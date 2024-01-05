@@ -1,8 +1,21 @@
 const express = require('express')
 const trackRoute = express()
 const db = require('../database/connection')
-trackRoute.get('/', async (req, res)=>
+trackRoute.get('/retrieve-trip-details', async (req, res)=>
 {   
-    res.send(`<h1>HEllo</h1>`)
+    const {trackingCode} = req.query
+
+    try {
+        const result = await db(`Select * from trips where t_trackingcode = '${trackingCode}'`)
+        if(result !== 0) 
+        {   
+            return res.json(result)
+        }
+        else{
+            return res.json({msg: "No Result Found!"})
+        }
+    } catch (error) {
+        return res.json({msg: "Database is unavailable right now!"})
+    }
 })
 module.exports = trackRoute

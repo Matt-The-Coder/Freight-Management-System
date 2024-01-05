@@ -61,13 +61,76 @@ const LiveTracking = () => {
   const [isMapSetup, setIsMapSetup] = useState(false)
   const [currentTheme, setCurrentTheme] = useState('')
   const [isFormNotSubmitted, setIsFormNotSubmitted] = useState(true)
+  const [trackingCode, setTrackingCode] = useState("")
+  const [tripDetail, setTripDetails] = useState({})
   const openDetail = () => {
     detail.current.classList.toggle("open")
   }
-const trackDriver = (e)=>
+const trackDriver = async (e)=>
 {
   e.preventDefault()
-  setIsFormNotSubmitted(false)
+  try {
+    const result = await axios.get(`${hostServer}/retrieve-trip-details?trackingCode=${trackingCode}`)
+    console.log("hello")
+    const tripData = result.data
+    console.log(tripData)
+    setTripDetails(tripData[0])
+    if(tripData.length !== 0){
+      setTimeout(()=>
+      {
+        const successLocation = (position) => {
+          const data = position.coords;
+          setTimeout(()=>
+          {
+            if(currentTheme == "dark"){
+              mapContainer.current.classList.remove("mapboxgl-map")
+              mapContainer.current.innerHTML = ""
+              setupDarkMap(tripDetail?.t_trip_fromlog, tripDetail?.t_trip_fromlat)
+              setIsMapSetup(!isMapSetup)
+              if (instructionContainer.current) {
+                const instructions = instructionContainer.current
+                instructionContainer.current.removeChild(instructions.children[0])
+              }
+              setDirections(tripDetail?.t_trip_fromlog, tripDetail?.t_trip_fromlat)
+              mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
+              instructionContainer.current.appendChild(mapInstructions.current)
+            
+          }
+         else {
+            // mapContainer.current.classList.remove("mapboxgl-map")
+            // mapContainer.current.innerHTML = ""
+            setupMap(tripDetail?.t_trip_fromlog, tripDetail?.t_trip_fromlat);
+            setIsMapSetup(!isMapSetup)
+            if (instructionContainer.current.hasChildNodes()) {
+              const instructions = instructionContainer.current
+              instructionContainer.current.removeChild(instructions.children[0])
+            }
+            setDirections(tripDetail?.t_trip_fromlog, tripDetail?.t_trip_fromlat)
+            mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
+            instructionContainer.current.appendChild(mapInstructions.current)
+          }
+          }, 500)
+    
+        };
+    
+        const errorLocation = () => {
+          setupMap();
+        };
+    
+        navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+          enableHighAccuracy: true,
+        });
+        setIsFormNotSubmitted(false)
+      }, 3000)
+
+    }
+    else alert("Invalid tracking code! Please enter a valid tracking code.")
+   
+  } catch (error) {
+    alert("Invalid tracking code! Please enter a valid tracking code.")
+    console.log(error)
+  }
+
 }
   useEffect(() => {
     const handleResize = () => {
@@ -220,7 +283,7 @@ const trackDriver = (e)=>
     }
 
   }
-  const retrieveDirection = async (fLongitude, fLatitude, dLongitude=121.03666348624142, dLatitude= 14.726582928426808) => 
+  const retrieveDirection = async (fLongitude, fLatitude, dLongitude=tripDetail.t_trip_tolog, dLatitude= tripDetail.t_trip_tolat) => 
   {
     const result = await axios.post(`${hostServer}/getDirections`, 
     {
@@ -235,7 +298,7 @@ const trackDriver = (e)=>
   const setDirections = (longitude, latitude) => {
     setIsLoading(true)
     directions.current.setOrigin([longitude, latitude]);
-    directions.current.setDestination([destinationLong, destinationLat]);
+    directions.current.setDestination([tripDetail.t_trip_tolog, tripDetail.t_trip_tolat]);
     // calculteWeatherCondition(latitude, longitude)
     // calculateCarbonEmissions()
     // retrieveDirection(longitude, latitude)
@@ -364,7 +427,7 @@ const trackDriver = (e)=>
        <div className="trackingContainer">
         <div className="trackingBox">
         <div className="trackingLogo">
-          <img src="/public/assets/img/kargada-name.png" alt="" />
+          <img src="/assets/img/kargada-name.png" alt="" />
         </div>
         <div className="trackingFormContainer">
         <div className="trackingTitle">
@@ -372,7 +435,7 @@ const trackDriver = (e)=>
         </div>
         <div className="trackingForm">
           <form onSubmit={(e)=>{trackDriver(e)}}>
-            <input type="text" placeholder='Tracking No.'/>
+            <input type="text" placeholder='Tracking No.' onChange={(e)=>{setTrackingCode(e.currentTarget.value)}}/>
             <button type="submit">Track</button>
           </form>
         </div>
