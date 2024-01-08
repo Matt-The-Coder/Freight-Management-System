@@ -63,6 +63,7 @@ const LiveTracking = () => {
   const [isFormNotSubmitted, setIsFormNotSubmitted] = useState(true)
   const [trackingCode, setTrackingCode] = useState("")
   const [tripDetail, setTripDetails] = useState({})
+  const [isMapRender, setIsMapRender] = useState(false)
   const openDetail = () => {
     detail.current.classList.toggle("open")
   }
@@ -70,61 +71,17 @@ const trackDriver = async (e)=>
 {
   e.preventDefault()
   try {
+    setIsLoading(true)
     const result = await axios.get(`${hostServer}/retrieve-trip-details?trackingCode=${trackingCode}`)
-    console.log("hello")
     const tripData = result.data
-    console.log(tripData)
     setTripDetails(tripData[0])
     if(tripData.length !== 0){
-      setTimeout(()=>
-      {
-        const successLocation = (position) => {
-          const data = position.coords;
-          setTimeout(()=>
-          {
-            if(currentTheme == "dark"){
-              mapContainer.current.classList.remove("mapboxgl-map")
-              mapContainer.current.innerHTML = ""
-              setupDarkMap(tripDetail?.t_trip_fromlog, tripDetail?.t_trip_fromlat)
-              setIsMapSetup(!isMapSetup)
-              if (instructionContainer.current) {
-                const instructions = instructionContainer.current
-                instructionContainer.current.removeChild(instructions.children[0])
-              }
-              setDirections(tripDetail?.t_trip_fromlog, tripDetail?.t_trip_fromlat)
-              mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
-              instructionContainer.current.appendChild(mapInstructions.current)
-            
-          }
-         else {
-            // mapContainer.current.classList.remove("mapboxgl-map")
-            // mapContainer.current.innerHTML = ""
-            setupMap(tripDetail?.t_trip_fromlog, tripDetail?.t_trip_fromlat);
-            setIsMapSetup(!isMapSetup)
-            if (instructionContainer.current.hasChildNodes()) {
-              const instructions = instructionContainer.current
-              instructionContainer.current.removeChild(instructions.children[0])
-            }
-            setDirections(tripDetail?.t_trip_fromlog, tripDetail?.t_trip_fromlat)
-            mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
-            instructionContainer.current.appendChild(mapInstructions.current)
-          }
-          }, 500)
-    
-        };
-    
-        const errorLocation = () => {
-          setupMap();
-        };
-    
-        navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
-          enableHighAccuracy: true,
-        });
+        setIsMapRender(true)
+        setIsLoading(false)
         setIsFormNotSubmitted(false)
-      }, 3000)
-
     }
     else alert("Invalid tracking code! Please enter a valid tracking code.")
+    setIsLoading(false)
    
   } catch (error) {
     alert("Invalid tracking code! Please enter a valid tracking code.")
@@ -184,6 +141,7 @@ const trackDriver = async (e)=>
     map.current.addControl(directions.current, 'top-left');
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
     map.current.addControl(new mapboxgl.FullscreenControl(), 'top-right');
+    marker.current.setLngLat([tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat]).addTo(map.current);
     // map.current.addControl(new MapboxTraffic(), 'top-right');
   };
   const setupDarkMap = (lng, lat) => {
@@ -215,6 +173,8 @@ const trackDriver = async (e)=>
     map.current.addControl(directions.current, 'top-left');
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
     map.current.addControl(new mapboxgl.FullscreenControl(), 'top-left');
+    marker.current.setLngLat([tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat]).addTo(map.current);
+  //     marker.current.setRotation(data?.heading)
     // map.current.addControl(new MapboxTraffic(), 'top-right');
     // map.current.on('click', (e) => {
     //   const clickedLngLat = e.lngLat.toArray();
@@ -296,32 +256,30 @@ const trackDriver = async (e)=>
 
 
   const setDirections = (longitude, latitude) => {
-    setIsLoading(true)
     directions.current.setOrigin([longitude, latitude]);
     directions.current.setDestination([tripDetail.t_trip_tolog, tripDetail.t_trip_tolat]);
     // calculteWeatherCondition(latitude, longitude)
     // calculateCarbonEmissions()
     // retrieveDirection(longitude, latitude)
-    setIsLoading(false)
   };
 
   // WATCH POSITION
-  useEffect(() => {
-    const succcessPosition = (position) => {
-      const data = position.coords;
-      setPositionData(data);
-      const calcSpeed = data.speed * 3.6
-      setSpeed(calcSpeed.toFixed(2))
-      marker.current.setLngLat([data?.longitude, data?.latitude]).addTo(map.current);
-      marker.current.setRotation(data?.heading)
-    };
-    const errorPosition = (position) => {
-      setPositionData(position.coords.longitude, position.coords.latitude);
-    }
-    navigator.geolocation.watchPosition(succcessPosition, errorPosition, {
-      enableHighAccuracy: true,
-    })
-  }, [])
+  // useEffect(() => {
+  //   const succcessPosition = (position) => {
+  //     const data = position.coords;
+  //     setPositionData(data);
+  //     const calcSpeed = data.speed * 3.6
+  //     setSpeed(calcSpeed.toFixed(2))
+  //     marker.current.setLngLat([data?.longitude, data?.latitude]).addTo(map.current);
+  //     marker.current.setRotation(data?.heading)
+  //   };
+  //   const errorPosition = (position) => {
+  //     setPositionData(position.coords.longitude, position.coords.latitude);
+  //   }
+  //   navigator.geolocation.watchPosition(succcessPosition, errorPosition, {
+  //     enableHighAccuracy: true,
+  //   })
+  // }, [isMapRender])
   
   useEffect(()=> 
   {
@@ -356,51 +314,76 @@ const trackDriver = async (e)=>
       setMapStyle("streets-v12")
     }
   }, [])
+  // For changing theme
   useEffect(() => {
-    const successLocation = (position) => {
-      const data = position.coords;
+
       setTimeout(()=>
       {
         if(currentTheme == "dark"){
           mapContainer.current.classList.remove("mapboxgl-map")
           mapContainer.current.innerHTML = ""
-          setupDarkMap(data.longitude, data.latitude)
+          setupDarkMap(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat)
           setIsMapSetup(!isMapSetup)
           if (instructionContainer.current) {
             const instructions = instructionContainer.current
             instructionContainer.current.removeChild(instructions.children[0])
           }
-          setDirections(data.longitude, data.latitude)
+          setDirections(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat)
           mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
           instructionContainer.current.appendChild(mapInstructions.current)
         
       }
      else {
-        // mapContainer.current.classList.remove("mapboxgl-map")
-        // mapContainer.current.innerHTML = ""
-        setupMap(data.longitude, data.latitude);
+        mapContainer.current.classList.remove("mapboxgl-map")
+        mapContainer.current.innerHTML = ""
+        setupMap(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat);
         setIsMapSetup(!isMapSetup)
         if (instructionContainer.current.hasChildNodes()) {
           const instructions = instructionContainer.current
           instructionContainer.current.removeChild(instructions.children[0])
         }
-        setDirections(data.longitude, data.latitude)
+        setDirections(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat)
         mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
         instructionContainer.current.appendChild(mapInstructions.current)
       }
       }, 500)
 
-    };
-
-    const errorLocation = () => {
-      setupMap();
-    };
-
-    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
-      enableHighAccuracy: true,
-    });
   }, [mapStyle]);
+  // For starting direction
+  useEffect(() => {
+      setTimeout(()=>
+      {
+        if(currentTheme == "dark"){
+          console.log("hello")
+          mapContainer.current.classList.remove("mapboxgl-map")
+          mapContainer.current.innerHTML = ""
+          setupDarkMap(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat)
+          setIsMapSetup(!isMapSetup)
+          if (instructionContainer.current.hasChildNodes()) {
+            const instructions = instructionContainer.current
+            instructionContainer.current.removeChild(instructions.children[0])
+          }
+          setDirections(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat)
+          mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
+          instructionContainer.current.appendChild(mapInstructions.current)
+        
+      }
+     else {
+        mapContainer.current.classList.remove("mapboxgl-map")
+        mapContainer.current.innerHTML = ""
+        setupMap(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat);
+        setIsMapSetup(!isMapSetup)
+        if (instructionContainer.current.hasChildNodes()) {
+          const instructions = instructionContainer.current
+          instructionContainer.current.removeChild(instructions.children[0])
+        }
+        setDirections(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat)
+        mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
+        instructionContainer.current.appendChild(mapInstructions.current)
+      }
+      }, 500)
 
+  }, [isMapRender]);
 
   const override = {
     display: "block",
