@@ -1,6 +1,5 @@
 const express = require('express')
 const WFRoute = express.Router()
-const axios = require('axios')
 // Calculate Emissions and Consumptions
 WFRoute.get('/calculateFuelConsumptionWithPrice', (req, res)=>
 {

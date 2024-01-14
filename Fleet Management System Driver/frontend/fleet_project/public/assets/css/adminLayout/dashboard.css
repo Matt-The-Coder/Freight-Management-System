@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
-body, html{
-    margin: 0;
-}
 :root {
     --light: #f6f6f9;
     --primary: #1976D2;
@@ -18,7 +15,7 @@ body, html{
     --light-success: #BBF7D0;
 }
 
-.Homelayout *{
+.DashboardLayout *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -26,15 +23,15 @@ body, html{
     color: var(--dark);
 }
 
-.Homelayout .bx{
+.DashboardLayout .bx{
     font-size: 1.7rem;
 }
 
-.Homelayout a{
+.DashboardLayout a{
     text-decoration: none;
 }
 
-.Homelayout li{
+.DashboardLayout li{
     list-style: none;
 }
 

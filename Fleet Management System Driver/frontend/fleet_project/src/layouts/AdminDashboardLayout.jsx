@@ -15,7 +15,6 @@ const AdminDashboardLayout = ()=>{
   const [user, setUser] = useState(null)
   const [authError, setAuthError] = useState(null)
   const [mapStyle, setMapStyle] = useState('streets-v12')
-  const [theme, setTheme] = useState("light")
   const toggleDropdown = (e) => {
       switch(e.id) {
         case'tracking': setTrackingDropdown(!trackingDropdown) 
@@ -145,10 +144,8 @@ const AdminDashboardLayout = ()=>{
           const toggler = document.getElementById('theme-toggle');
           if (toggler.checked) {
             document.body.classList.add('dark');
-            setTheme("dark")
           } else {
             document.body.classList.remove('dark');
-            setTheme("light")
           }
         };
     
@@ -288,9 +285,9 @@ const AdminDashboardLayout = ()=>{
         </a> 
       </li> */}
       <li >
-      <Link to="/admin/tracking/trips" id='subMenu'>
-       Trips
-      </Link> 
+      <a href="/admin/tracking/live" id='subMenu'>
+      Live Tracking
+      </a> 
     </li>
     </>
     )
@@ -333,7 +330,7 @@ const AdminDashboardLayout = ()=>{
     </nav>
     {/* End of Navbar */}
     <main>
-         <Outlet context={{isLoading, setIsLoading, ...user, mapStyle, setMapStyle, theme}}/>
+         <Outlet context={{isLoading, setIsLoading, ...user, mapStyle, setMapStyle}}/>
 
     </main>
   </div>

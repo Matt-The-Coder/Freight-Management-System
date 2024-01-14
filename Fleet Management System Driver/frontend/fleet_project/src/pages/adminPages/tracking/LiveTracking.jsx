@@ -225,7 +225,7 @@ const LiveTracking = () => {
     setIsLoading(true)
     directions.current.setOrigin([longitude, latitude]);
     directions.current.setDestination([121.0417, 14.7286]);
-    calculteWeatherCondition(latitude, longitude)
+    // calculteWeatherCondition(latitude, longitude)
     calculateCarbonEmissions()
     retrieveDirection(longitude, latitude)
     setIsLoading(false)
@@ -490,21 +490,13 @@ const LiveTracking = () => {
                   <img src={weatherIcon} alt="weather icon" />}
               </div>
               <div className="rainfallRate">
-                <div className="flip-card-inner">
-                  <div className="flip-card-front">
-                  <i className='bx bx-cloud-light-rain'></i>
-                  </div>
-                  <div className="flip-card-back">
-                  {weatherCondition && <p>Rainfall Rate: {parseFloat(weatherCondition.precip)}mm/hr - {
+                <i className='bx bx-cloud-light-rain'></i>
+                {weatherCondition && <p>Rainfall Rate: {parseFloat(weatherCondition.precip)}mm/hr - {
                   parseFloat(weatherCondition.precip) < 2.6 ? <label> Ligh Precipitation: Minimal impact on a driver's view while delivering cargo. Roads may become slightly wet, but visibility remains relatively clear, making for safe driving conditions.</label> :
                     parseFloat(weatherCondition.precip) < 7.7 ? <label> Moderate Precipitation: Reduced visibility during cargo delivery. Rain intensifies, requiring windshield wipers and extra caution on wet roads to ensure cargo safety.</label> :
                       parseFloat(weatherCondition.precip) < 51 ? <label> Heavy Precipitation: Significant reduction in visibility when delivering cargo. Intense rain can impair the driver's view and road conditions, demanding extra care to secure and transport goods safely.</label> :
                         <label> Very Heavvy Precipitation: Extremely poor visibility during cargo delivery. Hazardous conditions arise, posing significant risks to cargo, driver safety, and the timely completion of deliveries.</label>}
                 </p>}
-                  </div>
-                </div>
-               
-
               </div>
               <div className="air">
                 <i className='bx bx-wind'></i>

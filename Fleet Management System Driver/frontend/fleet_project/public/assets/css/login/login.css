@@ -15,7 +15,7 @@ input {
   left: 28vw;
   bottom: 5.2vw;
 }
-.Login {
+.AdminLogin {
   position: relative;
   width: 100%;
   background-color: #fff;
@@ -164,7 +164,7 @@ form.sign-in-form {
   grid-template-columns: repeat(2, 1fr);
 }
 
-.Login:before {
+.AdminLogin:before {
   content: "";
   position: absolute;
   height: 2000px;
@@ -237,45 +237,45 @@ form.sign-in-form {
 
 /* ANIMATION */
 
-.Login.sign-up-mode:before {
+.AdminLogin.sign-up-mode:before {
   transform: translate(100%, -50%);
   right: 52%;
 }
 
-.Login.sign-up-mode .left-panel .image,
-.Login.sign-up-mode .left-panel .loginContent {
+.AdminLogin.sign-up-mode .left-panel .image,
+.AdminLogin.sign-up-mode .left-panel .loginContent {
   transform: translateX(-800px);
 }
 
-.Login.sign-up-mode .signin-signup {
+.AdminLogin.sign-up-mode .signin-signup {
   left: 25%;
 }
 
-.Login.sign-up-mode form.sign-up-form {
+.AdminLogin.sign-up-mode form.sign-up-form {
   opacity: 1;
   z-index: 2;
 }
 
-.Login.sign-up-mode form.sign-in-form {
+.AdminLogin.sign-up-mode form.sign-in-form {
   opacity: 0;
   z-index: 1;
 }
 
-.Login.sign-up-mode .right-panel .image,
-.Login.sign-up-mode .right-panel .loginContent {
+.AdminLogin.sign-up-mode .right-panel .image,
+.AdminLogin.sign-up-mode .right-panel .loginContent {
   transform: translateX(0%);
 }
 
-.Login.sign-up-mode .left-panel {
+.AdminLogin.sign-up-mode .left-panel {
   pointer-events: none;
 }
 
-.Login.sign-up-mode .right-panel {
+.AdminLogin.sign-up-mode .right-panel {
   pointer-events: all;
 }
 
 @media (max-width: 870px) {
-  .Login {
+  .AdminLogin {
     min-height: 800px;
     height: 100vh;
   }
@@ -291,7 +291,7 @@ form.sign-in-form {
   }
 
   .signin-signup,
-  .Login.sign-up-mode .signin-signup {
+  .AdminLogin.sign-up-mode .signin-signup {
     left: 50%;
   }
 
@@ -343,7 +343,7 @@ form.sign-in-form {
     font-size: 0.7rem;
   }
 
-  .Login:before {
+  .AdminLogin:before {
     width: 1500px;
     height: 1500px;
     transform: translateX(-50%);
@@ -354,19 +354,19 @@ form.sign-in-form {
     transition: 2s ease-in-out;
   }
 
-  .Login.sign-up-mode:before {
+  .AdminLogin.sign-up-mode:before {
     transform: translate(-50%, 100%);
     bottom: 32%;
     right: initial;
   }
 
-  .Login.sign-up-mode .left-panel .image,
-  .Login.sign-up-mode .left-panel .loginContent {
+  .AdminLogin.sign-up-mode .left-panel .image,
+  .AdminLogin.sign-up-mode .left-panel .loginContent {
     transform: translateY(-300px);
   }
 
-  .Login.sign-up-mode .right-panel .image,
-  .Login.sign-up-mode .right-panel .loginContent {
+  .AdminLogin.sign-up-mode .right-panel .image,
+  .AdminLogin.sign-up-mode .right-panel .loginContent {
     transform: translateY(0px);
   }
 
@@ -375,7 +375,7 @@ form.sign-in-form {
     transform: translateY(300px);
   }
 
-  .Login.sign-up-mode .signin-signup {
+  .AdminLogin.sign-up-mode .signin-signup {
     top: 5%;
     transform: translate(-50%, 0);
   }
@@ -392,16 +392,16 @@ form.sign-in-form {
   .panel .loginContent {
     padding: 0.5rem 1rem;
   }
-  .Login {
+  .AdminLogin {
     padding: 1.5rem;
   }
 
-  .Login:before {
+  .AdminLogin:before {
     bottom: 72%;
     left: 50%;
   }
 
-  .Login.sign-up-mode:before {
+  .AdminLogin.sign-up-mode:before {
     bottom: 28%;
     left: 50%;
   }

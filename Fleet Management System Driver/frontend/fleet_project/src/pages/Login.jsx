@@ -3,7 +3,7 @@ import '../../public/assets/css/login/login.css'
 import { useEffect, useRef, useState} from 'react';
 import {Link, useNavigate, useOutletContext} from 'react-router-dom'
 import RiseLoader from "react-spinners/RiseLoader";
-const Login = ()=>{
+const AdminLogin = ()=>{
   const nav = useNavigate(null)
   const [isLoading, setIsLoading] = useState(false)
   const hostServer = import.meta.env.VITE_SERVER_HOST
@@ -86,7 +86,7 @@ const Login = ()=>{
 />
   </div>
        </>)}
-  <div className="Login" ref={mainContainer}>
+  <div className="AdminLogin" ref={mainContainer}>
   <div className="forms-container">
     <div className="signin-signup">
       <form action="#" className="sign-in-form" onSubmit={handleLogin}>
@@ -192,4 +192,4 @@ Join us and experience seamless shipping like never before.
     )
 }
 
-export default Login;
+export default AdminLogin;
