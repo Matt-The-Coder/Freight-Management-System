@@ -23,6 +23,7 @@ const AdminDashboardLayout = ()=>{
         case'maintenance': setMaintenanceDropdown(!maintenanceDropdown) 
         break;
         case "fuel" : setFuel(!fuel)
+        break;
         default:null;
       }
 
@@ -295,7 +296,7 @@ const AdminDashboardLayout = ()=>{
     </>
     )
       } 
-      <li onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+      <li id='settings' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
         <Link to="/admin/settings">
           <i className="bx bx-cog" />
           Settings

@@ -11,6 +11,9 @@ h3{
 h4{
   font-weight: 100px;
 }
+p {
+  font-size: 14px;
+}
 .tracking-details{
   width: 100%;
   padding: 24px;
@@ -54,52 +57,68 @@ button{
   gap: 10px;
 }
 
+.weatherTitle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+}
 
 .weatherData :is(.weatherIcon, .rainfallRate, .air, .temperature, 
 .humidity, .visibility, .solar, .pressure, .weatherAlert) {
-  display: flex;
   background-color: var(--light);
-  padding: 108px;
+  padding: 12px;
   border-radius: 20px;
-  height: 300px;
+  height: 100px;
   width: 300px;
   perspective: 1000px;
 }
 .flip-card-inner{
-  position: relative;
   width: 100%;
   height: 100%;
-  text-align: center;
   transition: transform 0.8s;
   transform-style: preserve-3d;
+
 }
-.rainfallRate:hover .flip-card-inner {
+.weatherData :is(.weatherIcon, .rainfallRate, .air, .temperature, 
+.humidity, .visibility, .solar, .pressure, .weatherAlert):hover .flip-card-inner {
   transform: rotateY(180deg);
 }
+
 .flip-card-front, .flip-card-back{
-  position: absolute;
   width: 100%;
   height: 100%;
   /* -webkit-backface-visibility: hidden; */
   backface-visibility: hidden;
 }
 .flip-card-front {
-  background-color: #bbb;
   color: black;
+  gap: 10px;
+  display: flex;
 }
+.flip-card-front .logo{
+  background-color: var(--light-primary);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  border-radius: 10px;
+}
+.flip-card-front .logo .bx{
+  font-size: 36px;
+  color: var(--primary);
+ }
 .flip-card-back {
-  background-color: dodgerblue;
-  color: white;
+  top: 0;
+  overflow: auto;
+  position: absolute;
   transform: rotateY(180deg);
+  scroll-behavior: smooth;
 }
 :is(.weatherIcon, .rainfallRate, .air, .temperature, 
 .humidity, .visibility, .solar, .pressure, .weatherAlert) :is(*:first-child){
-  background-color: var(--light-primary);
-  width: 35%;
-  font-size: 34px;
-  color: var(--primary);
-  height: 80px;
-  width: 80px;
+  font-size: 14px;
 }
 
 
@@ -224,7 +243,6 @@ button{
   }
 
   .weatherData>div{
-    overflow: auto;
     background-color: var(--light);
     border-radius: 20px;
     padding: 20px;

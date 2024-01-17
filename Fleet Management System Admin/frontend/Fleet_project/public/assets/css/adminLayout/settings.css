@@ -1,0 +1,149 @@
+.Settings{
+    height: 80vh;
+}
+.settings-container form{
+    display: block !important; 
+    height: 100%;
+    width: 100%;
+    overflow: visible !important;
+
+}
+
+.settings-container{
+    width: 100%;
+    height: 70vh;
+    display: flex;
+    gap: 2%;
+}
+/* Personal */
+.personal-settings{
+    padding: 24px;
+    height: 400px;
+    width: 50%;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: var(--light);
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+}
+.sub-title h4{
+    font-weight: 500;
+    font-size: 20px;
+}
+.sub-title h5{
+    font-weight: 400;
+}
+label{
+    font-weight: 500;
+}
+.settings-container span{
+    color: white !important;
+}
+.settings-container input{
+    border-radius: 5px;
+    color: black;
+    padding: 6px 12px;
+}
+.personal-settings img {
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+}
+.personal-settings .profile{
+    display: flex;
+    gap: 10px;
+}
+.personal-settings .bx{
+    position: relative;
+    font-size: 20px;
+    left: -30px;
+    bottom: -50px;
+    cursor: pointer;
+}
+.personal-settings :is(.first-row, .second-row){
+    display: flex;
+    gap: 10%;
+    margin-bottom: 20px;
+}
+
+.personal-settings :is(.first-row, .second-row) :is(.first-column, .second-column){
+    display: flex;
+    flex-direction: column;
+}
+/* Security */
+.security-settings{
+    padding: 24px;
+    height: 400px;
+    width: 50%;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: var(--light);
+}
+.security-settings .profile{
+    display: flex;
+    gap: 10px;
+}
+.security-settings :is(.first-row, .second-row){
+    display: flex;
+    gap: 10%;
+    margin-bottom: 20px;
+}
+
+.security-settings :is(.first-row, .second-row) :is(.first-column, .second-column){
+    display: flex;
+    flex-direction: column;
+}
+
+.personal-settings .save-button{
+    position: relative;
+    bottom: -7%;
+    right: -70%;
+    width: 100%;
+}
+.security-settings .save-button{
+    position: relative;
+    bottom: -30%;
+    right: -65%;
+    width: 100%;
+}
+.save-button button{
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    background-color:var(--button);
+    color:white
+}
+
+@media screen and (max-width: 768px) {
+    .settings-container{
+        flex-direction: column;
+    }
+    .personal-settings, .security-settings{
+        width: 100%;
+        height: auto;
+    }
+    .first-row, .second-row{
+        flex-direction: column;
+    }
+    .security-settings .save-button{
+        top: 0;
+        left: 0;
+    }
+    
+    .personal-settings .save-button, .security-settings .save-button{
+        bottom: 0;
+        right: 0;
+        text-align: end;
+    }
+    .save-button button{
+        right: 0px;
+    }
+    .save-button button span{
+        display: none;
+    }
+
+
+
+}
