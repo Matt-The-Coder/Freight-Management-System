@@ -38,12 +38,14 @@ const fuelRoute = require('./routes/fuelRoute')
 const authRoute = require('./routes/authRoute');
 const mapboxRoute = require('./routes/mapboxRoute')
 const weatherAndFuelRoute = require('./routes/weatherAndFuelRoute')
+const personalInfoRoute = require('./routes/personalInfoRoute')
 app.use(cors(corsOptions))
 app.use(authRoute)
 app.use(fuelRoute)
 app.use(maintenanceRouter)
 app.use(weatherAndFuelRoute)
 app.use(mapboxRoute)
+app.use(personalInfoRoute)
 
 app.listen(port, ()=>{
 

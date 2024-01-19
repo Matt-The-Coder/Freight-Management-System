@@ -31,13 +31,16 @@
     font-weight: 500;
     font-size: 20px;
 }
+.sub-title span{
+    color: var(--dark) !important;
+}
 .sub-title h5{
     font-weight: 400;
 }
 label{
     font-weight: 500;
 }
-.settings-container span{
+.save-button span{
     color: white !important;
 }
 .settings-container input{
@@ -71,6 +74,9 @@ label{
     display: flex;
     flex-direction: column;
 }
+#password-error{
+    justify-content: center;
+}
 /* Security */
 .security-settings{
     padding: 24px;
@@ -87,7 +93,7 @@ label{
 .security-settings :is(.first-row, .second-row){
     display: flex;
     gap: 10%;
-    margin-bottom: 20px;
+    margin: 20px 0px;
 }
 
 .security-settings :is(.first-row, .second-row) :is(.first-column, .second-column){
@@ -97,17 +103,19 @@ label{
 
 .personal-settings .save-button{
     position: relative;
-    bottom: -7%;
-    right: -70%;
+    height: 20%;
     width: 100%;
+    text-align: end;
 }
 .security-settings .save-button{
     position: relative;
-    bottom: -30%;
-    right: -65%;
+    height: 40%;
     width: 100%;
 }
-.save-button button{
+.personal-settings .save-button button{
+    position: relative;
+    top: 20px;
+    margin-top: auto; 
     padding: 6px 12px;
     border-radius: 5px;
     cursor: pointer;
@@ -115,8 +123,30 @@ label{
     background-color:var(--button);
     color:white
 }
-
+.security-settings .save-button button{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    background-color:var(--button);
+    color:white
+}
+.password-error p{
+    color: var(--danger);
+}
+@media screen and (max-width:352px ){
+        .Settings h1{
+        font-size: 31px !important;
+    }
+    .Settings h3{
+        font-size: 20px !important;
+    }
+}
 @media screen and (max-width: 768px) {
+
     .settings-container{
         flex-direction: column;
     }
@@ -127,18 +157,17 @@ label{
     .first-row, .second-row{
         flex-direction: column;
     }
-    .security-settings .save-button{
-        top: 0;
-        left: 0;
-    }
     
     .personal-settings .save-button, .security-settings .save-button{
-        bottom: 0;
-        right: 0;
-        text-align: end;
+       height: 40px;
+       position: relative;
     }
-    .save-button button{
-        right: 0px;
+    .personal-settings .save-button button{
+        position: relative;
+        top: 0;
+    }
+    .security-settings .save-button button{
+        position: absolute;
     }
     .save-button button span{
         display: none;
