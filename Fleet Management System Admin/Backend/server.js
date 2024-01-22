@@ -12,7 +12,7 @@ const session = require('express-session')
 const VITE_MAPBOX_API = "pk.eyJ1Ijoibm9haGtseWRlMTciLCJhIjoiY2xvZTF3djYwMDczdTJtcGY3dXdibHR4aSJ9.0VgWjkWc6WcgV4DarLZTGw"
 app.use(express.json());
 app.use(cookieParser())
-app.use(express.static('images'))
+app.use(express.static(path.join(__dirname, 'images')))
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
