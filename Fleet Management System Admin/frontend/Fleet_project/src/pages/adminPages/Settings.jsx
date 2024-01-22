@@ -1,11 +1,11 @@
-import { useOutletContext, useNavigate } from 'react-router-dom'
+import { useOutletContext, useNavigate, Form } from 'react-router-dom'
 import '/public/assets/css/adminLayout/settings.css'
 import axios from 'axios'
 import bcrypt from 'bcryptjs'
 import { useEffect, useRef, useState } from 'react'
 const Settings = () => {
     const hostServer = import.meta.env.VITE_SERVER_HOST
-    const { u_id, setIsLoading } = useOutletContext()
+    const { u_id, setIsLoading,image, setImage } = useOutletContext()
     const [fName, setFName] = useState("")
     const [lName, setLName] = useState("")
     const [uName, setUName] = useState("")
@@ -18,6 +18,7 @@ const Settings = () => {
     const [oldPasswordError, setOldPasswordError] = useState(false)
     const [mismatchedPassword, setMismatchedPassword] = useState(false)
     const [usernameError, setUsernameError] = useState(false)
+    const profilePic = useRef(null)
     const nav = useNavigate()
         useEffect(()=>{
             const getInfo = async () => {
@@ -94,12 +95,33 @@ const Settings = () => {
         } catch (error) {
             console.log(error)
         }
-
         
+    }
+    const changePicture = () => 
+    {
+        const pic = profilePic.current
+        const img = document.getElementById("prof-pic")
+        pic.click()
+        pic.addEventListener("change", async (e) => 
+        {
+            const result = e.target.files[0]
+            const formData = new FormData()
+            formData.append('image', result)
+            try {
+                const upload = await axios.post(`${hostServer}/changeProfile/${u_id}`, formData)
+                // img.src = URL.createObjectURL(result)
+                if(upload.data.status == "Success"){
+                   const uploadedImage = await axios.get(`${hostServer}/getProfilePicture/${u_id}`)
+                   console.log(uploadedImage.data.image[0].u_profile_picture)
+                   setImage(uploadedImage.data.image[0].u_profile_picture)
+                } else {
+                    console.log("Uploading failed.")
+                }
+            } catch (error) {
+                console.log(error)
+            }
 
-        
-
-        
+        })
     }
     return (
         <div className="Settings">
@@ -121,8 +143,9 @@ const Settings = () => {
                         <h3>Personal Information</h3>
                     </div>
                     <div className="profile">
-                        <img src="/assets/img/prof-pic.jpg" alt="Profile" />
-                        <i className='bx bx-camera' ></i>
+                        <img src={`${hostServer}/${image}`} alt="Profile" id="prof-pic"/>
+                        <input type="file" name="prof-pic"  ref={profilePic} hidden/>
+                        <i className='bx bx-camera'  onClick={changePicture}  ></i>
                         <div className="sub-title">
                             <h4>{fName} <span>{lName}</span></h4>
                             <h5>Admin</h5>

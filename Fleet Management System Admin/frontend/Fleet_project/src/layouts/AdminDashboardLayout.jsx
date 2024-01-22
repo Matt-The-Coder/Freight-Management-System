@@ -9,6 +9,7 @@ const AdminDashboardLayout = ()=>{
   const nav = useNavigate(null)
   const [trackingDropdown, setTrackingDropdown] = useState(false)
   const [maintenanceDropdown, setMaintenanceDropdown] = useState(false)
+  const [chatsDropdown, setChatsDropdown] = useState(false)
   const [fuel, setFuel] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isAuth, setIsAuth] = useState(false)
@@ -16,6 +17,9 @@ const AdminDashboardLayout = ()=>{
   const [authError, setAuthError] = useState(null)
   const [mapStyle, setMapStyle] = useState('streets-v12')
   const [theme, setTheme] = useState("light")
+  const [refresh, setRefresh] = useState(false)
+  const [access, setAccess] = useState("")
+  const [image, setImage] = useState('')
   const toggleDropdown = (e) => {
       switch(e.id) {
         case'tracking': setTrackingDropdown(!trackingDropdown) 
@@ -23,6 +27,8 @@ const AdminDashboardLayout = ()=>{
         case'maintenance': setMaintenanceDropdown(!maintenanceDropdown) 
         break;
         case "fuel" : setFuel(!fuel)
+        break;
+        case "chats": setChatsDropdown(!chatsDropdown)
         break;
         default:null;
       }
@@ -48,6 +54,7 @@ const AdminDashboardLayout = ()=>{
         const userData = result.data
         setIsAuth(true);
         setUser(userData.authData.user[0])
+        setRefresh(!refresh)
       }
     } catch (error) {
       setAuthError("Cannot fetch, Internal server is down!")
@@ -55,7 +62,18 @@ const AdminDashboardLayout = ()=>{
  
 
   }
-
+  const getProfilePicture = async () => 
+  {
+    const result = await axios.get(`${hostServer}/getProfilePicture/${user.u_id}`)
+    setImage(result.data.image[0].u_profile_picture)
+  }
+  const getAccess = async () => 
+  {
+    const result = await axios.get(`${hostServer}/getAccess/${user.u_id}`)
+    const fetchedData = result.data.data[0]
+    setAccess(fetchedData)
+    console.log(fetchedData)
+  }
   const handleLogout = async () => 
   {   
     try {
@@ -71,7 +89,13 @@ const AdminDashboardLayout = ()=>{
   useEffect(()=>
   { 
     checkAuthentication()
+
   }, [])
+  useEffect(()=>
+  { 
+    getAccess()
+    getProfilePicture()
+  }, [refresh])
 
 
     useEffect(() => {
@@ -217,43 +241,96 @@ const AdminDashboardLayout = ()=>{
        </>)}
        <noscript>You need to enable JavaScript to run this app.</noscript>
         <div className="adminSidebar close">
-    <a href="/admin/dashboard" className="logo">
+    <a href="/admin/settings" className="logo">
       <img src="/assets/img/kargada-logo.png" alt="Company Logo"/>
       <div className="logo-name">
         <span>Kar</span>gada
       </div>
     </a>
     <ul className="side-menu">
+      {access.a_admin_board==1 && 
       <li>
         <Link to="/admin/dashboard">
           <i className="bx bxs-dashboard" />
           Dashboard
         </Link>
-      </li>
-      
-      
-      <li id='maintenance' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
-        <Link to="#">
-        <i className='bx bx-wrench'></i>
-          Maintenance
-        </Link>
-      </li>
-      {maintenanceDropdown && (
-        <>
+      </li>}
+      {access.a_driver_board==1 && 
       <li>
-        <Link to="/admin/maintenance/list"  id='subMenu'>
-        Maintenance List
-        </Link> 
-      </li >
-      <li >
-      <Link to="/admin/maintenance/add" id='subMenu'>
-      Add Maintenance
-      </Link> 
-    </li>
-    </>
-    )
-      } 
-        <li id='fuel' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+        <Link to="/driver/dashboard">
+          <i className="bx bxs-dashboard" />
+          Dashboard
+        </Link>
+      </li>}
+      {access.a_deliveries ==1 && 
+            <li id='deliveries' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+            <Link to="/driver/deliveries">
+            <i class='bx bx-package' ></i>
+              Deliveries
+            </Link>
+          </li>
+      }
+      {access.a_history ==1 && 
+     
+            <li id='history' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+            <Link to="/driver/history">
+            <i class='bx bx-history' ></i>
+              History
+            </Link>
+          </li>
+     }
+      {access.a_driver_chat ==1 && 
+      (<>
+            <li id='chats' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+            <Link to="/driver/chats">
+            <i class='bx bx-chat'></i>
+              Chats
+            </Link>
+          </li>
+                {chatsDropdown && (
+                  <>
+                <li>
+                  <Link to="/admin/chats/list"  id='subMenu'>
+                  chats List
+                  </Link> 
+                </li >
+                <li >
+                <Link to="/admin/chats/add" id='subMenu'>
+                Add chats
+                </Link> 
+              </li>
+              </>
+              )
+                }
+      </>)}
+      {access.a_maintenance ==1 && ( <>
+            <li id='maintenance' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+            <Link to="#">
+            <i className='bx bx-wrench'></i>
+              Maintenance
+            </Link>
+          </li>
+                {maintenanceDropdown && (
+                  <>
+                <li>
+                  <Link to="/admin/maintenance/list"  id='subMenu'>
+                  Maintenance List
+                  </Link> 
+                </li >
+                <li >
+                <Link to="/admin/maintenance/add" id='subMenu'>
+                Add Maintenance
+                </Link> 
+              </li>
+              </>
+              )
+                } </>)
+          
+          }
+
+          {access.a_fuel ==1 && (
+          <>
+                  <li id='fuel' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
         <Link to="#">
         <i className='bx bx-gas-pump'></i>
           Fuel
@@ -275,7 +352,11 @@ const AdminDashboardLayout = ()=>{
         </>
         )
       }
-      <li id='tracking' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+          
+          </>)}
+      {access.a_tracking ==1 && (
+      <>
+            <li id='tracking' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
         <Link to="#">
         <i className='bx bx-navigation'></i>
           Tracking
@@ -296,12 +377,39 @@ const AdminDashboardLayout = ()=>{
     </>
     )
       } 
+      </>)}
+      {access.a_admin_chat ==1 && 
+      (<>
+            <li id='chats' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+            <Link to="#">
+            <i class='bx bx-chat'></i>
+              Chats
+            </Link>
+          </li>
+                {chatsDropdown && (
+                  <>
+                <li>
+                  <Link to="/admin/chats/list"  id='subMenu'>
+                  chats List
+                  </Link> 
+                </li >
+                <li >
+                <Link to="/admin/chats/add" id='subMenu'>
+                Add chats
+                </Link> 
+              </li>
+              </>
+              )
+                }
+      </>)}
+
       <li id='settings' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
-        <Link to="/admin/settings">
+        <Link to="/account/settings">
           <i className="bx bx-cog" />
           Settings
         </Link>
       </li>
+      
     </ul>
     <ul className="side-menu">
       <li onClick={handleLogout} style={{cursor:"pointer"}}>
@@ -328,13 +436,13 @@ const AdminDashboardLayout = ()=>{
       </form>
       <input type="checkbox" id="theme-toggle" hidden="" onClick={setMapTheme}/>
       <label htmlFor="theme-toggle" className="theme-toggle" onClick={setMapTheme} />
-      <a href="#" className="profile">
-        <img src="/assets/img/prof-pic.jpg" />
-      </a>
+      <Link to="/account/settings" className="profile">
+        <img src={`${hostServer}/${image}`} />
+      </Link>
     </nav>
     {/* End of Navbar */}
     <main>
-         <Outlet context={{isLoading, setIsLoading, ...user, mapStyle, setMapStyle, theme}}/>
+         <Outlet context={{isLoading, setIsLoading, ...user, mapStyle, setMapStyle, theme, setImage, image}}/>
 
     </main>
   </div>
