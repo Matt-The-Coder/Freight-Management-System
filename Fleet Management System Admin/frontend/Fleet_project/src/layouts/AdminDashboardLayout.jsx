@@ -20,6 +20,7 @@ const AdminDashboardLayout = ()=>{
   const [refresh, setRefresh] = useState(false)
   const [access, setAccess] = useState("")
   const [image, setImage] = useState('')
+  const [hasImage, setHasImage] = useState(false)
   const toggleDropdown = (e) => {
       switch(e.id) {
         case'tracking': setTrackingDropdown(!trackingDropdown) 
@@ -66,6 +67,7 @@ const AdminDashboardLayout = ()=>{
   {
     const result = await axios.get(`${hostServer}/getProfilePicture/${user.u_id}`)
     setImage(result.data.image[0].u_profile_picture)
+    setHasImage(true)
   }
   const getAccess = async () => 
   {
@@ -436,7 +438,7 @@ const AdminDashboardLayout = ()=>{
       <input type="checkbox" id="theme-toggle" hidden="" onClick={setMapTheme}/>
       <label htmlFor="theme-toggle" className="theme-toggle" onClick={setMapTheme} />
       <Link to="/account/settings" className="profile">
-        <img src={`${hostServer}/${image}`} alt='Profile' />
+        <img src={hasImage && `${hostServer}/${image}`} alt='Profile' />
       </Link>
     </nav>
     {/* End of Navbar */}
