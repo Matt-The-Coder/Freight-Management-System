@@ -10,6 +10,7 @@ const Settings = () => {
     const [lName, setLName] = useState("")
     const [uName, setUName] = useState("")
     const [email, setEmail] = useState("")
+    const [role, setRole] = useState('')
     const [uPassword, setUPassword] = useState("")
     const [cP, setCP] = useState("")
     const [nP, setNP] = useState('')
@@ -34,6 +35,7 @@ const Settings = () => {
                         setEmail(userData[0].u_email)
                         setUName(userData[0].u_username)
                         setUPassword(userData[0].u_password)
+                        setRole(userData[0].u_role)
                     }
                     setIsLoading(false)
                 } catch (error) {
@@ -148,7 +150,7 @@ const Settings = () => {
                         <i className='bx bx-camera'  onClick={changePicture}  ></i>
                         <div className="sub-title">
                             <h4>{fName} <span>{lName}</span></h4>
-                            <h5>Admin</h5>
+                            <h5>{role}</h5>
                         </div>
                     </div>
                     <form onSubmit={(e) => { updateInformation(e) }}>

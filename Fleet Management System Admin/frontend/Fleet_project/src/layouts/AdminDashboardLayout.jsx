@@ -72,7 +72,6 @@ const AdminDashboardLayout = ()=>{
     const result = await axios.get(`${hostServer}/getAccess/${user.u_id}`)
     const fetchedData = result.data.data[0]
     setAccess(fetchedData)
-    console.log(fetchedData)
   }
   const handleLogout = async () => 
   {   
@@ -265,7 +264,7 @@ const AdminDashboardLayout = ()=>{
       {access.a_deliveries ==1 && 
             <li id='deliveries' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
             <Link to="/driver/deliveries">
-            <i class='bx bx-package' ></i>
+            <i className='bx bx-package' ></i>
               Deliveries
             </Link>
           </li>
@@ -274,7 +273,7 @@ const AdminDashboardLayout = ()=>{
      
             <li id='history' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
             <Link to="/driver/history">
-            <i class='bx bx-history' ></i>
+            <i className='bx bx-history' ></i>
               History
             </Link>
           </li>
@@ -283,7 +282,7 @@ const AdminDashboardLayout = ()=>{
       (<>
             <li id='chats' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
             <Link to="/driver/chats">
-            <i class='bx bx-chat'></i>
+            <i className='bx bx-chat'></i>
               Chats
             </Link>
           </li>
@@ -382,7 +381,7 @@ const AdminDashboardLayout = ()=>{
       (<>
             <li id='chats' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
             <Link to="#">
-            <i class='bx bx-chat'></i>
+            <i className='bx bx-chat'></i>
               Chats
             </Link>
           </li>
@@ -437,7 +436,7 @@ const AdminDashboardLayout = ()=>{
       <input type="checkbox" id="theme-toggle" hidden="" onClick={setMapTheme}/>
       <label htmlFor="theme-toggle" className="theme-toggle" onClick={setMapTheme} />
       <Link to="/account/settings" className="profile">
-        <img src={`${hostServer}/${image}`} />
+        <img src={`${hostServer}/${image}`} alt='Profile' />
       </Link>
     </nav>
     {/* End of Navbar */}
