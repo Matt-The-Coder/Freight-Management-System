@@ -37,7 +37,7 @@ app.use(session({
   proxy: true,
   name: 'MyCustomCookieName',
   cookie: {
-    secure: false,
+    secure: true,
     httpOnly: true,
     sameSite: 'lax'
   }
