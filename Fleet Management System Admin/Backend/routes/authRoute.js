@@ -10,8 +10,6 @@ const verifyToken = (req, res, next) =>
 {
   const token = req.session.token
   // const token = req.cookies.token
-  console.log(req.session.token)
-  console.log(req.session.role)
     if(token){
         req.sessionToken = token
         // req.userToken = req.cookies.token

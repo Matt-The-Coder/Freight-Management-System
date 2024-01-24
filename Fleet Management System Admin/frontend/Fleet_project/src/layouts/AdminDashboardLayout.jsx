@@ -6,6 +6,7 @@ import axios from 'axios';
 const AdminDashboardLayout = ()=>{
   axios.defaults.withCredentials = true;
   const hostServer = import.meta.env.VITE_SERVER_HOST
+  const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
   const nav = useNavigate(null)
   const [trackingDropdown, setTrackingDropdown] = useState(false)
   const [maintenanceDropdown, setMaintenanceDropdown] = useState(false)
@@ -441,7 +442,7 @@ const AdminDashboardLayout = ()=>{
       <input type="checkbox" id="theme-toggle" hidden="" onClick={setMapTheme}/>
       <label htmlFor="theme-toggle" className="theme-toggle" onClick={setMapTheme} />
       <Link to="/account/settings" className="profile">
-        <img src={hasImage && `${hostServer}/${image}`} alt='Profile' />
+        <img src={hasImage && `${uploadingServer}/${image}`} alt='Profile' />
       </Link>
     </nav>
     {/* End of Navbar */}

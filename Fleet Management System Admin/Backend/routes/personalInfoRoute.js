@@ -4,20 +4,25 @@ const bcrypt = require('bcrypt')
 const multer = require('multer')
 const path = require('path')
 const db = require('../database/connection')
+const cloudinary = require("cloudinary").v2;
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './images')
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-    }
-})
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+  });
+  async function handleUpload(file) {
+    const res = await cloudinary.uploader.upload(file, {
+      resource_type: "auto",
+    });
+    return res;
+  }
 
-const upload = multer({
-    storage:storage
-})
-
+  const storage = new multer.memoryStorage();
+  const upload = multer({
+    storage,
+  });
+  
 personalInfoRoute.post('/updatePersonalInfo', async (req, res)=>{
     const {fName, lName, uName, email, u_id:id} = req.body
     try {
@@ -56,19 +61,51 @@ personalInfoRoute.get("/getAccess/:id", async (req, res) =>
     res.json({data: result}) 
 })
 
-// Change profile picture
-personalInfoRoute.post('/changeProfile/:id', upload.single('image'), async (req, res) => 
-{
-    const {id} = req.params
+personalInfoRoute.post("/upload/:id", upload.single("my_file"), async (req, res) => {
     try {
-        const query = `Update accounts set u_profile_picture = '${req.file.filename}' where u_id = ${id}`
-        await db(query)
-        res.json({status: 'Success'})
-    } catch (error) {
-        res.json({status: 'Failed'})
-    }
-})
 
+            const {id} = req.params
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cldRes = await handleUpload(dataURI);
+      const path = cldRes.url.split('/').pop()
+    const query = `Update accounts set u_profile_picture = '${path}' where u_id = ${id}`
+      const result = await db(query)
+      res.json(cldRes);
+
+    } catch (error) {
+      console.log("The error", error);
+      res.send({
+        message: error.message,
+      });
+    }
+  });
+
+// For localhost
+// Change profile picture
+// personalInfoRoute.post('/changeProfile/:id', upload.single('image'), async (req, res) => 
+// {
+//     const {id} = req.params
+//     try {
+//         const query = `Update accounts set u_profile_picture = '${req.file.filename}' where u_id = ${id}`
+//         await db(query)
+//         res.json({status: 'Success'})
+//     } catch (error) {
+//         res.json({status: 'Failed'})
+//     }
+// })
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, './images')
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+//     }
+// })
+
+// const upload = multer({
+//     storage:storage
+// })
 personalInfoRoute.get('/getProfilePicture/:id', async (req, res) => 
 {   
     const {id} = req.params
@@ -77,6 +114,7 @@ personalInfoRoute.get('/getProfilePicture/:id', async (req, res) =>
         const result = await db(query)
         res.json({image: result})
     } catch (error) {
+        console.log("Cannot get profile picture")
         res.json({status: "Failed to get profile picture"})
     }
 })

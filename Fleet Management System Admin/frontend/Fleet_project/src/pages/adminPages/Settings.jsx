@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import { useEffect, useRef, useState } from 'react'
 const Settings = () => {
     const hostServer = import.meta.env.VITE_SERVER_HOST
+    const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
     const { u_id, setIsLoading,image, setImage } = useOutletContext()
     const [fName, setFName] = useState("")
     const [lName, setLName] = useState("")
@@ -108,17 +109,20 @@ const Settings = () => {
         {
             const result = e.target.files[0]
             const formData = new FormData()
-            formData.append('image', result)
+            formData.append('my_file', result)
             try {
-                const upload = await axios.post(`${hostServer}/changeProfile/${u_id}`, formData)
+                setIsLoading(true)
+                const upload = await axios.post(`${hostServer}/upload/${u_id}`, formData)
                 // img.src = URL.createObjectURL(result)
-                if(upload.data.status == "Success"){
+                if(upload.data){
                    const uploadedImage = await axios.get(`${hostServer}/getProfilePicture/${u_id}`)
-                   console.log(uploadedImage.data.image[0].u_profile_picture)
-                   setImage(uploadedImage.data.image[0].u_profile_picture)
+                   console.log(uploadedImage.data)
+                   const fileImage = uploadedImage.data.image[0].u_profile_picture
+                   setImage(fileImage)
                 } else {
                     console.log("Uploading failed.")
                 }
+                setIsLoading(false)
             } catch (error) {
                 console.log(error)
             }
@@ -145,7 +149,7 @@ const Settings = () => {
                         <h3>Personal Information</h3>
                     </div>
                     <div className="profile">
-                        <img src={`${hostServer}/${image}`} alt="Profile" id="prof-pic"/>
+                        <img src={`${uploadingServer}/${image}`} alt="Profile" id="prof-pic"/>
                         <input type="file" name="prof-pic"  ref={profilePic} hidden/>
                         <i className='bx bx-camera'  onClick={changePicture}  ></i>
                         <div className="sub-title">
