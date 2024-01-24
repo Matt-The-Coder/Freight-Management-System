@@ -12,17 +12,17 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'images')))
 
-
+app.enable('trust proxy')
 app.use(session({
   secret: 'your-secret-key',
   resave: false,
   saveUninitialized: true,
   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
-  name: 'MyKargada', // This needs to be unique per-host.
+  name: 'MyKargadaOnly', // This needs to be unique per-host.
   cookie: {
     secure: true, // required for cookies to work on HTTPS
     maxAge: 1000 * 60 * 60 * 48,
-    httpOnly: false,
+    httpOnly: true,
     sameSite: 'none'
   }
 }))
