@@ -28,8 +28,14 @@ const AdminLogin = ()=>{
   {
     const res = await axios.get(`${hostServer}/alreadyauthenticated`)
     if(res.data.auth){
-        nav('/admin/dashboard')
-
+      if(res.data.role == "Admin"){
+        nav("/admin/dashboard")
+      }else {
+        nav('/driver/dashboard')
+      }
+        console.log(res.data.role)
+    }else {
+      console.log(res.data.role)
     }
   }
   const handleSignUp = () => 
@@ -48,8 +54,14 @@ const AdminLogin = ()=>{
       const result = await axios.post(`${hostServer}/login`, { userName, password });
       if(result.data.success) {
         setIsLoading(false)
-        console.log(result.data.token)
-        nav('/admin/dashboard')
+        const access = result.data.user[0].u_role
+        if(access == "Admin"){
+          nav('/admin/dashboard')
+        }
+        else{
+          nav('/driver/dashboard')
+        }
+
       }
       else {
         setIsLoading(false)

@@ -21,8 +21,8 @@ const verifyToken = (req, res, next) =>
 authRoute.get('/alreadyauthenticated', (req, res) => 
 {
 
-  if(req.session.token){
-    res.json({auth: true})
+  if(req.session.token){   
+      res.json({auth: true, role: req.session.role})  
   }
   else{
     res.json({auth:false})
@@ -71,7 +71,8 @@ authRoute.post('/login', async (req, res)=>
           }
           // res.cookie('token', token)
           req.session.token = token
-          return res.json({success:"Login Success!", token})
+          req.session.role = user[0].u_role
+          return res.json({success:"Login Success!", user})
         })
       }
     }

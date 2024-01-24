@@ -50,14 +50,17 @@ const AdminDashboardLayout = ()=>{
       const result = await axios.get(`${hostServer}/homeAuthentication`)
       if(result.data.message){
         setAuthError(result.data.message)
+        console.log(result.data.message)
         nav("/login")
       }else{
         const userData = result.data
         setIsAuth(true);
         setUser(userData.authData.user[0])
         setRefresh(!refresh)
+        console.log("okay naman")
       }
     } catch (error) {
+      console.log("Cannot fetch, server is down!")
       setAuthError("Cannot fetch, Internal server is down!")
     }
  
