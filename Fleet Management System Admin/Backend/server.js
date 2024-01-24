@@ -25,23 +25,7 @@ app.use(session({
     sameSite: 'none'
   }
 }))
-// app.use(session({
-//   secret: 'your-secret-key',
-//   resave: false,
-//   saveUninitialized: true
-// }))
-// app.use(session({
-//   secret: 'your-secret-key',
-//   resave: false,
-//   saveUninitialized: true,
-//   proxy: true,
-//   name: 'MyCustomCookieName',
-//   cookie: {
-//     secure: false,
-//     httpOnly: true,
-//     sameSite: 'lax'
-//   }
-// }));
+
 var corsOptions = {
     origin: [origin],
     methods: ["POST", "GET", "DELETE"],
