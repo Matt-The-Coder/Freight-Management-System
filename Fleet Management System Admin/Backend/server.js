@@ -13,23 +13,35 @@ const VITE_MAPBOX_API = "pk.eyJ1Ijoibm9haGtseWRlMTciLCJhIjoiY2xvZTF3djYwMDczdTJt
 app.use(express.json());
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'images')))
-app.use(session({
-  secret: 'your-secret-key',
-  resave: false,
-  saveUninitialized: true,
-  proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
-  name: 'MyCoolWebAppCookieName', // This needs to be unique per-host.
-  cookie: {
-    secure: true, // required for cookies to work on HTTPS
-    httpOnly: false,
-    sameSite: 'none'
-  }
-}))
+// app.use(session({
+//   secret: 'your-secret-key',
+//   resave: false,
+//   saveUninitialized: true,
+//   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
+//   name: 'MyCoolWebAppCookieName', // This needs to be unique per-host.
+//   cookie: {
+//     secure: false, // required for cookies to work on HTTPS
+//     httpOnly: false,
+//     sameSite: 'none'
+//   }
+// }))
 // app.use(session({
 //   secret: 'your-secret-key',
 //   resave: false,
 //   saveUninitialized: true
 // }))
+app.use(session({
+  secret: 'your-secret-key',
+  resave: false,
+  saveUninitialized: true,
+  proxy: true,
+  name: 'MyCustomCookieName',
+  cookie: {
+    secure: false,
+    httpOnly: true,
+    sameSite: 'lax'
+  }
+}));
 var corsOptions = {
     origin: [origin],
     methods: ["POST", "GET", "DELETE"],
