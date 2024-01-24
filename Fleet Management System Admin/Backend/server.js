@@ -15,17 +15,13 @@ app.use(express.static(path.join(__dirname, 'images')))
 app.enable('trust proxy', 1)
 app.use(session({
   secret: 'your-secret-key',
-  store: new SequelizeStore({
-    db: db.sequelize,
-    checkExpirationInterval: 15 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
-    expiration: 15 * 24 * 60 * 60 * 1000, // The maximum age (in milliseconds) of a valid session.
-  }),
   resave: false,
   saveUninitialized: true,
   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
   name: 'MyKargadaOnly', // This needs to be unique per-host.
   cookie: {
     secure: true, // required for cookies to work on HTTPS
+    maxAge: 1000 * 60 * 60 * 48,
     httpOnly: false,
     sameSite: 'none'
   }
