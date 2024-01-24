@@ -20,7 +20,7 @@ app.use(session({
   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
   name: 'MyCoolWebAppCookieName', // This needs to be unique per-host.
   cookie: {
-    secure: false, // required for cookies to work on HTTPS
+    secure: true, // required for cookies to work on HTTPS
     httpOnly: false,
     sameSite: 'none'
   }
