@@ -1,0 +1,95 @@
+.deliveries-list {
+    display: flex;
+}
+.deliveries-container{
+    width: 100%;
+    height: 300px;
+    box-shadow: 1px 1px 1px 1px var(--dark);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+.deliveries-header{
+    height: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.deliveries-header .header1{
+    height: 100%;
+    width: 80%;
+    border: 1px solid var(--dark);
+    border-radius: 10px;
+    text-align: center;
+}
+.deliveries-header .header1 h4{
+    font-size: 30px;
+    font-weight: 500;
+}
+.deliveries-content{
+    height: 60%;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.deliveries-content .main-content{
+    height: 80%;
+    display: flex;
+}
+.deliveries-content .main-content .content-design{
+    width: 4%;
+}
+.deliveries-content .main-content .content-design h1{
+    font-size: 25px;
+    font-weight: 900;
+}
+.deliveries-content .main-content .content-design p{
+    height: 10px;
+    background-color: rgb(61, 60, 60);
+    width: 1px;
+    margin-left: 6px;
+}
+.deliveries-content .main-content .content-locations{
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.deliveries-content .trips-button{
+    height: 20%;
+    text-align: center;
+}
+.deliveries-content .trips-button button{
+    background-color: var(--button);
+    color: white;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+@media screen and (max-width:375px) {
+
+    .trips-list, .deliveries-container{
+        padding: 5px;
+        height: auto;
+    }
+    .deliveries-header .header1{
+        padding: 15px;
+    }
+    .deliveries-header .header1 h4
+    {
+        font-size: 17px;
+        font-weight: 500;
+    }
+    .deliveries-content{
+        gap: 10px;
+        height: auto;
+    }
+    .main-content{
+        gap: 10px;
+        height: auto;
+    }
+    .content-design p{
+        height: 30px !important;
+    }
+
+}

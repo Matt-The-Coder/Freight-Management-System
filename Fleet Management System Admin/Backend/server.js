@@ -14,14 +14,13 @@ app.use(express.static(path.join(__dirname, 'images')))
 
 app.enable('trust proxy', 1)
 app.use(session({
-  secret: 'your-secret-key',
+  secret: 'secret-lang-po-ito',
   resave: false,
   saveUninitialized: true,
   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
   name: 'MyKargadaOnly', // This needs to be unique per-host.
   cookie: {
     secure: true, // required for cookies to work on HTTPS
-    maxAge: 1000 * 60 * 60 * 48,
     httpOnly: false,
     sameSite: 'none'
   }

@@ -442,7 +442,7 @@ const AdminDashboardLayout = ()=>{
       <input type="checkbox" id="theme-toggle" hidden="" onClick={setMapTheme}/>
       <label htmlFor="theme-toggle" className="theme-toggle" onClick={setMapTheme} />
       <Link to="/account/settings" className="profile">
-        <img src={hasImage && `${uploadingServer}/${image}`} alt='Profile' />
+        <img src={hasImage && `${uploadingServer}${image}`} alt='Profile' />
       </Link>
     </nav>
     {/* End of Navbar */}

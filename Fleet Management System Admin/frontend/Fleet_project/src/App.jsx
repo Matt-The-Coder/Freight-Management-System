@@ -5,7 +5,7 @@ import {
   MaintenanceList, AddMaintenance, Settings, LandingPage, AddFuel, FuelManagement
 } from './pages/adminPages/Components.js'
 import Notfound from './pages/Notfound'
-import { Chats, History, Deliveries, DriverDashboard } from './pages/driverPages/driverComponents.js'
+import { Chats, History, Deliveries, DriverDashboard, DeliveryTracking } from './pages/driverPages/driverComponents.js'
 
 const App = () => {
 
@@ -28,6 +28,7 @@ const App = () => {
           <Route path='/driver/chats' element={<Chats />} />
           <Route path='/driver/history' element={<History />} />
           <Route path='/driver/deliveries' element={<Deliveries />} />
+          <Route path='/driver/deliveries/tracking' element={<DeliveryTracking />} />
           <Route path='/driver/dashboard' element={<DriverDashboard />} />
         </Route>
         <Route path='/' element={<LandingPage />} />

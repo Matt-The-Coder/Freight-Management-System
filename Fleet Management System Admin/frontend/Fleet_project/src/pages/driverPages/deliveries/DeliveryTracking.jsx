@@ -19,7 +19,7 @@ import Speedometer, {
 
 
 
-const LiveTracking = () => {
+const DeliveryTracking = () => {
   axios.defaults.withCredentials = true;
   const { isLoading, setIsLoading, mapStyle, setMapStyle } = useOutletContext();
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
@@ -305,7 +305,7 @@ const LiveTracking = () => {
   }, [])
 
   return (
-    <div className="LiveTracking">
+    <div className="DeliveryTracking">
       {/* <div className="adminHeader">
         <div className="left">
           <h1>Live Tracking</h1>
@@ -764,4 +764,4 @@ const LiveTracking = () => {
   );
 };
 
-export default LiveTracking;
+export default DeliveryTracking;
