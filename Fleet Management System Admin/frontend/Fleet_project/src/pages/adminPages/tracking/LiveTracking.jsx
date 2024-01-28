@@ -33,6 +33,8 @@ const LiveTracking = () => {
   const directions = useRef(null);
   const markerTrack = useRef(null)
   const marker = useRef(null)
+  const [driverPosition, setDriverPosition] = useState({})
+  const [currentTrip, setCurrentTrip] = useState({})
   const [travelData, setTravelData]= useState([])
   const [address, setAddress] = useState('');
   const [distance, setDistance] = useState(null);
@@ -55,6 +57,7 @@ const LiveTracking = () => {
   const detail = useRef(null)
   const arrow = useRef(null)
   const [isMapSetup, setIsMapSetup] = useState(false)
+  const [positionExist, setPositionExist] = useState(false)
   const openDetail = () => {
     detail.current.classList.toggle("open")
   }
@@ -203,7 +206,6 @@ const LiveTracking = () => {
     try {
       const result = await axios.get(`${hostServer}/calculateFuelConsumptionWithPrice?miles=10&weightInKG=2000`)
       const data = result.data
-      console.log(data)
     } catch (error) {
       console.log(error)
     }
@@ -217,115 +219,104 @@ const LiveTracking = () => {
     })
     const data = result.data
     setTravelData(result.data)
-    console.log(data)
   }
 
 
-  const setDirections = (longitude, latitude) => {
+  const setDirections = (oLongitude, oLatitude, dLongitude, dLatitude) => {
     setIsLoading(true)
-    directions.current.setOrigin([longitude, latitude]);
-    directions.current.setDestination([121.0417, 14.7286]);
-    calculteWeatherCondition(latitude, longitude)
+    directions.current.setOrigin([oLongitude, oLatitude]);
+    directions.current.setDestination([dLongitude,dLatitude]);
+    // calculteWeatherCondition(latitude, longitude)
     calculateCarbonEmissions()
-    retrieveDirection(longitude, latitude)
+    retrieveDirection(oLongitude, oLatitude)
     setIsLoading(false)
   };
 
+  const getDriverPosition = async () => 
+  {
+    try {
+      const driverPosition = await axios.get(`${hostServer}/getPosition`)
+      setDriverPosition(driverPosition.data)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getTripData = async () => 
+  {
+    try {
+      const tripData = await axios.get(`${hostServer}/getTrip`)
+      setCurrentTrip(tripData.data)
+      setPositionExist(true)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(()=> 
+  {
+    setInterval(()=> {
+      getDriverPosition()
+    }, 2000)
+      getTripData()
+  }, [positionExist])
+
+
+
   // WATCH POSITION
   useEffect(() => {
-//     const message = new SpeechSynthesisUtterance();
-// // set the text to be spoken
-// message.text = "Meganot";
+if(positionExist){
+  setIsLoading(true);
 
-// // create an instance of the speech synthesis object
-// const speechSynthesis = window.speechSynthesis;
-
-// // start speaking
-// speechSynthesis.speak(message);
-    const succcessPosition = (position) => {
-      const data = position.coords;
-      setPositionData(data);
-      const calcSpeed = data.speed * 3.6
-      setSpeed(calcSpeed.toFixed(2))
-      marker.current.setLngLat([data?.longitude, data?.latitude]).addTo(map.current);
-      marker.current.setRotation(data?.heading)
-    };
-    const errorPosition = (position) => {
-      setPositionData(position.coords.longitude, position.coords.latitude);
+  console.log(currentTrip)
+  if (isMapSetup) {
+    mapContainer.current.classList.remove("mapboxgl-map")
+    mapContainer.current.innerHTML = ""
+    setupDarkMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat)
+    setIsMapSetup(!isMapSetup)
+    if (instructionContainer.current) {
+      const instructions = instructionContainer.current
+      instructionContainer.current.removeChild(instructions.children[0])
     }
-    navigator.geolocation.watchPosition(succcessPosition, errorPosition, {
-      enableHighAccuracy: true,
-    })
-  }, [])
-  useEffect(() => {
-    setIsLoading(true);
-    const successLocation = (position) => {
-      const data = position.coords;
-      if (isMapSetup) {
-        mapContainer.current.classList.remove("mapboxgl-map")
-        mapContainer.current.innerHTML = ""
-        setupDarkMap(data.longitude, data.latitude)
-        setIsMapSetup(!isMapSetup)
-        if (instructionContainer.current) {
-          const instructions = instructionContainer.current
-          instructionContainer.current.removeChild(instructions.children[0])
-        }
-        setDirections(data.longitude, data.latitude)
-        mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
-        instructionContainer.current.appendChild(mapInstructions.current)
-      }
-      else {
-        // mapContainer.current.classList.remove("mapboxgl-map")
-        // mapContainer.current.innerHTML = ""
-        setupMap(data.longitude, data.latitude);
-        setIsMapSetup(!isMapSetup)
-        if (instructionContainer.current.hasChildNodes()) {
-          const instructions = instructionContainer.current
-          instructionContainer.current.removeChild(instructions.children[0])
-        }
-        setDirections(data.longitude, data.latitude)
-        mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
-        instructionContainer.current.appendChild(mapInstructions.current)
-      }
-    };
+    setDirections(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat, currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat)
+    mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
+    instructionContainer.current.appendChild(mapInstructions.current)
+    console.log(driverPosition.longitude)
+    console.log(driverPosition.latitude)
+    marker.current.setLngLat([driverPosition? driverPosition.longitude : 121.0089472, driverPosition? driverPosition.latitude: 14.6702336]).addTo(map.current);
+    marker.current.setRotation(driverPosition? driverPosition.heading : 12)
+    const calcSpeed = driverPosition?.speed * 3.6
+    setSpeed(calcSpeed.toFixed(2))
+  }
+  else {
+    setupMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat);
+    setIsMapSetup(!isMapSetup)
+    if (instructionContainer.current.hasChildNodes()) {
+      const instructions = instructionContainer.current
+      instructionContainer.current.removeChild(instructions.children[0])
+    }
+    setDirections(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat, currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat)
+    mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
+    instructionContainer.current.appendChild(mapInstructions.current)
+    console.log(driverPosition.longitude)
+    console.log(driverPosition.latitude)
+    marker.current.setLngLat([driverPosition? driverPosition.longitude : 121.0089472, driverPosition? driverPosition.latitude: 14.6702336]).addTo(map.current);
+    marker.current.setRotation(driverPosition? driverPosition.heading : 12)
+    const calcSpeed = driverPosition?.speed * 3.6
+    setSpeed(calcSpeed.toFixed(2))
+  }
+  setIsLoading(false);
+}
+  }, [mapStyle, positionExist])
 
-    const errorLocation = () => {
-      setupMap();
-    };
 
-    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
-      enableHighAccuracy: true,
-    });
-
-    setIsLoading(false);
-  }, [mapStyle]);
-
-  useEffect(() => {
-
-  }, [])
 
   return (
     <div className="LiveTracking">
-      {/* <div className="adminHeader">
-        <div className="left">
-          <h1>Live Tracking</h1>
-          <ul className="breadcrumb">
-            <li><Link to="/admin/dashboard" className='active'>
-              Dashboard
-            </Link></li>
-            /
-            <li><Link to="/admin/tracking/history">Tracking</Link></li>
-          </ul>
-        </div>
-      </div> */}
       <div className="tracking-details">
         <div ref={mapContainer} className="map-container" />
         <div id="markerTrack" ref={markerTrack}>
         </div>
-
-
-
-
         {isMobile ?
           (
             <div className="detail-slide" ref={detail}>
@@ -735,9 +726,9 @@ const LiveTracking = () => {
               <>
                 <div className="boxInfo" ref={bInfo}>
                   <div className="boxInfoNav" ref={boxInfoNav}>
-                    <h4 onClick={() => { openBoxInfo(1) }}>Direction</h4>
-                    <h4 onClick={() => { openBoxInfo(2) }}>Message</h4>
-                    <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4>
+                    <h3 onClick={() => { openBoxInfo(1) }}>Directions</h3>
+                    {/* <h4 onClick={() => { openBoxInfo(2) }}>Message</h4>
+                    <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4> */}
                   </div>
                   <div className="boxInfoDetail">
                     <div className="instruction-container" ref={instructionContainer}>

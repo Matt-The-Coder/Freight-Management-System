@@ -33,6 +33,7 @@ const DeliveryTracking = () => {
   const directions = useRef(null);
   const markerTrack = useRef(null)
   const marker = useRef(null)
+  const [currentTrip, setCurrentTrip] = useState({})
   const [travelData, setTravelData]= useState([])
   const [address, setAddress] = useState('');
   const [distance, setDistance] = useState(null);
@@ -221,13 +222,13 @@ const DeliveryTracking = () => {
   }
 
 
-  const setDirections = (longitude, latitude) => {
+  const setDirections = (longitude, latitude, dLongitude, dLatitude) => {
     setIsLoading(true)
     directions.current.setOrigin([longitude, latitude]);
-    directions.current.setDestination([121.0417, 14.7286]);
-    calculteWeatherCondition(latitude, longitude)
+    directions.current.setDestination([dLongitude, dLatitude]);
+    // calculteWeatherCondition(latitude, longitude)
     calculateCarbonEmissions()
-    retrieveDirection(longitude, latitude)
+    // retrieveDirection(longitude, latitude)
     setIsLoading(false)
   };
 
@@ -242,13 +243,28 @@ const DeliveryTracking = () => {
 
 // // start speaking
 // speechSynthesis.speak(message);
-    const succcessPosition = (position) => {
-      const data = position.coords;
-      setPositionData(data);
-      const calcSpeed = data.speed * 3.6
-      setSpeed(calcSpeed.toFixed(2))
-      marker.current.setLngLat([data?.longitude, data?.latitude]).addTo(map.current);
-      marker.current.setRotation(data?.heading)
+    const succcessPosition = async (position) => {
+
+      try {
+        const data = position.coords;
+        setPositionData(data);
+        const calcSpeed = data.speed * 3.6
+        setSpeed(calcSpeed.toFixed(2))
+        marker.current.setLngLat([data?.longitude, data?.latitude]).addTo(map.current);
+        marker.current.setRotation(data?.heading)
+        const updatePosition = await axios.put(`${hostServer}/updatePosition`, {
+          latitude: data.latitude,
+          longitude: data.longitude,
+          altitude: data.altitude,
+          speed:calcSpeed.toFixed(2),
+          heading: data.heading,
+          accuracy: data.accuracy
+        })
+        console.log(updatePosition.data)
+      } catch (error) {
+        console.log(error)
+      }
+
     };
     const errorPosition = (position) => {
       setPositionData(position.coords.longitude, position.coords.latitude);
@@ -257,9 +273,17 @@ const DeliveryTracking = () => {
       enableHighAccuracy: true,
     })
   }, [])
+
+
+  // Get the location one time
   useEffect(() => {
     setIsLoading(true);
-    const successLocation = (position) => {
+    const successLocation = async (position) => {
+
+        const currentTrip = await axios.get(`${hostServer}/getTrip`)
+        const result = currentTrip.data
+        setCurrentTrip(result)
+        console.log(result)
       const data = position.coords;
       if (isMapSetup) {
         mapContainer.current.classList.remove("mapboxgl-map")
@@ -270,20 +294,18 @@ const DeliveryTracking = () => {
           const instructions = instructionContainer.current
           instructionContainer.current.removeChild(instructions.children[0])
         }
-        setDirections(data.longitude, data.latitude)
+        setDirections(data.longitude,data.latitude,result.t_trip_tolog, result.t_trip_tolat)
         mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
         instructionContainer.current.appendChild(mapInstructions.current)
       }
       else {
-        // mapContainer.current.classList.remove("mapboxgl-map")
-        // mapContainer.current.innerHTML = ""
         setupMap(data.longitude, data.latitude);
         setIsMapSetup(!isMapSetup)
         if (instructionContainer.current.hasChildNodes()) {
           const instructions = instructionContainer.current
           instructionContainer.current.removeChild(instructions.children[0])
         }
-        setDirections(data.longitude, data.latitude)
+        setDirections(data.longitude,data.latitude, result.t_trip_tolog, result.t_trip_tolat)
         mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
         instructionContainer.current.appendChild(mapInstructions.current)
       }
@@ -300,31 +322,14 @@ const DeliveryTracking = () => {
     setIsLoading(false);
   }, [mapStyle]);
 
-  useEffect(() => {
 
-  }, [])
 
   return (
     <div className="DeliveryTracking">
-      {/* <div className="adminHeader">
-        <div className="left">
-          <h1>Live Tracking</h1>
-          <ul className="breadcrumb">
-            <li><Link to="/admin/dashboard" className='active'>
-              Dashboard
-            </Link></li>
-            /
-            <li><Link to="/admin/tracking/history">Tracking</Link></li>
-          </ul>
-        </div>
-      </div> */}
       <div className="tracking-details">
         <div ref={mapContainer} className="map-container" />
         <div id="markerTrack" ref={markerTrack}>
         </div>
-
-
-
 
         {isMobile ?
           (
@@ -735,9 +740,9 @@ const DeliveryTracking = () => {
               <>
                 <div className="boxInfo" ref={bInfo}>
                   <div className="boxInfoNav" ref={boxInfoNav}>
-                    <h4 onClick={() => { openBoxInfo(1) }}>Direction</h4>
-                    <h4 onClick={() => { openBoxInfo(2) }}>Message</h4>
-                    <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4>
+                    <h3 onClick={() => { openBoxInfo(1) }}>Directions</h3>
+                    {/* <h4 onClick={() => { openBoxInfo(2) }}>Message</h4>
+                    <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4> */}
                   </div>
                   <div className="boxInfoDetail">
                     <div className="instruction-container" ref={instructionContainer}>

@@ -28,7 +28,7 @@ const Settings = () => {
                     setIsLoading(true)
                     const result = await axios.get(`${hostServer}/getaccountbyid/${u_id}`)
                     if (result.data.message) {
-                        nav("/login")
+                        // nav("/login")
                     } else {
                         const userData = result.data
                         setFName(userData[0].u_first_name)

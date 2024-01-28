@@ -28,7 +28,7 @@ app.use(session({
 
 var corsOptions = {
     origin: [origin],
-    methods: ["POST", "GET", "DELETE"],
+    methods: ["POST", "GET", "DELETE", "PUT"],
     credentials: true,
     optionsSuccessStatus: 200 
   }
