@@ -52,7 +52,7 @@ const AdminDashboardLayout = ()=>{
       if(result.data.message){
         setAuthError(result.data.message)
         console.log(result.data.message)
-        // nav("/login")
+        nav("/login")
       }else{
         const userData = result.data
         setIsAuth(true);

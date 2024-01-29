@@ -33,7 +33,7 @@ const LiveTracking = () => {
   const directions = useRef(null);
   const markerTrack = useRef(null)
   const marker = useRef(null)
-  const [driverPosition, setDriverPosition] = useState({})
+  const [carPosition, setCarPosition] = useState(null)
   const [currentTrip, setCurrentTrip] = useState({})
   const [travelData, setTravelData]= useState([])
   const [address, setAddress] = useState('');
@@ -235,9 +235,13 @@ const LiveTracking = () => {
   const getDriverPosition = async () => 
   {
     try {
-      const driverPosition = await axios.get(`${hostServer}/getPosition`)
-      setDriverPosition(driverPosition.data)
-
+      const drivePosition = await axios.get(`${hostServer}/getPosition`)
+      const result = drivePosition.data
+        marker.current.setLngLat([result? result.longitude : 121.0089472, result? result.latitude: 14.6702336]).addTo(map.current);
+        marker.current.setRotation(result? result.heading : 12)
+        const calcSpeed = result?.speed * 3.6
+        setSpeed(calcSpeed.toFixed(2)) 
+          setCarPosition(result)
     } catch (error) {
       console.log(error)
     }
@@ -253,27 +257,20 @@ const LiveTracking = () => {
       console.log(error)
     }
   }
-  useEffect(()=> 
-  {
-    setInterval(()=> {
-      getDriverPosition()
-    }, 2000)
-      getTripData()
-  }, [positionExist])
 
 
-
+  useEffect(() => {
+    console.log(carPosition);
+  }, [carPosition]);
   // WATCH POSITION
   useEffect(() => {
+getTripData()
 if(positionExist){
   setIsLoading(true);
-
-  console.log(currentTrip)
   if (isMapSetup) {
     mapContainer.current.classList.remove("mapboxgl-map")
     mapContainer.current.innerHTML = ""
     setupDarkMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat)
-    setIsMapSetup(!isMapSetup)
     if (instructionContainer.current) {
       const instructions = instructionContainer.current
       instructionContainer.current.removeChild(instructions.children[0])
@@ -281,15 +278,11 @@ if(positionExist){
     setDirections(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat, currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat)
     mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
     instructionContainer.current.appendChild(mapInstructions.current)
-    console.log(driverPosition.longitude)
-    console.log(driverPosition.latitude)
-    marker.current.setLngLat([driverPosition? driverPosition.longitude : 121.0089472, driverPosition? driverPosition.latitude: 14.6702336]).addTo(map.current);
-    marker.current.setRotation(driverPosition? driverPosition.heading : 12)
-    const calcSpeed = driverPosition?.speed * 3.6
-    setSpeed(calcSpeed.toFixed(2))
   }
   else {
     setupMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat);
+    setInterval(()=>{getDriverPosition()}, 2000)
+
     setIsMapSetup(!isMapSetup)
     if (instructionContainer.current.hasChildNodes()) {
       const instructions = instructionContainer.current
@@ -298,17 +291,45 @@ if(positionExist){
     setDirections(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat, currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat)
     mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
     instructionContainer.current.appendChild(mapInstructions.current)
-    console.log(driverPosition.longitude)
-    console.log(driverPosition.latitude)
-    marker.current.setLngLat([driverPosition? driverPosition.longitude : 121.0089472, driverPosition? driverPosition.latitude: 14.6702336]).addTo(map.current);
-    marker.current.setRotation(driverPosition? driverPosition.heading : 12)
-    const calcSpeed = driverPosition?.speed * 3.6
-    setSpeed(calcSpeed.toFixed(2))
   }
+
+
   setIsLoading(false);
 }
-  }, [mapStyle, positionExist])
+  }, [positionExist])
 
+  
+    useEffect(() => {
+  if(positionExist){
+    setIsLoading(true);
+    if (isMapSetup) {
+      mapContainer.current.classList.remove("mapboxgl-map")
+      mapContainer.current.innerHTML = ""
+      setupDarkMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat)
+      setIsMapSetup(!isMapSetup)
+      if (instructionContainer.current) {
+        const instructions = instructionContainer.current
+        instructionContainer.current.removeChild(instructions.children[0])
+      }
+      setDirections(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat, currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat)
+      mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
+      instructionContainer.current.appendChild(mapInstructions.current)
+    }
+    else {
+      setupMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat);
+      setIsMapSetup(!isMapSetup)
+      if (instructionContainer.current.hasChildNodes()) {
+        const instructions = instructionContainer.current
+        instructionContainer.current.removeChild(instructions.children[0])
+      }
+      setDirections(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat, currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat)
+      mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
+      instructionContainer.current.appendChild(mapInstructions.current)
+    }
+    setIsLoading(false);
+  }
+    }, [mapStyle])
+  
 
 
   return (

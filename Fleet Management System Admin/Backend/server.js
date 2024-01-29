@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'images')))
 
-app.enable('trust proxy', 1)
+app.enable('trust proxy')
 app.use(session({
   secret: 'secret-lang-po-ito',
   resave: false,
