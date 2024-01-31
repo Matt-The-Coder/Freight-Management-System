@@ -10,21 +10,21 @@ const session = require('express-session')
 const VITE_MAPBOX_API = "pk.eyJ1Ijoibm9haGtseWRlMTciLCJhIjoiY2xvZTF3djYwMDczdTJtcGY3dXdibHR4aSJ9.0VgWjkWc6WcgV4DarLZTGw"
 app.use(express.json());
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'images')))
+// app.use(express.static(path.join(__dirname, 'images')))
 
-app.enable('trust proxy')
 app.use(session({
-  secret: 'secret-lang-po-ito',
+  secret: 'your-secret-key',
   resave: false,
   saveUninitialized: true,
   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
-  name: 'MyKargadaOnly', // This needs to be unique per-host.
+  name: 'MyCoolWebAppCookieName', // This needs to be unique per-host.
   cookie: {
     secure: true, // required for cookies to work on HTTPS
     httpOnly: false,
     sameSite: 'none'
   }
 }))
+
 
 var corsOptions = {
     origin: [origin],
