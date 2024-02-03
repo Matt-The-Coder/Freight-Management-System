@@ -1,14 +1,18 @@
 import { Routes, Route } from 'react-router-dom'
+import { useState } from 'react'
+import io from 'socket.io-client'
 import AdminDashboardLayout from './layouts/AdminDashboardLayout'
 import {
-  AdminDashboard, Login, LiveTracking, TrackingTrips,
-  MaintenanceList, AddMaintenance, Settings, LandingPage, AddFuel, FuelManagement
+  AdminDashboard, Login, LiveTracking, TrackingTrips, AdminChat,
+  MaintenanceList, AddMaintenance, Settings, LandingPage, AddFuel, FuelManagement, Message
 } from './pages/adminPages/Components.js'
 import Notfound from './pages/Notfound'
-import { Chats, History, Deliveries, DriverDashboard, DeliveryTracking } from './pages/driverPages/driverComponents.js'
-
+import { History, Deliveries, DriverDashboard, DeliveryTracking, DriverChat } from './pages/driverPages/driverComponents.js'
+const hostServer = import.meta.env.VITE_SERVER_HOST
+const socket = io.connect(`${hostServer}`)
 const App = () => {
-
+  const [username, setUsername] = useState(''); // Add this
+  const [room, setRoom] = useState(''); // Add this
 
   return (
     <>
@@ -24,8 +28,11 @@ const App = () => {
           <Route path='/admin/tracking/live' element={<LiveTracking />} />
           <Route path='/admin/fuel/manage' element={<FuelManagement />} />
           <Route path='/admin/fuel/add' element={<AddFuel />} />
+          <Route path='/admin/chat' element={<AdminChat socket={socket}
+          />} />
           {/* Driver Side */}
-          <Route path='/driver/chats' element={<Chats />} />
+
+          <Route path='/driver/chats' element={<DriverChat socket={socket}/>} />
           <Route path='/driver/history' element={<History />} />
           <Route path='/driver/deliveries' element={<Deliveries />} />
           <Route path='/driver/deliveries/tracking' element={<DeliveryTracking />} />

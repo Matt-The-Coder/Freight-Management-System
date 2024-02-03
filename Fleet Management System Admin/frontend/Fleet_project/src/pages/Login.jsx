@@ -4,10 +4,10 @@ import { useEffect, useRef, useState} from 'react';
 import {Link, useNavigate, useOutletContext} from 'react-router-dom'
 import RiseLoader from "react-spinners/RiseLoader";
 const AdminLogin = ()=>{
+  axios.defaults.withCredentials = true;
   const nav = useNavigate(null)
   const [isLoading, setIsLoading] = useState(false)
   const hostServer = import.meta.env.VITE_SERVER_HOST
-  axios.defaults.withCredentials = true;
   const [userName, setUserName] = useState(null)
   const [password, setPassword] = useState(null)
   const eye = useRef(null)
@@ -55,7 +55,7 @@ const AdminLogin = ()=>{
       if(result.data.success) {
         setIsLoading(false)
         const access = result.data.user[0].u_role
-        if(access == "Admin"){
+        if(access == "admin"){
           nav('/admin/dashboard')
         }
         else{

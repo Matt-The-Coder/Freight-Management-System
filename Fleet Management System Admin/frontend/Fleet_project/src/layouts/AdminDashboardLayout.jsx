@@ -286,27 +286,12 @@ const AdminDashboardLayout = ()=>{
      }
       {access.a_driver_chat ==1 && 
       (<>
-            <li id='chats' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
-            <Link to="/driver/chats">
+            <li id='chats'>
+            <a href="/driver/chats">
             <i className='bx bx-chat'></i>
               Chats
-            </Link>
+            </a>
           </li>
-                {chatsDropdown && (
-                  <>
-                <li>
-                  <Link to="/admin/chats/list"  id='subMenu'>
-                  chats List
-                  </Link> 
-                </li >
-                <li >
-                <Link to="/admin/chats/add" id='subMenu'>
-                Add chats
-                </Link> 
-              </li>
-              </>
-              )
-                }
       </>)}
       {access.a_maintenance ==1 && ( <>
             <li id='maintenance' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
@@ -386,12 +371,12 @@ const AdminDashboardLayout = ()=>{
       {access.a_admin_chat ==1 && 
       (<>
             <li id='chats' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
-            <Link to="#">
+            <a href="/admin/chat">
             <i className='bx bx-chat'></i>
               Chats
-            </Link>
+            </a>
           </li>
-                {chatsDropdown && (
+                {/* {chatsDropdown && (
                   <>
                 <li>
                   <Link to="/admin/chats/list"  id='subMenu'>
@@ -405,7 +390,7 @@ const AdminDashboardLayout = ()=>{
               </li>
               </>
               )
-                }
+                } */}
       </>)}
 
       <li id='settings' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>

@@ -8,3 +8,5 @@ export { default as Login } from '../Login';
 export {default as LandingPage} from '../landingPages/LandingPage';
 export {default as FuelManagement} from './fuel/FuelManagement'
 export {default as AddFuel} from './fuel/AddFuel'
+export {default as AdminChat} from './chat/Chat'
+export {default as Message} from './chat/Message'

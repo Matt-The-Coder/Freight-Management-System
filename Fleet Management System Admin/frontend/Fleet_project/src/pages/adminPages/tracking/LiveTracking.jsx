@@ -96,6 +96,7 @@ const LiveTracking = () => {
       accessToken: mapboxgl.accessToken,
       profile: 'mapbox/driving',
       interactive: false,
+      alternatives:true,
       controls: { profileSwitcher: false, inputs: false },
       flyTo: true,
       geocoder: {
@@ -127,6 +128,7 @@ const LiveTracking = () => {
       accessToken: mapboxgl.accessToken,
       profile: 'mapbox/driving',
       interactive: false,
+      alternatives:true,
       controls: { profileSwitcher: false, inputs: false },
       flyTo: true,
       geocoder: {

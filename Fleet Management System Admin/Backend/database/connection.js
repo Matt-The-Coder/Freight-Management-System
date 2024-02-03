@@ -15,6 +15,13 @@ const db = mysql.createPool({
     port: "3306"
 })
 
+// const db = mysql.createPool({
+//     host: 'localhost',
+//     user:'sust_Admin',
+//     password:'admin',
+//     database: "sust_FreightDB"
+//     // port: "3306"
+// })
 
 module.exports = async (query) => {
 
