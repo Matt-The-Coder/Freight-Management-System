@@ -32,6 +32,10 @@ const LiveTracking = () => {
   const [showInfo, setShowInfo] = useState(false)
   const directions = useRef(null);
   const markerTrack = useRef(null)
+  const originTrack = useRef(null)
+  const destinationTrack = useRef(null)
+  const originMarker = useRef(null)
+  const destinationMarker = useRef(null)
   const marker = useRef(null)
   const [carPosition, setCarPosition] = useState(null)
   const [currentTrip, setCurrentTrip] = useState({})
@@ -103,6 +107,15 @@ const LiveTracking = () => {
         accessToken: mapboxgl.accessToken,
       }
     });
+
+    originTrack.current = new mapboxgl.Marker({
+      element: originMarker.current, scale: '0'
+    }).setPopup(new mapboxgl.Popup().setHTML("<p>Origin</p>")) // add popup
+    
+    destinationTrack.current = new mapboxgl.Marker({
+      element: destinationMarker.current, scale: '0'
+    }).setPopup(new mapboxgl.Popup().setHTML("<p>Destination</p>")) // add popup
+
 
     // Create a marker with the custom element
     marker.current = new mapboxgl.Marker({
@@ -278,6 +291,8 @@ if(positionExist){
       instructionContainer.current.removeChild(instructions.children[0])
     }
     setDirections(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat, currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat)
+    originTrack.current.setLngLat([currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat]).addTo(map.current);
+    destinationTrack.current.setLngLat([currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat]).addTo(map.current);
     mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
     instructionContainer.current.appendChild(mapInstructions.current)
   }
@@ -291,6 +306,8 @@ if(positionExist){
       instructionContainer.current.removeChild(instructions.children[0])
     }
     setDirections(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat, currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat)
+    originTrack.current.setLngLat([currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat]).addTo(map.current);
+    destinationTrack.current.setLngLat([currentTrip?.t_trip_tolog, currentTrip?.t_trip_tolat]).addTo(map.current);
     mapInstructions.current = document.querySelector(".mapboxgl-ctrl-directions.mapboxgl-ctrl")
     instructionContainer.current.appendChild(mapInstructions.current)
   }
@@ -338,8 +355,6 @@ if(positionExist){
     <div className="LiveTracking">
       <div className="tracking-details">
         <div ref={mapContainer} className="map-container" />
-        <div id="markerTrack" ref={markerTrack}>
-        </div>
         {isMobile ?
           (
             <div className="detail-slide" ref={detail}>
@@ -771,7 +786,10 @@ if(positionExist){
             </div>
           </>)}
 
-
+          <div id="markerTrack" ref={markerTrack}>
+        </div>
+        <i class='bx bx-map-pin' id='originPin' ref={originMarker}></i>
+        <i class='bx bxs-map-pin' id='destinationPin' ref={destinationMarker} ></i>
       </div>
     </div>
 

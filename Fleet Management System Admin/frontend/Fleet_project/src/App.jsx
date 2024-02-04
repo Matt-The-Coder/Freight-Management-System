@@ -11,14 +11,11 @@ import { History, Deliveries, DriverDashboard, DeliveryTracking, DriverChat } fr
 const hostServer = import.meta.env.VITE_SERVER_HOST
 const socket = io.connect(`${hostServer}`)
 const App = () => {
-  const [username, setUsername] = useState(''); // Add this
-  const [room, setRoom] = useState(''); // Add this
-
   return (
     <>
       <Routes>
 
-        <Route element={<AdminDashboardLayout />}>
+        <Route element={<AdminDashboardLayout socket={socket} />}>
           {/* Admin Side */}
           <Route path='/admin/dashboard' element={<AdminDashboard />} />
           <Route path='/admin/maintenance/add' element={<AddMaintenance />} />

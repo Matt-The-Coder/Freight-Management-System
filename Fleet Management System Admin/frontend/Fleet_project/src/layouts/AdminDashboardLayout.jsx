@@ -3,7 +3,7 @@ import '../../public/assets/css/adminLayout/dashboard.css'
 import { useEffect, useState } from 'react';
 import RiseLoader from "react-spinners/RiseLoader";
 import axios from 'axios';
-const AdminDashboardLayout = ()=>{
+const AdminDashboardLayout = ({socket})=>{
   axios.defaults.withCredentials = true;
   const hostServer = import.meta.env.VITE_SERVER_HOST
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
@@ -83,6 +83,7 @@ const AdminDashboardLayout = ()=>{
   {   
     try {
       setIsLoading(true)
+      socket.emit('logout', {username: user.u_username})
       await axios.delete(`${hostServer}/logout`);
       setIsLoading(false)
       nav("/login")

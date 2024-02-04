@@ -32,6 +32,8 @@ const DeliveryTracking = () => {
   const [showInfo, setShowInfo] = useState(false)
   const directions = useRef(null);
   const markerTrack = useRef(null)
+  const originMarker = useRef(null)
+  const destinationMarker = useRef(null)
   const marker = useRef(null)
   const [currentTrip, setCurrentTrip] = useState({})
   const [travelData, setTravelData]= useState([])
@@ -133,6 +135,10 @@ const DeliveryTracking = () => {
         accessToken: mapboxgl.accessToken,
       }
     });
+        // Create a marker with the custom element
+    marker.current = new mapboxgl.Marker({
+      element: markerTrack.current, scale: '0'
+    }).setPopup(new mapboxgl.Popup().setHTML("<p>I'm Here!</p>")) // add popup
 
     // Create a marker with the custom element
     marker.current = new mapboxgl.Marker({
@@ -285,7 +291,6 @@ const DeliveryTracking = () => {
         const currentTrip = await axios.get(`${hostServer}/getTrip`)
         const result = currentTrip.data
         setCurrentTrip(result)
-        console.log(result)
       const data = position.coords;
       if (isMapSetup) {
         mapContainer.current.classList.remove("mapboxgl-map")
@@ -330,8 +335,7 @@ const DeliveryTracking = () => {
     <div className="DeliveryTracking">
       <div className="tracking-details">
         <div ref={mapContainer} className="map-container" />
-        <div id="markerTrack" ref={markerTrack}>
-        </div>
+
 
         {isMobile ?
           (
@@ -763,7 +767,10 @@ const DeliveryTracking = () => {
               <i className='bx bxs-right-arrow bx-fade-right' id='showInfo' onClick={openInfo}></i>
             </div>
           </>)}
-
+          <div id="markerTrack" ref={markerTrack}>
+        </div>
+        <i class='bx bx-map-pin' id='originPin' ref={originMarker}></i>
+        <i class='bx bxs-map-pin' id='destinationPin' ref={destinationMarker} ></i>
 
       </div>
     </div>

@@ -57,10 +57,25 @@ app.use(weatherAndFuelRoute)
 app.use(mapboxRoute)
 app.use(personalInfoRoute)
 
+let activeUsers = []
 io.on('connection', async (socket) =>  {
-
   console.log(`User connected ${socket.id}`);
-    const messages = await db("Select * from message limit 100")
+    socket.on('active', (data)=>{
+      const {username} = data
+      if(activeUsers.length == 0 || !activeUsers.includes(username) ){
+        activeUsers.push(username)
+      }
+      io.emit('usersActive', activeUsers)
+    })
+    socket.on('logout', (data) => {
+      const {username} = data
+      // Remove the user from active users
+      const filteredUsers = activeUsers.filter((name)=>{return name  !== username})
+      activeUsers = filteredUsers
+      io.emit('usersActive', activeUsers)
+    });
+    
+    const messages = await db("Select username,role,message,timesent,prof_pic from message limit 100")
     socket.emit('last_100_messages', messages)
 
     socket.on('send_message', async (data) => {
