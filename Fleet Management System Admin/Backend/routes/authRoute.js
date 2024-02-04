@@ -32,7 +32,7 @@ authRoute.get('/alreadyauthenticated', (req, res) =>
   }
 })
 authRoute.get('/homeAuthentication', verifyToken, (req, res) => {
-    jwt.verify(req.sessionToken, "secret-lang-po-ito", (err, authData)=>{
+    jwt.verify(req.sessionToken, "secretkey", (err, authData)=>{
         if(err){
           return res.json({message: "token is expired, not valid!"})
         }else {

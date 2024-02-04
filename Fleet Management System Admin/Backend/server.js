@@ -24,7 +24,7 @@ const io = new Server(server,
     }
   })
 app.use(session({
-  secret: 'secret-lang-po-ito',
+  secret: 'secretkey',
   resave: false,
   saveUninitialized: true,
   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
