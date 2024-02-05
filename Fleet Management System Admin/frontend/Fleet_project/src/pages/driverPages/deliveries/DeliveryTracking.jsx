@@ -769,8 +769,8 @@ const DeliveryTracking = () => {
           </>)}
           <div id="markerTrack" ref={markerTrack}>
         </div>
-        <i class='bx bx-map-pin' id='originPin' ref={originMarker}></i>
-        <i class='bx bxs-map-pin' id='destinationPin' ref={destinationMarker} ></i>
+        {/* <i className='bx bx-map-pin' id='originPin' ref={originMarker}></i>
+        <i className='bx bxs-map-pin' id='destinationPin' ref={destinationMarker} ></i> */}
 
       </div>
     </div>
