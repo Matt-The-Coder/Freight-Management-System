@@ -234,9 +234,9 @@ const DeliveryTracking = () => {
     setIsLoading(true)
     directions.current.setOrigin([longitude, latitude]);
     directions.current.setDestination([dLongitude, dLatitude]);
-    // calculteWeatherCondition(latitude, longitude)
+    calculteWeatherCondition(latitude, longitude)
     calculateCarbonEmissions()
-    // retrieveDirection(longitude, latitude)
+    retrieveDirection(longitude, latitude)
     setIsLoading(false)
   };
 

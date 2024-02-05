@@ -126,6 +126,7 @@ const trackDriver = async (e)=>
       interactive: false,
       controls: { profileSwitcher: false, inputs: false },
       flyTo: true,
+      alternatives:true,
       geocoder: {
         accessToken: mapboxgl.accessToken,
       }
@@ -158,6 +159,7 @@ const trackDriver = async (e)=>
       interactive: false,
       controls: { profileSwitcher: false, inputs: false },
       flyTo: true,
+      alternatives:true,
       geocoder: {
         accessToken: mapboxgl.accessToken,
       }
@@ -258,9 +260,9 @@ const trackDriver = async (e)=>
   const setDirections = (longitude, latitude) => {
     directions.current.setOrigin([longitude, latitude]);
     directions.current.setDestination([tripDetail.t_trip_tolog, tripDetail.t_trip_tolat]);
-    // calculteWeatherCondition(latitude, longitude)
-    // calculateCarbonEmissions()
-    // retrieveDirection(longitude, latitude)
+    calculteWeatherCondition(latitude, longitude)
+    calculateCarbonEmissions()
+    retrieveDirection(longitude, latitude)
   };
 
   // WATCH POSITION
@@ -574,30 +576,7 @@ const trackDriver = async (e)=>
           <div className="weatherTitle">
           <h3>Weather Condition</h3>
           </div>
-            <div className="moreInfo">
-              <>
-                <div className="boxInfo" ref={bInfo}>
-                  <div className="boxInfoNav" ref={boxInfoNav}>
-                    <h4 onClick={() => { openBoxInfo(1) }}>Direction</h4>
-                    {/* <h4 onClick={() => { openBoxInfo(2) }}>Message</h4>
-                    <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4> */}
-                  </div>
-                  <div className="boxInfoDetail">
-                    <div className="instruction-container" ref={instructionContainer}>
-                    </div>
-                    {boxInfoMessage &&
-                      <>
-                        <h1>Message</h1>
-                      </>}
-                    {boxInfoReminder &&
-                      <>
-                        <h1>Reminder</h1>
-                      </>}
-                  </div>
-                </div>
-              </>
-              <i className='bx bxs-right-arrow bx-fade-right' id='showInfo' onClick={openInfo}></i>
-            </div>
+
             <div className="weatherData">
               {/* <div className="weatherIcon">
                 {weatherCondition && <p>Current Weather: {weatherCondition.weather.description} </p> &&
@@ -863,7 +842,30 @@ const trackDriver = async (e)=>
             </div>
 
 
-
+            <div className="moreInfo">
+              <>
+                <div className="boxInfo" ref={bInfo}>
+                  <div className="boxInfoNav" ref={boxInfoNav}>
+                    <h4 onClick={() => { openBoxInfo(1) }}>Direction</h4>
+                    {/* <h4 onClick={() => { openBoxInfo(2) }}>Message</h4>
+                    <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4> */}
+                  </div>
+                  <div className="boxInfoDetail">
+                    <div className="instruction-container" ref={instructionContainer}>
+                    </div>
+                    {boxInfoMessage &&
+                      <>
+                        <h1>Message</h1>
+                      </>}
+                    {boxInfoReminder &&
+                      <>
+                        <h1>Reminder</h1>
+                      </>}
+                  </div>
+                </div>
+              </>
+              <i className='bx bxs-right-arrow bx-fade-right' id='showInfo' onClick={openInfo}></i>
+            </div>
           </>)}
 
 

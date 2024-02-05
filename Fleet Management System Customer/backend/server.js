@@ -18,4 +18,8 @@ app.listen(port, () =>
     console.log(`Server Started at ${port}`)
 })
 const trackRoute = require('./routes/trackRoute')
+const weatherAndFuelRoute = require('./routes/weatherAndFuelRoute')
+const mapboxRoute = require('./routes/mapboxRoute')
 app.use(trackRoute)
+app.use(weatherAndFuelRoute)
+app.use(mapboxRoute)

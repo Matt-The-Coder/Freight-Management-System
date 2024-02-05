@@ -241,7 +241,7 @@ const LiveTracking = () => {
     setIsLoading(true)
     directions.current.setOrigin([oLongitude, oLatitude]);
     directions.current.setDestination([dLongitude,dLatitude]);
-    // calculteWeatherCondition(latitude, longitude)
+    calculteWeatherCondition(latitude, longitude)
     calculateCarbonEmissions()
     retrieveDirection(oLongitude, oLatitude)
     setIsLoading(false)
