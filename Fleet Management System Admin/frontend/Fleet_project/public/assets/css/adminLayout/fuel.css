@@ -137,6 +137,12 @@
     border-radius: 5px;
     background-color: var(--grey) ;
 }
+.fuel-search button{
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background-color: var(--button);
+}
 .fuel-list{
     width: 100%;
     height: auto;
@@ -150,6 +156,18 @@
     border-bottom: 2px #4e4a4a solid;
     text-align: left;
     padding: 10px 20px;
+}
+:is(.fuel-list .fuel-table tr) :is(th, td) button{
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background-color: var(--button);
+    cursor: pointer;
+}
+:is(.fuel-list .fuel-table tr) :is(th, td) input{
+    border: none;
+    background:none;
+    width: 100%;
 }
 @media screen and (max-width: 768px){
         /* ADD FUEL */

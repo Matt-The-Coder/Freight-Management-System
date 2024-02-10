@@ -32,6 +32,18 @@
     border-bottom: 2px solid rgb(49, 47, 47);
     padding: 10px 20px;
 }
+.maintenance-table tr td input{
+    background: none;
+    border: none;
+    width: 120%;
+}
+.maintenance-table tr td button{
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background-color: var(--button);
+    cursor: pointer;
+}
 .Maintenance .maintenance-search{
     display: flex;
     gap: 1%;
@@ -41,6 +53,13 @@
 .Maintenance .maintenance-search input{
     background-color: var(--grey) ;
     border-radius: 5px;
+}
+.Maintenance .maintenance-search button{
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background-color: var(--button);
+    cursor: pointer;
 }
 
 /* Add Maintenance */
@@ -124,7 +143,7 @@
     column-gap: 2%;
 }
 :is(.parts-qty) :is(.parts-name, .qty){
-    width: 40%;
+    width: 100%;
 }
 .parts-qty .add{
     margin-left: auto;
@@ -371,17 +390,7 @@
         column-gap: 2%;
     }
     .parts-qty .parts-name{
-        width: 52%;
-    }
-    .parts-qty .qty{
-        width: 30%;
-    }
-    .parts-qty .add{
-        margin-top: auto;
-        cursor: pointer;
-        margin-left: 0;
-        width: 20%;
-        text-align: end;
+        width: 100%;
     }
     .parts-qty .qty select, .parts-qty .parts-name select{
         width: 100%;

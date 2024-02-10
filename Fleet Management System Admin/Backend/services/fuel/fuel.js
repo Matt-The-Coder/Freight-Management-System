@@ -15,7 +15,7 @@ module.exports = () => {
     {
         const query = `INSERT INTO fuel (v_id, v_fuel_quantity, v_odometerreading,	
             v_fuelprice, v_fuelfilldate, v_fueladdedby,	v_fuelcomments,	v_created_date)
-            values (${vehicle}, ${quantity}, ${odometerReading}, ${amount}, 
+            values ('${vehicle}', ${quantity}, ${odometerReading}, ${amount}, 
                 '${date}', '${driver}', '${remarks}', '${created_date}')`
         try {
             const data = await db(query)
@@ -24,8 +24,35 @@ module.exports = () => {
             throw error
         }
     }
+    const updateFuel =  async (vehicle, driver, date, quantity, odometerReading, amount, remarks, created_date, f_id) => 
+    {
+        const query = `UPDATE fuel set
+        v_id ='${vehicle}',
+        v_fuel_quantity	= ${quantity},
+        v_odometerreading = ${odometerReading},
+        v_fuelprice	= ${amount},
+        v_fuelfilldate = '${date}',
+        v_fueladdedby = '${driver}',
+        v_fuelcomments = '${remarks}',
+        v_created_date =  '${created_date}' where v_fuel_id= ${f_id}`
+        
+        try {
+            const data = await db(query)
+            return data
+        } catch (error) {
+            throw error
+        }
+    }
+    const fuelSearch = async (search) => {
+        const query = `SELECT * FROM FUEL WHERE v_fueladdedby LIKE '%${search}%' OR v_fuelprice LIKE '%${search}%'`;
+        const data = await db(query)
+        return data
+
+    }
     return{
         getFuelList,
-        addFuel
+        addFuel,
+        fuelSearch,
+        updateFuel
     }
 }

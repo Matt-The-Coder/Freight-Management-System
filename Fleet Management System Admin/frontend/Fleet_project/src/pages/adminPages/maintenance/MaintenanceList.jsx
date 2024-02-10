@@ -1,23 +1,45 @@
 import { useEffect, useState } from 'react'
 import '/public/assets/css/adminLayout/maintenance.css'
 import axios from "axios"
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 const MaintenanceList = () => {
+    const nav = useNavigate()
+    const [isDelete, setIsDelete] = useState(false)
     const [maintenanceData, setMaintenanceData] = useState([])
-    const hostServer = import.meta.env.VITE_SERVER_HOST;
-    useEffect( ()=> 
-    {   const fetchData = async () => 
-        {
-            try {
-                const data = await axios.get(`${hostServer}/maintenance-list`)
-                setMaintenanceData(data.data)
-            } catch (error) {
-                throw error
-            }
+    const hostServer = import.meta.env.VITE_SERVER_HOST
+    const [maintenanceSearch, setMaintenanceSearch] = useState('')
+    const getMaintenanceList = async () => {
+        const fetchMaintenance = await axios.get(`${hostServer}/maintenance-list`)
+        console.log(fetchMaintenance.data)
+        const  data = fetchMaintenance.data;
+        setMaintenanceData(data)
+    }
+    const searchMaintenance = async() =>
+    {
+        const fetchMaintenance = await axios.get(`${hostServer}/maintenance-search?search=${maintenanceSearch}`)
+        console.log(fetchMaintenance.data)
+        const filteredData = fetchMaintenance.data
+        setMaintenanceData(filteredData)
+    }
+    useEffect(()=>{
+        getMaintenanceList()
+    },[isDelete])
+    const formatDate = (date) => {
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate() + 1);
+        return formattedDate.toISOString().split("T")[0];
+      };
+      const updateData = (e) => {
+        if(e){
+            nav(`/admin/maintenance/edit/${e}`)
         }
-        fetchData()
-
-    }, [])
+        
+    }
+    const deleteData = async (e) => {
+     await axios.delete(`${hostServer}/maintenance-delete/${e}`)
+     alert('Deleted Successfully!')
+     setIsDelete(!isDelete)
+    }
     return (
         <div className="Maintenance">
             <div className="adminHeader">
@@ -32,8 +54,8 @@ const MaintenanceList = () => {
             </div>
             <div className="maintenance-details">
                 <div className="maintenance-search">
-                    <p>Search: </p>
-                    <input type="text" id='search' />
+                    <input type="text" id='search' onChange={(e)=>{setMaintenanceSearch(e.target.value)}}/>
+                    <button onClick={searchMaintenance}>Search</button>
                 </div>
                 <div className="maintenance-list">
                     <table className='maintenance-table'>
@@ -51,32 +73,22 @@ const MaintenanceList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>test</td>
-                                <td>test</td>
-                                <td>test</td>
-                                <td>test</td>
-                                <td>test</td>
-                                <td>test</td>
-                                <td>test</td>
-                                <td>test</td>
-                                <td>test</td>
-                            </tr>
                             {
-                                maintenanceData.forEach((data)=> 
+                                maintenanceData.map((e, i)=> 
                                 {
-                                    <tr>
-                                        <td>{data?.m_id}</td>
-                                        <td>{data?.m_v_id}</td>/
-                                        <td>{data?.m_start_date}</td>
-                                        <td>{data?.m_end_date}</td>
-                                        <td>{data?.m_details}</td>
-                                        <td>{data?.vendor_name}</td>
-                                        <td>{data?.m_cost}</td>
-                                        <td>{data?.status}</td>
-                                        <td>Manage</td>
+                                    return(
+                                    <tr key={i}>
+                                        <td>{e?.m_id}</td>
+                                        <td>{e?.m_v_id} </td>
+                                        <td> {formatDate(e?.m_start_date)}</td>
+                                        <td> {formatDate(e?.m_end_date)}</td>
+                                        <td>{e?.m_service} </td>
+                                        <td> {e?.m_vendor_name}</td>
+                                        <td> {e?.m_cost}</td>
+                                        <td> {e?.m_status}</td>
+                                        <td><button onClick={()=>{updateData(e.m_id)}}>Edit</button><button onClick={()=>{deleteData(e.m_id)}}>Delete</button></td>
                                     </tr>
-                                })
+                                )})
                             }
                         </tbody>
 

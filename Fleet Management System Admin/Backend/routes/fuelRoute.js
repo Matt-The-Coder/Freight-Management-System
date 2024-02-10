@@ -1,7 +1,8 @@
 const express = require('express')
 const fuelRoute = express.Router()
 const fuelServices = require('../services/fuel/fuel')
-const {getFuelList, addFuel } = fuelServices()
+const db = require('../database/connection')
+const {getFuelList, addFuel, fuelSearch, updateFuel} = fuelServices()
 // Add Fuel
 fuelRoute.post("/add-fuel", async (req, res) => {
     const {vehicle, driver, date, quantity, odometerReading, amount, remarks} = req.body
@@ -17,6 +18,40 @@ fuelRoute.post("/add-fuel", async (req, res) => {
 fuelRoute.get("/retrieve-fuel", async (req, res) => {
     const fuelData = await getFuelList()
     res.json(fuelData)
+})
+// Search
+fuelRoute.get("/fuel", async (req, res) => {
+    const {search} = req.query
+    const fuelData = await fuelSearch(search)
+    res.json(fuelData)
+})
+// update
+fuelRoute.put("/fuel-update", async (req, res) => {
+    const {vehicle, driver, date, quantity, odometerReading, amount, remarks, id} = req.body
+    const d = new Date()
+    const year = d.getFullYear()
+    const month = d.getMonth() + 1
+    const day = d.getDate()
+    const created_date = `${year}-${month}-${day}`
+    const result = await updateFuel(vehicle, driver, date, quantity, odometerReading, amount, remarks, created_date, id)
+    res.json(result).status(200)
+})
+// get fuel by id
+fuelRoute.get("/fuelbyid/:id", async (req, res) => {
+    const {id} = req.params
+    const fuelData = await db(`Select * from fuel where v_fuel_id = ${id}`)
+    res.json(fuelData)
+})
+
+fuelRoute.delete('/fuel-delete/:id', async (req, res) => {
+    const {id} = req.params;
+    console.log(id)
+    const query = `Delete from fuel where v_fuel_id = ${id}`
+    try {
+        await db(query)
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 module.exports = fuelRoute

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import '/public/assets/css/adminLayout/maintenance.css';
-import {Link} from "react-router-dom"
+import {Link, useNavigate, useParams} from "react-router-dom"
 import axios from 'axios';
-const AddMaintenance = () => {
+const EditMaintenance = () => {
+    const {maintenanceID} = useParams();
+    const nav = useNavigate()
   const hostServer = import.meta.env.VITE_SERVER_HOST
-  const [addedParts, setAddedParts] = useState([]);
+//   const [addedParts, setAddedParts] = useState([]);
   const [vehicle, setVehicle] = useState();
   const [sDate, setSDate] = useState();
   const [eDate, setEDate] = useState();
@@ -98,17 +100,34 @@ const AddMaintenance = () => {
   //   setAddedParts(updatedParts);
   // };
 
-  const createMaintenance = async () => 
-  {
-      const result = await axios.post(`${hostServer}/add-maintenance`, 
-      {vehicle, startDate:sDate, endDate:eDate, details, cost, vendor, mService, status})
-      alert("Created Successfully!")
-  }
 
   const formatDate = (date)=> {
     const formattedDate = new Date(date).toISOString().split("T")[0];
     return formattedDate
   }
+  const maintenanceUpdate = async (e) => {
+    e.preventDefault()
+    const result = await axios.put(`${hostServer}/maintenance-update`,
+        {vehicle, startDate:sDate, endDate:eDate, details, cost, vendor, mService, status, id:maintenanceID })
+    alert('Updated Successful!')
+    nav('/admin/maintenance/list')
+}
+  const getMaintenance = async () => {
+    const fetched = await axios.get(`${hostServer}/maintenancebyid/${maintenanceID}`)
+    const data = fetched.data[0]
+    setVehicle(data.m_v_id)
+    setSDate(formatDate(data.m_start_date))
+    setEDate(formatDate(data.m_end_date))
+    setDetails(data.m_details)
+    setCost(data.m_cost)
+    setMService(data.m_service)
+    setVendor(data.m_vendor_name)
+    setStatus(data.m_status)
+    console.log(formatDate(data.m_start_date))
+}
+useEffect(() => {
+    getMaintenance()
+}, [])
   return (
     <div className="AddMaintenance">
       <div className="adminHeader">
@@ -131,7 +150,7 @@ const AddMaintenance = () => {
         <div className="vehicle-details">
           <div className="select-vehicle">
             <h4>Select Vehicle</h4>
-            <select name="select-vehicle" id="select-vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }}>
+            <select name="select-vehicle" id="select-vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }} value={vehicle}>
               <option value="Truck">Select Vehicle</option>
               {truckNames.map(e=>{
                 return(
@@ -145,33 +164,33 @@ const AddMaintenance = () => {
               <h4>
                 <span>Maintenance</span> Start Date
               </h4>
-              <input type="date" name="" id="" onChange={(e) => {  setSDate(formatDate(e.currentTarget.value)) }} />
+              <input type="date" name="" id="" onChange={(e) => {  setSDate(formatDate(e.currentTarget.value)) }} value={sDate}/>
             </div>
             <div className="end">
               <h4>
                 <span>Maintenance</span> End Date
               </h4>
-              <input type="date" name="" id="" onChange={(e) => { setEDate(formatDate(e.currentTarget.value)) }} />
+              <input type="date" name="" id="" onChange={(e) => { setEDate(formatDate(e.currentTarget.value)) }} value={eDate}/>
             </div>
           </div>
           <div className="service-details">
             <h4>Service Details</h4>
-            <textarea name="service-details" id="service-details" onChange={(e) => { setDetails(e.currentTarget.value) }} cols="45" rows="6" placeholder='Enter Details'></textarea>
+            <textarea name="service-details" id="service-details" onChange={(e) => { setDetails(e.currentTarget.value) }} cols="45" rows="6" placeholder='Enter Details' value={details}></textarea>
           </div>
           <div className="cost-vendor">
             <div className="cost">
               <h4>Total Cost</h4>
-              <input type="number" placeholder='Enter Price' onChange={(e) => { setCost(e.currentTarget.value) }} />
+              <input type="number" placeholder='Enter Price' onChange={(e) => { setCost(e.currentTarget.value) }}  value={cost}/>
             </div>
             <div className="vendor">
               <h4>Vendor <span>Name</span> </h4>
-              <input type="text" name="" id="" placeholder='Enter Name' onChange={(e) => { setVendor(e.currentTarget.value) }} />
+              <input type="text" name="" id="" placeholder='Enter Name' onChange={(e) => { setVendor(e.currentTarget.value) }} value={vendor}/>
             </div>
           </div>
           <div className="parts-qty">
             <div className="parts-name">
               <h4>Maintenance Service</h4>
-              <select name="parts" id="parts" onChange={(e) => { setMService(e.currentTarget.value) }}>
+              <select name="parts" id="parts" onChange={(e) => { setMService(e.currentTarget.value) }} value={mService}>
                 <option value="parts1">Select Service</option>
                 {maintenanceServices.map((e)=>{
                   return(
@@ -203,7 +222,7 @@ const AddMaintenance = () => {
           ))} */}
           <div className="maintenance-status">
             <h4>Maintenance Status</h4>
-            <select name="maintenance-status" id="maintenance-status" onChange={(e) => { setStatus(e.currentTarget.value) }}>
+            <select name="maintenance-status" id="maintenance-status" onChange={(e) => { setStatus(e.currentTarget.value) }} value={status}>
               <option value="1">Choose Status</option>
               {maintenanceStatusOptions.map((e)=>{
                 return (
@@ -213,7 +232,7 @@ const AddMaintenance = () => {
             </select>
           </div>
           <div className="save">
-            <button onClick={createMaintenance}>Create</button>
+            <button onClick={maintenanceUpdate}>Save</button>
           </div>
         </div>
       </div>
@@ -221,4 +240,4 @@ const AddMaintenance = () => {
   );
 };
 
-export default AddMaintenance;
+export default EditMaintenance;

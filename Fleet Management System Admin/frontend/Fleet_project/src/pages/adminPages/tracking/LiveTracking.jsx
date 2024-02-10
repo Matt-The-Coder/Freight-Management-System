@@ -252,6 +252,7 @@ const LiveTracking = () => {
     try {
       const drivePosition = await axios.get(`${hostServer}/getPosition`)
       const result = drivePosition.data
+      setPositionData(result)
         marker.current.setLngLat([result? result.longitude : 121.0089472, result? result.latitude: 14.6702336]).addTo(map.current);
         marker.current.setRotation(result? result.heading : 12)
         const calcSpeed = result?.speed * 3.6
@@ -720,11 +721,11 @@ if(positionExist){
                         </div>
 
                         <div className="vehicleData">
-                          {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
-                          {positionData && <p>Altitude: {positionData.altitude == null ? <label>Idle</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
-                          {positionData && <p>Accuracy: {positionData?.accuracy.toFixed(0)}</p>}
-                          {positionData && <p>Heading: {positionData?.heading}</p>}
-                          {driveTime && <p>Drive Time: {driveTime}</p>}
+                          {positionData && <p>Speed: {positionData.speed == null ? <p>Idle</p> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                          {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
+                          {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label>:<label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
+                          {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label>:<label>{positionData?.heading.toFixed(0)}</label>}</p>}
+                          {driveTime && <p>Drive Time: <label>{driveTime}</label></p>}
                         </div>
                       </div>
                     </div>

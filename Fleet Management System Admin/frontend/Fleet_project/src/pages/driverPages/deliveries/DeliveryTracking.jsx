@@ -50,6 +50,7 @@ const DeliveryTracking = () => {
   const [isMobile, setIsMobile] = useState(false);
   const boxInfoNav = useRef([])
   const bInfo = useRef(null)
+  const [deliveryState, setDeliveryState ] = useState('ongoing')
   const [boxInfoDirection, setBoxInfoDirection] = useState(true)
   const [boxInfoMessage, setBoxInfoMessage] = useState(false)
   const [boxInfoReminder, setBoxInfoboxInfoReminder] = useState(false)
@@ -329,7 +330,11 @@ const DeliveryTracking = () => {
     setIsLoading(false);
   }, [mapStyle]);
 
-
+  const setDeliveryStatus = (e) => {
+    e.preventDefault()
+    console.log(deliveryState)
+    
+  }
 
   return (
     <div className="DeliveryTracking">
@@ -700,13 +705,12 @@ const DeliveryTracking = () => {
                             <Indicator fontSize={40} />
                           </Speedometer>
                         </div>
-
                         <div className="vehicleData">
-                          {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
-                          {positionData && <p>Altitude: {positionData.altitude == null ? <label>Idle</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
-                          {positionData && <p>Accuracy: {positionData?.accuracy.toFixed(0)}</p>}
-                          {positionData && <p>Heading: {positionData?.heading}</p>}
-                          {driveTime && <p>Drive Time: {driveTime}</p>}
+                          {positionData && <p>Speed: {positionData.speed == null ? <p>Idle</p> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                          {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
+                          {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label>:<label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
+                          {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label>:<label>{positionData?.heading.toFixed(0)}</label>}</p>}
+                          {driveTime && <p>Drive Time: <label>{driveTime}</label></p>}
                         </div>
                       </div>
                     </div>
@@ -746,17 +750,24 @@ const DeliveryTracking = () => {
               <>
                 <div className="boxInfo" ref={bInfo}>
                   <div className="boxInfoNav" ref={boxInfoNav}>
-                    <h3 onClick={() => { openBoxInfo(1) }}>Directions</h3>
-                    {/* <h4 onClick={() => { openBoxInfo(2) }}>Message</h4>
-                    <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4> */}
+                    <h4 onClick={() => { openBoxInfo(1) }}>Directions</h4>
+                    <h4 onClick={() => { openBoxInfo(2) }}>Delivery Status</h4>
+                    {/* <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4> */}
                   </div>
                   <div className="boxInfoDetail">
                     <div className="instruction-container" ref={instructionContainer}>
                     </div>
                     {boxInfoMessage &&
-                      <>
-                        <h1>Message</h1>
-                      </>}
+                      <div className='trip-status'>
+                        <form onSubmit={(e)=>{setDeliveryStatus(e)}}>
+                          <h3>Set Delivery Status</h3>
+                          <select id='status-update' onChange={(e)=>{setDeliveryState(e.currentTarget.value)}}>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Completed">Completed</option>
+                          </select>
+                          <button type='submit'>Submit</button>
+                        </form>
+                      </div>}
                     {boxInfoReminder &&
                       <>
                         <h1>Reminder</h1>

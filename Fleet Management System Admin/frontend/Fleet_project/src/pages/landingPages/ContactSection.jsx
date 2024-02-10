@@ -23,7 +23,7 @@ const ContactSection = () =>
             <span className="contact__information">kargada@gmail.com</span>
           </li>
           <li className="contact__address">
-            Location: <span className="contact__information">Quezon City, Metro Manila</span>
+            Location: <span className="contact__information">Andres Soriano Avenue Barangay 655, Manila</span>
           </li>
         </ul>
         <div className="contact__content">

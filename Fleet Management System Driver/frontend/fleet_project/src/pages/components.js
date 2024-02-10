@@ -1,8 +1,0 @@
-export {default as Homepage} from './Homepage.jsx'
-export {default as Chat} from './chat/Chat.jsx'
-export {default as Deliveries} from './deliveries/Deliveries.jsx'
-export {default as Mapdirections} from './deliveries/Mapdirections.jsx'
-export {default as History} from './history/History.jsx'
-export {default as Dashboard} from './Dashboard.jsx'
-export {default as Settings} from './Settings.jsx'
-export {default as Login} from './Login.jsx'
