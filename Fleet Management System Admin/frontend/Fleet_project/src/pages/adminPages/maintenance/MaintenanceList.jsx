@@ -1,25 +1,29 @@
 import { useEffect, useState } from 'react'
 import '/public/assets/css/adminLayout/maintenance.css'
 import axios from "axios"
-import {Link, useNavigate} from "react-router-dom"
+import {Link, useNavigate, useOutletContext} from "react-router-dom"
 const MaintenanceList = () => {
     const nav = useNavigate()
+    
+    const {setIsLoading} = useOutletContext()
     const [isDelete, setIsDelete] = useState(false)
     const [maintenanceData, setMaintenanceData] = useState([])
     const hostServer = import.meta.env.VITE_SERVER_HOST
     const [maintenanceSearch, setMaintenanceSearch] = useState('')
     const getMaintenanceList = async () => {
+        setIsLoading(true)
         const fetchMaintenance = await axios.get(`${hostServer}/maintenance-list`)
-        console.log(fetchMaintenance.data)
         const  data = fetchMaintenance.data;
         setMaintenanceData(data)
+        setIsLoading(false)
     }
     const searchMaintenance = async() =>
     {
+        setIsLoading(true)
         const fetchMaintenance = await axios.get(`${hostServer}/maintenance-search?search=${maintenanceSearch}`)
-        console.log(fetchMaintenance.data)
         const filteredData = fetchMaintenance.data
         setMaintenanceData(filteredData)
+        setIsLoading(false)
     }
     useEffect(()=>{
         getMaintenanceList()
@@ -37,9 +41,12 @@ const MaintenanceList = () => {
     }
     const deleteData = async (e) => {
         try {
+            setIsLoading(true)
             const fetched = await axios.delete(`${hostServer}/maintenance-delete/${e}`)
+            setIsLoading(false)
             alert(fetched.data.message)
             setIsDelete(!isDelete)
+ 
         } catch (error) {
             console.log(error)
         }

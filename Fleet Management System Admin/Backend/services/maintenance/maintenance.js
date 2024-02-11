@@ -46,7 +46,7 @@ module.exports = () =>
         }
     }
     const maintenanceSearch = async (search) => {
-        const query = `SELECT * FROM MAINTENANCE WHERE m_cost LIKE '%${search}%' OR m_status LIKE '%${search}%'`;
+        const query = `SELECT * FROM maintenance WHERE m_cost LIKE '%${search}%' OR m_status LIKE '%${search}%'`;
         const data = await db(query)
         return data
 

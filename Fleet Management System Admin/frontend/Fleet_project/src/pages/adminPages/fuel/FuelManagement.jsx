@@ -1,24 +1,28 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const FuelManagement = () => {
     const nav = useNavigate()
+    const {setIsLoading} = useOutletContext()
     const [isDelete, setIsDelete] = useState(false)
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     const [fuelList, setFuelList] = useState([])
     const [fuelSearch, setFuelSearch] = useState('')
     const getFuelList = async () => {
+        setIsLoading(true)
         const fetchFuel = await axios.get(`${hostServer}/retrieve-fuel`)
         const  data = fetchFuel.data;
         setFuelList(data)
+        setIsLoading(false)
     }
     const searchFuel = async() =>
     {
+        setIsLoading(true)
         const fetchFuel = await axios.get(`${hostServer}/fuel?search=${fuelSearch}`)
-        console.log(fetchFuel.data)
         const filteredData = fetchFuel.data
         setFuelList(filteredData)
+        setIsLoading(false)
     }
     const updateData = (e) => {
         if(e){
@@ -28,7 +32,6 @@ const FuelManagement = () => {
     }
     useEffect(()=>{
         getFuelList()
-        console.log(fuelList)
     },[isDelete])
     const formatDate = (date) => {
         const formattedDate = new Date(date);
@@ -37,9 +40,10 @@ const FuelManagement = () => {
       };
       const deleteData = async (e) => {
         try {
+            setIsLoading(true)
             const fetched = await axios.put(`${hostServer}/fuel-delete/${e}`) 
             setIsDelete(!isDelete)
-            console.log(fetched)
+            setIsLoading(false)
             alert(fetched.data.message)
         } catch (error) {
             console.log(error)

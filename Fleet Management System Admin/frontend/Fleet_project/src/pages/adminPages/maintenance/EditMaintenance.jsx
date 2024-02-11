@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import '/public/assets/css/adminLayout/maintenance.css';
-import {Link, useNavigate, useParams} from "react-router-dom"
+import {Link, useNavigate, useParams, useOutletContext} from "react-router-dom"
 import axios from 'axios';
 const EditMaintenance = () => {
     const {maintenanceID} = useParams();
     const nav = useNavigate()
+    
+    const {setIsLoading} = useOutletContext()
   const hostServer = import.meta.env.VITE_SERVER_HOST
 //   const [addedParts, setAddedParts] = useState([]);
   const [vehicle, setVehicle] = useState();
@@ -107,12 +109,15 @@ const EditMaintenance = () => {
   };
   const maintenanceUpdate = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
     const result = await axios.put(`${hostServer}/maintenance-update`,
         {vehicle, startDate:sDate, endDate:eDate, details, cost, vendor, mService, status, id:maintenanceID })
+        setIsLoading(false)
     alert('Updated Successful!')
     nav('/admin/maintenance/list')
 }
   const getMaintenance = async () => {
+    setIsLoading(true)
     const fetched = await axios.get(`${hostServer}/maintenancebyid/${maintenanceID}`)
     const data = fetched.data[0]
     setVehicle(data.m_v_id)
@@ -123,7 +128,7 @@ const EditMaintenance = () => {
     setMService(data.m_service)
     setVendor(data.m_vendor_name)
     setStatus(data.m_status)
-    console.log(formatDate(data.m_start_date))
+    setIsLoading(false)
 }
 useEffect(() => {
     getMaintenance()

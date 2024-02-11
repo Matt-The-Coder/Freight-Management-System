@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import '/public/assets/css/adminLayout/fuel.css'
 import axios from 'axios'
 const AddFuel = () => {
+    const {setIsLoading} = useOutletContext()
     const nav = useNavigate()
     const [vehicle, setVehicle] = useState("")
     const [driver, setDriver] = useState("")
@@ -15,8 +16,10 @@ const AddFuel = () => {
     const AddFuel = async (e) => 
     {
         e.preventDefault()
+        setIsLoading(true)
         const result = await axios.post(`${hostServer}/add-fuel`, 
         {vehicle, driver, date, quantity, odometerReading, amount, remarks})
+        setIsLoading(false)
         alert("Added Successfully!")
         nav('/admin/fuel/manage')
     }

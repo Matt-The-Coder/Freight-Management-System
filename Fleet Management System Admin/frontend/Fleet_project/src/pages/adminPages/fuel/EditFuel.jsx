@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import '/public/assets/css/adminLayout/fuel.css'
 import axios from 'axios'
 const EditFuel = () => {
+    const {setIsLoading} = useOutletContext()
     const { fuel_id } = useParams()
     const [vehicle, setVehicle] = useState("")
     const [driver, setDriver] = useState("")
@@ -17,15 +18,18 @@ const EditFuel = () => {
         const formattedDate = new Date(date);
         formattedDate.setDate(formattedDate.getDate() + 1);
         return formattedDate.toISOString().split("T")[0];
-      };
+    };
     const updateFuel = async (e) => {
         e.preventDefault()
+        setIsLoading(true)
         const result = await axios.put(`${hostServer}/fuel-update`,
-            { vehicle, driver, date, quantity, odometerReading, amount, remarks, id:fuel_id })
+            { vehicle, driver, date, quantity, odometerReading, amount, remarks, id: fuel_id })
+            setIsLoading(false)
         alert('Updated Successful!')
         nav('/admin/fuel/manage')
     }
     const getfuel = async () => {
+        setIsLoading(true)
         const fetched = await axios.get(`${hostServer}/fuelbyid/${fuel_id}`)
         const data = fetched.data[0]
         setVehicle(data.v_id)
@@ -35,7 +39,7 @@ const EditFuel = () => {
         setOdometerReading(data.v_odometerreading)
         setAmount(data.v_fuelprice)
         setRemarks(data.v_fuelcomments)
-        console.log(data.v_fueladdedby)
+        setIsLoading(false)
     }
     useEffect(() => {
         getfuel()
@@ -57,7 +61,7 @@ const EditFuel = () => {
         "Hino 700",
         "Fuso Super Great",
         "Isuzu Giga"
-      ];
+    ];
     return (
         <div className="AddFuel">
             <div className="adminHeader">
@@ -79,7 +83,7 @@ const EditFuel = () => {
                         <div className="vehicle">
                             <h4>Vehicle</h4>
                             <select name="vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }} value={vehicle}>
-                                <option value="">Select Vehicle</option>
+                                <option>Select Vehicle</option>
                                 {truckNames.map(e => {
                                     return (
                                         <option value={e}>{e}</option>
@@ -89,8 +93,9 @@ const EditFuel = () => {
                         </div>
                         <div className="driver">
                             <h4>Driver</h4>
-                            <select required onChange={(e) => { setDriver(e.currentTarget.value) }} value={driver}>
+                            <select onChange={(e) => { setDriver(e.currentTarget.value) }} value={driver}>
                                 <option>Select Driver</option>
+                                <option value="Matt">Matt</option>
                                 <option value="Matthew">Matthew</option>
                                 <option value="Ralph">Ralph</option>
                             </select>
