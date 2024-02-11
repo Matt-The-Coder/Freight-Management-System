@@ -45,6 +45,7 @@ maintenanceRouter.delete('/maintenance-delete/:id', async (req, res) => {
     const query = `Delete from maintenance where m_id = ${id}`
     try {
         await db(query)
+        res.json({message:"Deleted Successfully!"})
     } catch (error) {
         console.log(error)
     }

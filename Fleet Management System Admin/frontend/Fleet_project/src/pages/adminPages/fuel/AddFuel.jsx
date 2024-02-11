@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '/public/assets/css/adminLayout/fuel.css'
 import axios from 'axios'
 const AddFuel = () => {
+    const nav = useNavigate()
     const [vehicle, setVehicle] = useState("")
     const [driver, setDriver] = useState("")
     const [date, setDate] = useState("")
@@ -15,8 +17,27 @@ const AddFuel = () => {
         e.preventDefault()
         const result = await axios.post(`${hostServer}/add-fuel`, 
         {vehicle, driver, date, quantity, odometerReading, amount, remarks})
-        console.log(result)
+        alert("Added Successfully!")
+        nav('/admin/fuel/manage')
     }
+    const truckNames = [
+        "Volvo FH16",
+        "Scania R730",
+        "Mercedes-Benz Actros",
+        "MAN TGX",
+        "Iveco Stralis",
+        "DAF XF",
+        "Renault T Range",
+        "Kenworth W900",
+        "Peterbilt 379",
+        "Freightliner Cascadia",
+        "International LT",
+        "Mack Anthem",
+        "Western Star 4900",
+        "Hino 700",
+        "Fuso Super Great",
+        "Isuzu Giga"
+      ];
     return (
         <div className="AddFuel">
             <div className="adminHeader">
@@ -39,7 +60,9 @@ const AddFuel = () => {
                             <h4>Vehicle</h4>
                             <select name="vehicle" onChange={(e)=>{setVehicle(e.currentTarget.value)}} required>
                                 <option value="">Select Vehicle</option>
-                                <option value="1">Toyota</option>
+                                {truckNames.map((e, i)=>{
+                                    return <option key={i}>{e}</option>
+                                })}
                             </select>
                         </div>
                         <div className="driver">
@@ -47,6 +70,8 @@ const AddFuel = () => {
                             <select required  onChange={(e)=>{setDriver(e.currentTarget.value)}}>
                                 <option value="">Select Driver</option>
                                 <option value="Matthew">Matthew</option>
+                                <option value="Ralph">Ralph</option>
+                                <option value="Matt">Matt</option>
                             </select>
                         </div>
                         <div className="fill-date" >

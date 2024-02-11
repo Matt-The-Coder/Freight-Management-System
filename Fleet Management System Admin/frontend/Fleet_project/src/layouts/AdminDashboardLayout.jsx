@@ -247,12 +247,12 @@ const AdminDashboardLayout = ({socket})=>{
        </>)}
        <noscript>You need to enable JavaScript to run this app.</noscript>
         <div className="adminSidebar close">
-    <a href="/admin/settings" className="logo">
+    <Link to="/account/settings" className="logo">
       <img src="/assets/img/kargada-logo.png" alt="Company Logo"/>
       <div className="logo-name">
         <span>Kar</span>gada
       </div>
-    </a>
+    </Link>
     <ul className="side-menu">
       {access.a_admin_board==1 && 
       <li>

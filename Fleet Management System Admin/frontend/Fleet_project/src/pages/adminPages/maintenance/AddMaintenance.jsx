@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import '/public/assets/css/adminLayout/maintenance.css';
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import axios from 'axios';
 const AddMaintenance = () => {
   const hostServer = import.meta.env.VITE_SERVER_HOST
+  const nav = useNavigate()
   const [addedParts, setAddedParts] = useState([]);
   const [vehicle, setVehicle] = useState();
   const [sDate, setSDate] = useState();
@@ -103,6 +104,7 @@ const AddMaintenance = () => {
       const result = await axios.post(`${hostServer}/add-maintenance`, 
       {vehicle, startDate:sDate, endDate:eDate, details, cost, vendor, mService, status})
       alert("Created Successfully!")
+      nav('/admin/maintenance/list')
   }
 
   const formatDate = (date)=> {

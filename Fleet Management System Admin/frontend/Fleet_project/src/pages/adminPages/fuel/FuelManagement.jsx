@@ -5,13 +5,6 @@ import { useNavigate } from "react-router-dom";
 const FuelManagement = () => {
     const nav = useNavigate()
     const [isDelete, setIsDelete] = useState(false)
-    const [vehicle, setVehicle] = useState("")
-    const [driver, setDriver] = useState("")
-    const [date, setDate] = useState("")
-    const [quantity, setQuantity] = useState("")
-    const [odometerReading, setOdometerReading] = useState("")
-    const [amount, setAmount] = useState("")
-    const [remarks, setRemarks] = useState("")
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     const [fuelList, setFuelList] = useState([])
     const [fuelSearch, setFuelSearch] = useState('')
@@ -35,6 +28,7 @@ const FuelManagement = () => {
     }
     useEffect(()=>{
         getFuelList()
+        console.log(fuelList)
     },[isDelete])
     const formatDate = (date) => {
         const formattedDate = new Date(date);
@@ -42,9 +36,15 @@ const FuelManagement = () => {
         return formattedDate.toISOString().split("T")[0];
       };
       const deleteData = async (e) => {
-        const fetched = await axios.delete(`${hostServer}/fuel-delete/${e}`) 
-        setIsDelete(!isDelete)
-        alert('Deleted Successfully!')
+        try {
+            const fetched = await axios.put(`${hostServer}/fuel-delete/${e}`) 
+            setIsDelete(!isDelete)
+            console.log(fetched)
+            alert(fetched.data.message)
+        } catch (error) {
+            console.log(error)
+        }
+
        }
     return (
         <div className="FuelManagement">

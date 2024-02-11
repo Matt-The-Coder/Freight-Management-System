@@ -100,11 +100,11 @@ const EditMaintenance = () => {
   //   setAddedParts(updatedParts);
   // };
 
-
-  const formatDate = (date)=> {
-    const formattedDate = new Date(date).toISOString().split("T")[0];
-    return formattedDate
-  }
+  const formatDate = (date) => {
+    const formattedDate = new Date(date);
+    formattedDate.setDate(formattedDate.getDate() + 1);
+    return formattedDate.toISOString().split("T")[0];
+  };
   const maintenanceUpdate = async (e) => {
     e.preventDefault()
     const result = await axios.put(`${hostServer}/maintenance-update`,

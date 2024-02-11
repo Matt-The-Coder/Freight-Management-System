@@ -13,10 +13,15 @@ module.exports = () =>
     }
     const addMaintenance = async (vehicle, startDate, endDate, details, cost, vendor, mService, status) => 
     {
+        const d = new Date()
+        const year = d.getFullYear()
+        const month = d.getMonth() + 1
+        const day = d.getDate()
+        const created_date = `${year}-${month}-${day}`
         const query = `Insert into maintenance 	(m_v_id, m_start_date, m_end_date,
-        m_details, m_cost, m_vendor_name, m_service, m_status) 
+        m_details, m_cost, m_vendor_name, m_service, m_status, v_created_date) 
         values('${vehicle}', '${startDate}', '${endDate}', '${details}', ${cost}, '${vendor}', 
-            '${mService}', '${status}')`
+            '${mService}', '${status}', '${created_date}')`
 
         const data = await db(query)
         return data

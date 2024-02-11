@@ -28,12 +28,7 @@ fuelRoute.get("/fuel", async (req, res) => {
 // update
 fuelRoute.put("/fuel-update", async (req, res) => {
     const {vehicle, driver, date, quantity, odometerReading, amount, remarks, id} = req.body
-    const d = new Date()
-    const year = d.getFullYear()
-    const month = d.getMonth() + 1
-    const day = d.getDate()
-    const created_date = `${year}-${month}-${day}`
-    const result = await updateFuel(vehicle, driver, date, quantity, odometerReading, amount, remarks, created_date, id)
+    const result = await updateFuel(vehicle, driver, date, quantity, odometerReading, amount, remarks, id)
     res.json(result).status(200)
 })
 // get fuel by id
@@ -43,12 +38,13 @@ fuelRoute.get("/fuelbyid/:id", async (req, res) => {
     res.json(fuelData)
 })
 
-fuelRoute.delete('/fuel-delete/:id', async (req, res) => {
+fuelRoute.put('/fuel-delete/:id', async (req, res) => {
     const {id} = req.params;
     console.log(id)
     const query = `Delete from fuel where v_fuel_id = ${id}`
     try {
         await db(query)
+        res.json({message:"Deleted Successfully!"})
     } catch (error) {
         console.log(error)
     }

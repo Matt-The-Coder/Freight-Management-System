@@ -36,9 +36,14 @@ const MaintenanceList = () => {
         
     }
     const deleteData = async (e) => {
-     await axios.delete(`${hostServer}/maintenance-delete/${e}`)
-     alert('Deleted Successfully!')
-     setIsDelete(!isDelete)
+        try {
+            const fetched = await axios.delete(`${hostServer}/maintenance-delete/${e}`)
+            alert(fetched.data.message)
+            setIsDelete(!isDelete)
+        } catch (error) {
+            console.log(error)
+        }
+
     }
     return (
         <div className="Maintenance">

@@ -13,10 +13,11 @@ const EditFuel = () => {
     const [remarks, setRemarks] = useState("")
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     const nav = useNavigate()
-    const formatDate = (date)=> {
-        const formattedDate = new Date(date).toISOString().split("T")[0];
-        return formattedDate
-      }
+    const formatDate = (date) => {
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate() + 1);
+        return formattedDate.toISOString().split("T")[0];
+      };
     const updateFuel = async (e) => {
         e.preventDefault()
         const result = await axios.put(`${hostServer}/fuel-update`,
@@ -29,12 +30,12 @@ const EditFuel = () => {
         const data = fetched.data[0]
         setVehicle(data.v_id)
         setDriver(data.v_fueladdedby)
-        setDate(formatDate(data.v_created_date))
+        setDate(formatDate(data.v_fuelfilldate))
         setQuantity(data.v_fuel_quantity)
         setOdometerReading(data.v_odometerreading)
         setAmount(data.v_fuelprice)
         setRemarks(data.v_fuelcomments)
-        console.log(formatDate(data.v_created_date))
+        console.log(data.v_fueladdedby)
     }
     useEffect(() => {
         getfuel()
@@ -89,7 +90,7 @@ const EditFuel = () => {
                         <div className="driver">
                             <h4>Driver</h4>
                             <select required onChange={(e) => { setDriver(e.currentTarget.value) }} value={driver}>
-                                <option value="">Select Driver</option>
+                                <option>Select Driver</option>
                                 <option value="Matthew">Matthew</option>
                                 <option value="Ralph">Ralph</option>
                             </select>

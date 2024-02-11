@@ -24,7 +24,7 @@ module.exports = () => {
             throw error
         }
     }
-    const updateFuel =  async (vehicle, driver, date, quantity, odometerReading, amount, remarks, created_date, f_id) => 
+    const updateFuel =  async (vehicle, driver, date, quantity, odometerReading, amount, remarks, f_id) => 
     {
         const query = `UPDATE fuel set
         v_id ='${vehicle}',
@@ -33,8 +33,7 @@ module.exports = () => {
         v_fuelprice	= ${amount},
         v_fuelfilldate = '${date}',
         v_fueladdedby = '${driver}',
-        v_fuelcomments = '${remarks}',
-        v_created_date =  '${created_date}' where v_fuel_id= ${f_id}`
+        v_fuelcomments = '${remarks}' where v_fuel_id= ${f_id}`
         
         try {
             const data = await db(query)
