@@ -114,6 +114,7 @@ const Settings = () => {
                 setIsLoading(true)
                 const upload = await axios.post(`${hostServer}/upload/${u_id}`, formData)
                 // img.src = URL.createObjectURL(result)
+                console.log(upload.data)
                 if(upload.data){
                    const uploadedImage = await axios.get(`${hostServer}/getProfilePicture/${u_id}`)
                    console.log(uploadedImage.data)

@@ -72,6 +72,9 @@ personalInfoRoute.post("/upload/:id", upload.single("my_file"), async (req, res)
     const query = `Update accounts set u_profile_picture = '${path}' where u_id = ${id}`
       const result = await db(query)
       res.json(cldRes);
+      console.log(result)
+      console.log(path)
+      
 
     } catch (error) {
       console.log("The error", error);
