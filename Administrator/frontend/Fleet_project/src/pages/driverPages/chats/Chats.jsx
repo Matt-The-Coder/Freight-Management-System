@@ -6,7 +6,10 @@ const DriverChat = ({ socket }) => {
   const [messagesRecieved, setMessagesReceived] = useState([]);
   const [message, setMessage] = useState('');
   const [users, setUsers] = useState([])
-
+  const [scroll, setScroll] = useState(false)
+  useEffect(()=>{
+    messageContainer.current.scrollTop = messageContainer.current.scrollHeight
+  }, [scroll])
 
   const sendMessage = (e) => {
     e.preventDefault()
@@ -15,6 +18,7 @@ const DriverChat = ({ socket }) => {
       // Send message to server. We can't specify who we send the message to from the frontend. We can only send to server. Server can then send message to rest of users in room
       socket.emit('send_message', { username: u_username, role: u_role, message, __createdtime__, picture: u_profile_picture });
       setMessage('');
+      setScroll(!scroll)
     }
   }
 
@@ -22,7 +26,6 @@ const DriverChat = ({ socket }) => {
   //  For Welcoming!
   useEffect(() => {
     socket.on('receive_message', (data) => {
-      console.log(data);
       setMessagesReceived((state) => [
         ...state,
         {
@@ -33,6 +36,7 @@ const DriverChat = ({ socket }) => {
           prof_pic: data.picture
         },
       ]);
+      setScroll(!scroll)
     });
     return () => socket.off('receive_message');
 
@@ -43,6 +47,7 @@ const DriverChat = ({ socket }) => {
     if(u_username !== undefined){
       socket.emit('active', { username: u_username })
     }
+    setScroll(!scroll)
     return () => socket.off('active')
   }, [u_username,socket])
 
@@ -51,15 +56,16 @@ const DriverChat = ({ socket }) => {
     socket.on('usersActive', (activeUsers) => {
       setUsers(activeUsers)
     })
+    setScroll(!scroll)
   }, [socket])
 
   useEffect(() => {
     // Last 100 messages sent in the chat room (fetched from the db in backend)
     socket.on('last_100_messages', (last100Messages) => {
       // Sort these messages by __createdtime__
-      console.log(last100Messages)
       last100Messages = sortMessagesByDate(last100Messages);
       setMessagesReceived((state) => [...state, ...last100Messages]);
+      setScroll(!scroll)
     });
 
     return () => socket.off('last_100_messages');
@@ -92,7 +98,7 @@ const DriverChat = ({ socket }) => {
         </div>
 
         <div className="message-container">
-          <div className="convo">
+          <div className="convo" ref={messageContainer}>
             {messagesRecieved.map((message, i) => {
               return (
                 <div className="convo-box" key={i}>
@@ -121,7 +127,7 @@ const DriverChat = ({ socket }) => {
           <div className="message">
             <div className="send-message">
               <form onSubmit={(e) => { sendMessage(e) }}>
-                <input type="text" placeholder="Enter Message" onChange={(e) => { setMessage(e.currentTarget.value) }} />
+                <input type="text" placeholder="Enter Message" onChange={(e) => { setMessage(e.currentTarget.value) }} value={message} />
                 <button type="submit">Send <span>Message</span> </button>
               </form>
 

@@ -11,7 +11,7 @@
 /* Maintenance List */
 .maintenance-details{
     padding: 24px;
-    height: 70vh;
+    height: auto;
     border-radius: 20px;
     background-color: var(--light);
 }

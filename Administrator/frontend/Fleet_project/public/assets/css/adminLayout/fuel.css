@@ -121,7 +121,7 @@
 }
 /* Fuel Management */
 .fuel-content{
-    height: 70vh;
+    height: auto;
     padding: 24px;
     border-radius: 20px;
     background-color: var(--light);

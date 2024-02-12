@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import {useOutletContext } from "react-router-dom";
+import '/public/assets/css/adminLayout/adminChat.css'
 const AdminChat = ({ socket }) => {
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
   const { u_username, u_role, u_profile_picture } = useOutletContext()
@@ -7,12 +8,17 @@ const AdminChat = ({ socket }) => {
   const [message, setMessage] = useState('');
   const [users, setUsers] = useState([])
   const [userName, setUserName] = useState('')
-
+  const [scroll, setScroll] = useState(false)
+  const messageContainer = useRef()
   useEffect(()=>{
     if(u_username !== undefined){
       setUserName(u_username)
     }
   },[u_username])
+
+  useEffect(()=>{
+    messageContainer.current.scrollTop = messageContainer.current.scrollHeight
+  }, [scroll])
 
   const sendMessage = (e) => {
     e.preventDefault()
@@ -21,6 +27,7 @@ const AdminChat = ({ socket }) => {
       // Send message to server. We can't specify who we send the message to from the frontend. We can only send to server. Server can then send message to rest of users in room
       socket.emit('send_message', { username: u_username, role: u_role, message, __createdtime__, picture: u_profile_picture });
       setMessage('');
+      setScroll(!scroll)
     }
   }
 
@@ -28,7 +35,6 @@ const AdminChat = ({ socket }) => {
   //  For Welcoming!
   useEffect(() => {
     socket.on('receive_message', (data) => {
-      console.log(data);
       setMessagesReceived((state) => [
         ...state,
         {
@@ -39,6 +45,7 @@ const AdminChat = ({ socket }) => {
           prof_pic: data.picture
         },
       ]);
+      setScroll(!scroll)
     });
     return () => socket.off('receive_message');
 
@@ -46,7 +53,6 @@ const AdminChat = ({ socket }) => {
 
   // Send users to the server
   useEffect(() => {
-    console.log(userName)
     if(userName !== ''){
       socket.emit('active', { username: userName })
     }
@@ -68,7 +74,7 @@ const AdminChat = ({ socket }) => {
       last100Messages = sortMessagesByDate(last100Messages);
       setMessagesReceived((state) => [...state, ...last100Messages]);
     });
-
+    setScroll(!scroll)
     return () => socket.off('last_100_messages');
   }, [socket]);
 
@@ -99,7 +105,7 @@ const AdminChat = ({ socket }) => {
         </div>
 
         <div className="message-container">
-          <div className="convo">
+          <div className="convo" ref={messageContainer}>
             {messagesRecieved.map((message, i) => {
               return (
                 <div className="convo-box" key={i}>
@@ -128,7 +134,7 @@ const AdminChat = ({ socket }) => {
           <div className="message">
             <div className="send-message">
               <form onSubmit={(e) => { sendMessage(e) }}>
-                <input type="text" placeholder="Enter Message" onChange={(e) => { setMessage(e.currentTarget.value) }} />
+                <input type="text" placeholder="Enter Message" onChange={(e) => { setMessage(e.currentTarget.value) }} value={message} />
                 <button type="submit">Send <span>Message</span> </button>
               </form>
 
