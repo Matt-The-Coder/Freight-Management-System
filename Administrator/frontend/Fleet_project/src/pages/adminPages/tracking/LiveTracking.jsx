@@ -1,6 +1,5 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
 import mapboxgl from 'mapbox-gl';
 import { useOutletContext } from 'react-router-dom';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
@@ -349,6 +348,7 @@ if(positionExist){
     setIsLoading(false);
   }
     }, [mapStyle])
+  
   
 
 

@@ -92,16 +92,17 @@ authRoute.post('/login', async (req, res)=>
 authRoute.get('/register', async (req, res)=>
 {
   try {
-    const email = 'manabatrm2@gmail.com'
-    const username = 'Matt'
-    const fname = 'Matthew'
-    const lName = 'Manabat'
-    const password = 'Ashlynky#17'
+    const email = 'sensei@gmail.com'
+    const username = 'Satoru'
+    const fname = 'Satoru'
+    const lName = 'Gojo'
+    const password = 'Testing#17'
     const role = 'driver'
     const hashedPassword = await bcrypt.hash(password, 10)
     const sqlQuery = `INSERT INTO accounts ( u_username, u_first_name, u_last_name, u_password, u_email, u_role) 
     VALUES('${username}','${fname}', '${lName}',  '${hashedPassword}', '${email}','${role}' )`;
     await db(sqlQuery)
+
 
   } catch (error) {
     console.error(error)

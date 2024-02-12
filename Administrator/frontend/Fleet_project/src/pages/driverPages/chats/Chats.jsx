@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 const DriverChat = ({ socket }) => {
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
+  const messageContainer = useRef()
   const { u_username, u_role, u_profile_picture } = useOutletContext()
   const [messagesRecieved, setMessagesReceived] = useState([]);
   const [message, setMessage] = useState('');

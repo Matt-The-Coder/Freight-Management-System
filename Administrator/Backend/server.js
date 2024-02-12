@@ -49,7 +49,10 @@ const authRoute = require('./routes/authRoute');
 const mapboxRoute = require('./routes/mapboxRoute')
 const weatherAndFuelRoute = require('./routes/weatherAndFuelRoute')
 const personalInfoRoute = require('./routes/personalInfoRoute')
+const trackingRoute = require('./routes/trackingRoute')
 
+
+app.use(trackingRoute)
 app.use(authRoute)
 app.use(fuelRoute)
 app.use(maintenanceRouter)

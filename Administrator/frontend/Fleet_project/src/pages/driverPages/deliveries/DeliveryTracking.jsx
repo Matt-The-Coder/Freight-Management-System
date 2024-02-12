@@ -1,6 +1,6 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import mapboxgl from 'mapbox-gl';
 import { useOutletContext } from 'react-router-dom';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
@@ -21,7 +21,9 @@ import Speedometer, {
 
 const DeliveryTracking = () => {
   axios.defaults.withCredentials = true;
-  const { isLoading, setIsLoading, mapStyle, setMapStyle } = useOutletContext();
+  const { setIsLoading, mapStyle, setMapStyle } = useOutletContext();
+  const {trip_id} = useParams()
+  const nav = useNavigate()
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
   mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
   const hostServer = import.meta.env.VITE_SERVER_HOST;
@@ -63,6 +65,7 @@ const DeliveryTracking = () => {
     detail.current.classList.toggle("open")
   }
   useEffect(() => {
+    console.log(trip_id)
     const handleResize = () => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches;
       setIsMobile(isMobileView);
@@ -330,12 +333,32 @@ const DeliveryTracking = () => {
     setIsLoading(false);
   }, [mapStyle]);
 
-  const setDeliveryStatus = (e) => {
+  const setDeliveryStatus = async (e) => {
     e.preventDefault()
-    console.log(deliveryState)
-    
+    try {
+      setIsLoading(true)
+      const data = await axios.post(`${hostServer}/update-trip/${trip_id}`, {
+        status:deliveryState
+      })
+      const result = data.data.message
+      setIsLoading(false)
+      alert(result)
+      nav('/driver/deliveries')
+    } catch (error) {
+      console.log(error)
+    }
   }
 
+  const setOngoingStatus = async () => {
+    try {
+      setIsLoading(true)
+      const data = await axios.post(`${hostServer}/update-trip-status/${trip_id}`)
+      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(()=>{setOngoingStatus()}, [])
   return (
     <div className="DeliveryTracking">
       <div className="tracking-details">
@@ -762,7 +785,7 @@ const DeliveryTracking = () => {
                         <form onSubmit={(e)=>{setDeliveryStatus(e)}}>
                           <h3>Set Delivery Status</h3>
                           <select id='status-update' onChange={(e)=>{setDeliveryState(e.currentTarget.value)}}>
-                            <option value="Ongoing">Ongoing</option>
+                            <option value="OnGoing">OnGoing</option>
                             <option value="Completed">Completed</option>
                           </select>
                           <button type='submit'>Submit</button>
