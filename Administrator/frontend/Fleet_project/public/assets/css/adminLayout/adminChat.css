@@ -115,7 +115,7 @@
     }
     .AdminMessage .active {
         width: 100%;
-        height: auto;
+        height: 100px;
     }
     .AdminMessage .message-container {
         width: 100%;
@@ -128,14 +128,15 @@
     .AdminMessage .active{
         flex-direction: row;
         overflow-y: hidden;
-        height: auto;
-        padding: 5px 5px;
+        height: 200px;
+
     }
     .AdminMessage .active span{
         display: none;
     }
     .AdminMessage .message-container .convo{
         padding: 10px 5px;
+        height: 75%;
     }
     .AdminMessage .message-container .convo-box{
         padding: 10px !important;

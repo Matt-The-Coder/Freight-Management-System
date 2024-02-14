@@ -11,6 +11,7 @@ const AdminDashboardLayout = ({socket})=>{
   const [trackingDropdown, setTrackingDropdown] = useState(false)
   const [maintenanceDropdown, setMaintenanceDropdown] = useState(false)
   const [chatsDropdown, setChatsDropdown] = useState(false)
+  const [adminHistory, setAdminHistory] = useState(false)
   const [fuel, setFuel] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isAuth, setIsAuth] = useState(false)
@@ -31,6 +32,8 @@ const AdminDashboardLayout = ({socket})=>{
         case "fuel" : setFuel(!fuel)
         break;
         case "chats": setChatsDropdown(!chatsDropdown)
+        break;
+        case "adminHistory": setAdminHistory(!adminHistory)
         break;
         default:null;
       }
@@ -313,6 +316,25 @@ const AdminDashboardLayout = ({socket})=>{
                 Add Maintenance
                 </Link> 
               </li>
+              </>
+              )
+                } </>)
+          
+          }
+                {access.a_maintenance ==1 && ( <>
+            <li id='adminHistory' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+            <Link to="#">
+            <i className='bx bx-history' ></i>
+              History
+            </Link>
+          </li>
+                {adminHistory && (
+                  <>
+                <li>
+                  <Link to="/admin/history/list"  id='subMenu'>
+                  Deliveries
+                  </Link> 
+                </li >
               </>
               )
                 } </>)

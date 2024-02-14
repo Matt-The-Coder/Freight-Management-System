@@ -1,7 +1,7 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
@@ -20,7 +20,8 @@ import Speedometer, {
 
 const LiveTracking = () => {
   axios.defaults.withCredentials = true;
-  const { isLoading, setIsLoading, mapStyle, setMapStyle } = useOutletContext();
+  const {  setIsLoading, mapStyle, setMapStyle } = useOutletContext();
+  const {trip_id} = useParams()
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
   mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
   const hostServer = import.meta.env.VITE_SERVER_HOST;
@@ -65,6 +66,7 @@ const LiveTracking = () => {
     detail.current.classList.toggle("open")
   }
   useEffect(() => {
+    alert(trip_id)
     const handleResize = () => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches;
       setIsMobile(isMobileView);

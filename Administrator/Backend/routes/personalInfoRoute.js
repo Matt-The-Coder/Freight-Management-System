@@ -82,6 +82,19 @@ personalInfoRoute.post("/upload/:id", upload.single("my_file"), async (req, res)
     }
   });
 
+  personalInfoRoute.get('/getaccountbyusername', async (req, res) => 
+{
+    try {
+        const {username} = req.query
+        const query = `Select * from accounts where u_username = '${username}'`
+        const result = await db(query)
+        res.json(result)
+    } catch (error) {
+        res.json({message: "Wrong ID"})
+    }
+
+})
+
 // For localhost
 // Change profile picture
 // personalInfoRoute.post('/changeProfile/:id', upload.single('image'), async (req, res) => 

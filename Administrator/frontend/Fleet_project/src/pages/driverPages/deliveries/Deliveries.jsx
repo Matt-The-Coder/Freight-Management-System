@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import '/public/assets/css/adminLayout/deliveries.css'
 import axios from 'axios'
-const DriverDeliveries = () => 
-{
+const DriverDeliveries = () => {
     const hostServer = import.meta.env.VITE_SERVER_HOST;
-    const { u_username:username, setIsLoading, u_id:id } = useOutletContext()
+    const { u_username: username, setIsLoading, u_id: id } = useOutletContext()
     const [deliveries, setDeliveries] = useState([])
     const getDeliveries = async () => {
         try {
@@ -19,12 +18,12 @@ const DriverDeliveries = () =>
             console.log(error)
         }
     }
-    useEffect(()=>{
+    useEffect(() => {
         getDeliveries()
-    },[])
-    return(
+    }, [])
+    return (
         <div className="DriverDeliveries">
-                        <div className="adminHeader">
+            <div className="adminHeader">
                 <div className="left">
                     <h1>Deliveries</h1>
                     <ul className="breadcrumb">
@@ -38,17 +37,33 @@ const DriverDeliveries = () =>
             </div>
             <div className="deliveries-list">
                 {deliveries.length == 0 && <center><h1>No Deliveries Yet</h1></center>}
-                {deliveries?.map((e, i)=>{
+                {deliveries?.map((e, i) => {
+                    let statusColor = '';
+                    if (e.t_trip_status === 'Completed') {
+                        statusColor = '#388E3C'; // Green
+                    } else if (e.t_trip_status == "In Progress") {
+                        statusColor = '#FBC02D'; // Yellow
+                    } else if (e.t_trip_status == 'Unsuccessful') {
+                        statusColor = '#D32F2F'; // Red
+                    } else if (e.t_trip_status == 'Pending') {
+                        statusColor = '#9E9E9E'; // Gray
+                    }
                     return (
                         <div className="deliveries-container" key={i}>
-                        <div className="deliveries-header">
-                            <div className="header1">
-                                <h4>Estimated Travel Time: 28 mins</h4>
-                                <h4>Estimated Total Distance: 106 km</h4>
+                            <div className="delivery-info">
+                                <div className="h3-container" style={{ backgroundColor: statusColor }}>
+                                    <h3>{e.t_trip_status}</h3>
+                                </div>
+
                             </div>
-                        </div>
-                        <div className="deliveries-content">
-                        <div className="main-content">
+                            <div className="deliveries-header">
+                                <div className="header1">
+                                    <h4>Estimated Travel Time: 28 mins</h4>
+                                    <h4>Estimated Total Distance: 106 km</h4>
+                                </div>
+                            </div>
+                            <div className="deliveries-content">
+                                <div className="main-content">
                                     <div className="content-design">
                                         <h1>•</h1>
                                         <p></p>
@@ -68,16 +83,16 @@ const DriverDeliveries = () =>
                                 <div className="trips-button">
                                     <a href={`/driver/deliveries/tracking/${e.t_id}`}><button>View On Map</button></a>
                                 </div>
+                            </div>
                         </div>
-                    </div>
                     )
-                    
+
                 })}
-                
+
             </div>
 
-            
-        
+
+
         </div>
     )
 }

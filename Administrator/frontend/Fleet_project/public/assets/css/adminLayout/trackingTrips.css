@@ -3,16 +3,31 @@
     flex-direction: column;
     height: auto;
     width: 100%;
+    gap: 20px;
     padding: 24px;
 }
 .trips-container{
     width: 100%;
     height: auto;
-    box-shadow: 1px 1px 1px 1px var(--dark);
-    border-radius: 5px;
+    box-shadow: 1px 1px 2px 1px var(--dark);
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     padding: 24px;
+}
+.trips-container .delivery-info{
+    display: grid;
+    place-items:center;
+    margin: 0px 0 !important;
+}
+.trips-container .delivery-info .h3-container{
+    border-radius: 5px;
+    padding: 10px;
+}
+.trips-container .delivery-info h3{
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
 }
 .trips-header{
     height: 40%;
@@ -41,6 +56,7 @@
     height: 70px;
     width: 70px;
     border-radius: 50%;
+    object-fit: cover;
 }
 .trips-header .header-container .header1 .row1 h4{
     font-size: 20px;
@@ -124,6 +140,11 @@
     }
     .content-design p{
         height: 30px !important;
+    }
+    .trips-container .delivery-info{
+        display: grid;
+        place-items:center;
+        margin: 5px 0 !important;
     }
 
 }
