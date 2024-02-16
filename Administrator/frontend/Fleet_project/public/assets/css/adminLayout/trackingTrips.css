@@ -146,5 +146,8 @@
         place-items:center;
         margin: 5px 0 !important;
     }
+    .trips-container .delivery-info h3{
+        font-size: 15px;
+    }
 
 }

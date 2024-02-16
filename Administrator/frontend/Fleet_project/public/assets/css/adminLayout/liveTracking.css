@@ -209,7 +209,7 @@ button{
   }
   #speedometer{
     display: flex;
-    gap: 8%;
+    gap: 5%;
   }
   .transportData{
     display: flex;
@@ -218,7 +218,7 @@ button{
   .vehicleData{
     width: 48%;
     display: flex;
-    justify-content: center;
+    justify-content:left;
     flex-direction: column;
   }
   .vehicleData p, .transportData p{

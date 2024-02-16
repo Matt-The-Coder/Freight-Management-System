@@ -10,19 +10,19 @@ const AdminHistory = () => {
     const [deliveryDriver, setDeliveryDriver] = useState([])
     const getDeliveries = async () => {
         try {
+            setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-trips-admin`)
             const result = data.data
             setDeliveries(result.tripData)
             setDeliveryDriver(result.driverData)
+            setIsLoading(false)
         } catch (error) {
             console.log(error)
         }
     }
 
     useEffect(() => {
-        setIsLoading(true)
         getDeliveries()
-        setIsLoading(false)
     }, [])
     return (
         <>
@@ -40,14 +40,14 @@ const AdminHistory = () => {
                     </div>
                 </div>
                 <div className="trips-list">
-
+                {deliveries.length == 0 && <center><h1>No Deliveries Yet</h1></center>}
                     {deliveries.map((e, i) => {
                         let statusColor = '';
                         if (e.t_trip_status == 'Completed') {
                             statusColor = "#388E3C";
                         } else if (e.t_trip_status == 'In Progress') {
                             statusColor = '#FBC02D';
-                        } else if (e.t_trip_status == 'Unsuccessful') {
+                        } else if (e.t_trip_status == 'Cancelled') {
                             statusColor = '#D32F2F';
                         }
                         return (

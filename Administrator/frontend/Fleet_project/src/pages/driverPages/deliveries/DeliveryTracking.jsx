@@ -21,7 +21,7 @@ import Speedometer, {
 
 const DeliveryTracking = () => {
   axios.defaults.withCredentials = true;
-  const { setIsLoading, mapStyle, setMapStyle } = useOutletContext();
+  const { setIsLoading, mapStyle } = useOutletContext();
   const {trip_id} = useParams()
   const nav = useNavigate()
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
@@ -31,29 +31,21 @@ const DeliveryTracking = () => {
   const map = useRef(null);
   const [transportDetail, setTransportDetail] = useState(false)
   const tDetail = useRef(null)
-  const [showInfo, setShowInfo] = useState(false)
   const directions = useRef(null);
   const markerTrack = useRef(null)
-  const originMarker = useRef(null)
-  const destinationMarker = useRef(null)
   const marker = useRef(null)
   const [currentTrip, setCurrentTrip] = useState({})
-  const [travelData, setTravelData]= useState([])
-  const [address, setAddress] = useState('');
-  const [distance, setDistance] = useState(null);
-  const [formattedCurrentLocation, setFormattedCurrentLocation] = useState('')
-  const [carbonEmissions, setCarbonEmissions] = useState(null);
   const [driveTime, setDriveTime] = useState(null);
   const [speed, setSpeed] = useState(0)
   const [weatherCondition, setWeatherConditon] = useState(null)
   const [weatherAlerts, setWeatherAlerts] = useState(null)
   const [weatherIcon, setWeatherIcon] = useState(null)
   const [positionData, setPositionData] = useState(null)
+  const [vehicleStats, setVehicleStats] = useState(null)
   const [isMobile, setIsMobile] = useState(false);
   const boxInfoNav = useRef([])
   const bInfo = useRef(null)
-  const [deliveryState, setDeliveryState ] = useState('ongoing')
-  const [boxInfoDirection, setBoxInfoDirection] = useState(true)
+  const [deliveryState, setDeliveryState ] = useState('In Progress')
   const [boxInfoMessage, setBoxInfoMessage] = useState(false)
   const [boxInfoReminder, setBoxInfoboxInfoReminder] = useState(false)
   const mapInstructions = useRef(null)
@@ -65,7 +57,6 @@ const DeliveryTracking = () => {
     detail.current.classList.toggle("open")
   }
   useEffect(() => {
-    console.log(trip_id)
     const handleResize = () => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches;
       setIsMobile(isMobileView);
@@ -194,6 +185,17 @@ const DeliveryTracking = () => {
     }
   }
 
+  // const addSustainData = async () => {
+  //   try {
+  //     const response = await axios.get(`${hostServer}/sustainability`, {
+  //       trip_id, carbonEmission, rainRate, cWeather, aQuality, wSpeed, wDirection, wAngle, temp, humid, vis, uIndex, sRad, press, slPress
+  //     });
+  //     const result = response.data.weatherData
+
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // } 
   const calculteWeatherCondition = async (latitude, longitude) => {
     try {
       const response = await axios.get(`${hostServer}/weatherdata?lat=${latitude}&lon=${longitude}`);
@@ -216,22 +218,14 @@ const DeliveryTracking = () => {
     try {
       const result = await axios.get(`${hostServer}/calculateFuelConsumptionWithPrice?miles=10&weightInKG=2000`)
       const data = result.data
+      setVehicleStats(data)
       console.log(data)
     } catch (error) {
       console.log(error)
     }
 
   }
-  const retrieveDirection = async (fLongitude, fLatitude, dLongitude=121.03666348624142, dLatitude= 14.726582928426808) => 
-  {
-    const result = await axios.post(`${hostServer}/getDirections`, 
-    {
-      fLongitude, fLatitude, dLongitude, dLatitude,mapboxToken
-    })
-    const data = result.data
-    setTravelData(result.data)
-    console.log(data)
-  }
+
 
 
   const setDirections = (longitude, latitude, dLongitude, dLatitude) => {
@@ -240,21 +234,12 @@ const DeliveryTracking = () => {
     directions.current.setDestination([dLongitude, dLatitude]);
     calculteWeatherCondition(latitude, longitude)
     calculateCarbonEmissions()
-    retrieveDirection(longitude, latitude)
     setIsLoading(false)
   };
 
   // WATCH POSITION
   useEffect(() => {
-//     const message = new SpeechSynthesisUtterance();
-// // set the text to be spoken
-// message.text = "Meganot";
 
-// // create an instance of the speech synthesis object
-// const speechSynthesis = window.speechSynthesis;
-
-// // start speaking
-// speechSynthesis.speak(message);
     const succcessPosition = async (position) => {
 
       try {
@@ -265,6 +250,7 @@ const DeliveryTracking = () => {
         marker.current.setLngLat([data?.longitude, data?.latitude]).addTo(map.current);
         marker.current.setRotation(data?.heading)
         const updatePosition = await axios.put(`${hostServer}/updatePosition`, {
+          trip_id,
           latitude: data.latitude,
           longitude: data.longitude,
           altitude: data.altitude,
@@ -292,8 +278,9 @@ const DeliveryTracking = () => {
     setIsLoading(true);
     const successLocation = async (position) => {
 
-        const currentTrip = await axios.get(`${hostServer}/getTrip`)
+        const currentTrip = await axios.get(`${hostServer}/get-current-trip/${trip_id}`)
         const result = currentTrip.data
+        console.log(result)
         setCurrentTrip(result)
       const data = position.coords;
       if (isMapSetup) {
@@ -349,16 +336,6 @@ const DeliveryTracking = () => {
     }
   }
 
-  const setOngoingStatus = async () => {
-    try {
-      setIsLoading(true)
-      const data = await axios.post(`${hostServer}/update-trip-status/${trip_id}`)
-      setIsLoading(false)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  useEffect(()=>{setOngoingStatus()}, [])
   return (
     <div className="DeliveryTracking">
       <div className="tracking-details">
@@ -729,7 +706,8 @@ const DeliveryTracking = () => {
                           </Speedometer>
                         </div>
                         <div className="vehicleData">
-                          {positionData && <p>Speed: {positionData.speed == null ? <p>Idle</p> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                        <p>Vehicle: <label htmlFor="">{currentTrip.t_vehicle}</label></p>
+                          {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
                           {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                           {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label>:<label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
                           {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label>:<label>{positionData?.heading.toFixed(0)}</label>}</p>}
@@ -744,12 +722,13 @@ const DeliveryTracking = () => {
                       </div>
                       <div className="transportData">
                         <div className="transportData1">
-                          <p>Driver: </p>
-                          <p>Vehicle: </p>
-                          <p>Destination: </p>
-                          <p>Cargo Weight: </p>
-                          <p>Fuel Consumption: </p>
-                          <p>Carbon Emissions: </p>
+                          <p>Driver: {currentTrip.t_driver} </p>
+                          <p>Destination: {currentTrip.t_trip_tolocation}</p>
+                          <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
+                          <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>
+                          <p>Fuel Consumption: {(vehicleStats.fuelConsumption).toFixed(2)}l</p>
+                          <p>Estimated Fuel Cost: ₱{(vehicleStats.fuelCost).toFixed(2)}</p>
+
                         </div>
                         <div className="transportData2">
   
@@ -785,7 +764,8 @@ const DeliveryTracking = () => {
                         <form onSubmit={(e)=>{setDeliveryStatus(e)}}>
                           <h3>Set Delivery Status</h3>
                           <select id='status-update' onChange={(e)=>{setDeliveryState(e.currentTarget.value)}}>
-                            <option value="OnGoing">OnGoing</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
                           </select>
                           <button type='submit'>Submit</button>

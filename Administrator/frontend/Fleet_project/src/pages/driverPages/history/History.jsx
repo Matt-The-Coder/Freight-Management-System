@@ -10,7 +10,7 @@ const DriverHistory = () => {
         try {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-completed-trip?username=${username}`)
-            const result = data.data
+            const result = data.data.reverse()
             setIsLoading(false)
             setDeliveries(result)
 
@@ -21,6 +21,12 @@ const DriverHistory = () => {
     useEffect(() => {
         getDeliveries()
     }, [])
+
+    const formatDate = (date) => {
+        const newDate = new Date(date);
+        const formattedDate = newDate.toLocaleString();
+        return formattedDate;
+      };
 
     return (
         <div className="DriverHistory">
@@ -44,15 +50,21 @@ const DriverHistory = () => {
                             statusColor = "#388E3C";
                         } else if (e.t_trip_status == 'In Progress') {
                             statusColor = '#FBC02D';
-                        } else if (e.t_trip_status == 'Unsuccessful') {
+                        } else if (e.t_trip_status == 'Cancelled') {
                             statusColor = '#D32F2F';
                         }
                                 
                     return (
                         <div className="deliveries-container" key={i}>
                             <div className="delivery-info">
+                                <div className="first-container"></div>
+                                <div className="second-container">
                                 <div className="h3-container" style={{backgroundColor:statusColor}}>
                                     <h3 >{e.t_trip_status}</h3>
+                                </div>
+                                </div>
+                                <div className="time-container">
+                                    <p>{formatDate(e.t_modified_date)}</p>
                                 </div>
 
                             </div>

@@ -5,7 +5,7 @@ const trackingRoute = express.Router()
 trackingRoute.get('/get-trips-admin', async (req, res) => {
     try {
         const tripData = await db(`
-          SELECT * FROM trips WHERE t_trip_status = 'Completed' OR t_trip_status = "Unsuccessful"
+          SELECT * FROM trips WHERE t_trip_status = 'Completed' OR t_trip_status = "Cancelled"
         `);
     
         const driverData = await db("SELECT * FROM accounts");
@@ -51,7 +51,7 @@ trackingRoute.get('/get-trip', async (req, res) => {
 trackingRoute.get('/get-completed-trip', async (req, res) => {
     try {
         const {username} = req.query
-        const data = await db(`SELECT * FROM trips WHERE t_driver = '${username}' AND (t_trip_status = 'Completed' OR t_trip_status = 'Unsuccessful')`);
+        const data = await db(`SELECT * FROM trips WHERE t_driver = '${username}' AND (t_trip_status = 'Completed' OR t_trip_status = 'Cancelled')`);
         res.json(data)
     } catch (error) {
         console.log(error)
@@ -62,20 +62,21 @@ trackingRoute.post('/update-trip/:trip_id', async (req, res) => {
     try {
         const {trip_id} = req.params
         const {status} = req.body
-        console.log(status)
         const data = await db(`UPDATE trips set t_trip_status = '${status}' where t_id = ${trip_id}`)
-        return res.json({message:"Delivery Completed!"})
+        return res.json({message:"Delivery Status Updated!"})
     } catch (error) {
         console.log(error)
     }
 })
 
-trackingRoute.post('/update-trip-status/:trip_id', async (req, res) => {
-    try {
-        const {trip_id} = req.params
-        const data = await db(`UPDATE trips set t_trip_status = 'In Progress' where t_id = ${trip_id}`)
-    } catch (error) {
-        console.log(error)
-    }
+
+trackingRoute.get('/get-current-trip/:trip_id', async (req, res)=>{
+  try {
+    const {trip_id} = req.params
+    const data = await db(`SELECT * FROM trips WHERE t_id = ${trip_id}`);
+    res.json(data[0])
+} catch (error) {
+    console.log(error)
+}
 })
 module.exports = trackingRoute
