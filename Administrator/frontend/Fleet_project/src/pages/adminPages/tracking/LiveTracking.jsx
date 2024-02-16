@@ -38,6 +38,7 @@ const LiveTracking = () => {
   const destinationMarker = useRef(null)
   const marker = useRef(null)
   const [carPosition, setCarPosition] = useState(null)
+  const [vehicleStats, setVehicleStats] = useState(null)
   const [currentTrip, setCurrentTrip] = useState({})
   const [travelData, setTravelData]= useState([])
   const [address, setAddress] = useState('');
@@ -66,7 +67,6 @@ const LiveTracking = () => {
     detail.current.classList.toggle("open")
   }
   useEffect(() => {
-    alert(trip_id)
     const handleResize = () => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches;
       setIsMobile(isMobileView);
@@ -222,20 +222,21 @@ const LiveTracking = () => {
     try {
       const result = await axios.get(`${hostServer}/calculateFuelConsumptionWithPrice?miles=10&weightInKG=2000`)
       const data = result.data
+      setVehicleStats(data)
     } catch (error) {
       console.log(error)
     }
 
   }
-  const retrieveDirection = async (fLongitude, fLatitude, dLongitude=121.03666348624142, dLatitude= 14.726582928426808) => 
-  {
-    const result = await axios.post(`${hostServer}/getDirections`, 
-    {
-      fLongitude, fLatitude, dLongitude, dLatitude,mapboxToken
-    })
-    const data = result.data
-    setTravelData(result.data)
-  }
+  // const retrieveDirection = async (fLongitude, fLatitude, dLongitude=121.03666348624142, dLatitude= 14.726582928426808) => 
+  // {
+  //   const result = await axios.post(`${hostServer}/getDirections`, 
+  //   {
+  //     fLongitude, fLatitude, dLongitude, dLatitude,mapboxToken
+  //   })
+  //   const data = result.data
+  //   setTravelData(result.data)
+  // }
 
 
   const setDirections = (oLongitude, oLatitude, dLongitude, dLatitude) => {
@@ -244,14 +245,14 @@ const LiveTracking = () => {
     directions.current.setDestination([dLongitude,dLatitude]);
     calculteWeatherCondition(oLatitude, oLongitude)
     calculateCarbonEmissions()
-    retrieveDirection(oLongitude, oLatitude)
+    // retrieveDirection(oLongitude, oLatitude)
     setIsLoading(false)
   };
 
   const getDriverPosition = async () => 
   {
     try {
-      const drivePosition = await axios.get(`${hostServer}/getPosition`)
+      const drivePosition = await axios.get(`${hostServer}/getPosition/${trip_id}`)
       const result = drivePosition.data
       setPositionData(result)
         marker.current.setLngLat([result? result.longitude : 121.0089472, result? result.latitude: 14.6702336]).addTo(map.current);
@@ -267,17 +268,16 @@ const LiveTracking = () => {
   const getTripData = async () => 
   {
     try {
-      const tripData = await axios.get(`${hostServer}/getTrip`)
+      const tripData = await axios.get(`${hostServer}/get-current-trip/${trip_id}`)
       setCurrentTrip(tripData.data)
       setPositionExist(true)
     } catch (error) {
-      console.log(error)
+      console.log("mali")
     }
   }
 
 
   useEffect(() => {
-    console.log(carPosition);
   }, [carPosition]);
   // WATCH POSITION
   useEffect(() => {
@@ -300,7 +300,7 @@ if(positionExist){
   }
   else {
     setupMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat);
-    setInterval(()=>{getDriverPosition()}, 2000)
+    setInterval(()=>{getDriverPosition()}, 5000)
 
     setIsMapSetup(!isMapSetup)
     if (instructionContainer.current.hasChildNodes()) {
@@ -723,7 +723,8 @@ if(positionExist){
                         </div>
 
                         <div className="vehicleData">
-                          {positionData && <p>Speed: {positionData.speed == null ? <p>Idle</p> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                        <p>Vehicle: <label htmlFor="">{currentTrip.t_vehicle}</label></p>
+                          {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
                           {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                           {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label>:<label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
                           {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label>:<label>{positionData?.heading.toFixed(0)}</label>}</p>}
@@ -738,12 +739,12 @@ if(positionExist){
                       </div>
                       <div className="transportData">
                         <div className="transportData1">
-                          <p>Driver: </p>
-                          <p>Vehicle: </p>
-                          <p>Destination: </p>
-                          <p>Cargo Weight: </p>
-                          <p>Fuel Consumption: </p>
-                          <p>Carbon Emissions: </p>
+                        <p>Driver: {currentTrip.t_driver} </p>
+                          <p>Destination: {currentTrip.t_trip_tolocation}</p>
+                          <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
+                          <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>
+                          <p>Fuel Consumption: {(vehicleStats.fuelConsumption).toFixed(2)}l</p>
+                          <p>Estimated Fuel Cost: ₱{(vehicleStats.fuelCost).toFixed(2)}</p>
                         </div>
                         <div className="transportData2">
   

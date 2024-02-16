@@ -45,9 +45,10 @@ mapboxRoute.put("/updatePosition", async (req, res) => {
     }
 })
 
-mapboxRoute.get("/getPosition", async (req, res) => {
+mapboxRoute.get("/getPosition/:trip_id", async (req, res) => {
     try {
-        const query = "Select * from positions"
+        const {trip_id} = req.params
+        const query = `Select * from positions where trip_id = ${trip_id}`
         const positionData = await db(query)
         res.json(positionData[0])
     } catch (error) {

@@ -76,7 +76,7 @@ trackingRoute.get('/get-current-trip/:trip_id', async (req, res)=>{
     const data = await db(`SELECT * FROM trips WHERE t_id = ${trip_id}`);
     res.json(data[0])
 } catch (error) {
-    console.log(error)
+    console.log("error")
 }
 })
 module.exports = trackingRoute
