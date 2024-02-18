@@ -4,6 +4,22 @@
   border-radius: 5px;
   cursor: pointer;
 }
+.switch-pager{
+  width: auto;
+  display: flex;
+
+}
+.switch-pager .switch-pager-content{
+  height: auto;
+  width: 100%;
+}
+.switch-pager h4{
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid var(--dark);
+  font-weight: 500;
+
+}
 h3{
   font-weight: 600;
   font-size: 24px;
@@ -16,13 +32,16 @@ p {
 }
 .tracking-details{
   width: 100%;
+  height: auto;
   padding: 24px;
+
+
 }
 .map-container {
     height: 70vh;
     width: 100%;
     border: var(--light) 2px solid;
-    border-radius: 20px;
+    border-radius: 10px;
     }
 
 .mapboxgl-ctrl.mapboxgl-ctrl-attrib.mapboxgl-compact {
@@ -306,7 +325,8 @@ button{
   @media screen and (max-width: 576px) {
     .tracking-details{
       padding: 0px;
-      height: 90vh;
+      height: auto;
+      border: 1px solid var(--dark);
     }
     .instruction-container{
       display: flex;
@@ -357,4 +377,51 @@ button{
       cursor: pointer;
       margin-bottom: 20px;
     }
+    .switch-pager{
+      background-color: var(--light);
+    }
+    .transportCard{
+      position: static;
+      display: flex;
+      flex-direction: column;
+      width: auto;
+      height: auto;
+    }
+    .transportCard .card{
+      height: auto;
+      width: auto;
+      padding: 15px;
+      border-top: 1px solid var(--dark);
+    }
+    .transportCard .card .vehicleData{
+      width: 100%;
   }
+  .trip-status{
+    margin-bottom: 5%;
+  }
+  .trip-status form{
+    gap: 5%;
+  }
+  .trip-status h3{
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .trip-status :is(select, button){
+    padding: 5px;
+    border: 1px solid var(--dark);
+    border-radius: 5px;
+  }
+  .trip-status button{
+    background-color: var(--button);
+    color: white;
+  }
+  .trip-status select, .trip-status option{
+    color: black;
+  }
+  .trip-status .status-form{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 5%;
+  }
+}

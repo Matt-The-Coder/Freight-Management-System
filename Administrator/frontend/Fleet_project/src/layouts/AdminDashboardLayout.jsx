@@ -1,6 +1,6 @@
 import {Outlet, Link, useNavigate} from 'react-router-dom'
 import '../../public/assets/css/adminLayout/dashboard.css'
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import RiseLoader from "react-spinners/RiseLoader";
 import axios from 'axios';
 const AdminDashboardLayout = ({socket})=>{
@@ -51,6 +51,11 @@ const AdminDashboardLayout = ({socket})=>{
   };
   
 
+  const closeSidebar = () => {
+    const adminSidebar = document.querySelector('.adminSidebar');
+    adminSidebar.classList.add('close')
+    adminSidebar.style.display = 'none'
+  }
   const checkAuthentication = async () => {
 
     try {
@@ -398,7 +403,7 @@ const AdminDashboardLayout = ({socket})=>{
       <>
             <li id='report' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
         <Link to="#">
-        <i class='bx bx-file'></i>
+        <i className='bx bx-file'></i>
           Reports
         </Link>
       </li>
@@ -459,7 +464,7 @@ const AdminDashboardLayout = ({socket})=>{
   {/* Main Content */}
   <div className="content">
     {/* Navbar */}
-    <nav>
+    <nav >
       <i className="bx bx-menu" />
       <form action="#">
         <div className="form-input">
@@ -476,7 +481,7 @@ const AdminDashboardLayout = ({socket})=>{
       </Link>
     </nav>
     {/* End of Navbar */}
-    <main>
+    <main onClick={closeSidebar}>
          <Outlet context={{isLoading, setIsLoading, ...user, mapStyle, setMapStyle, theme, setImage, image}}/>
 
     </main>
