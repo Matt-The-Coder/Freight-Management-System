@@ -58,9 +58,9 @@ const MaintenanceList = () => {
                 <div className="left">
                     <h1>Maintenance</h1>
                     <ul className="breadcrumb" >
-                        <li><Link to="/admin/dashboard" className="active">Dashboard</Link></li>
+                        <li><Link to="/admin/dashboard" >Maintenance</Link></li>
                         /
-                        <li><a href="#">Maintenance</a></li>
+                        <li><a href="#" className="active">Maintenance List</a></li>
                     </ul>
                 </div>
             </div>

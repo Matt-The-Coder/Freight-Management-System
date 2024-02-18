@@ -57,10 +57,10 @@ const FuelManagement = () => {
                     <h1>Fuel Info</h1>
                     <ul className="breadcrumb">
                         <li><a href="#">
-                            Analytics
+                            Fuel
                         </a></li>
                         /
-                        <li><a href="#" className="active">Shop</a></li>
+                        <li><a href="#" className="active">Fuel Management</a></li>
                     </ul>
                 </div>
             </div>

@@ -9,6 +9,7 @@ const AdminDashboardLayout = ({socket})=>{
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
   const nav = useNavigate(null)
   const [trackingDropdown, setTrackingDropdown] = useState(false)
+  const [reportDropdown, setReportDropdown] = useState(false)
   const [maintenanceDropdown, setMaintenanceDropdown] = useState(false)
   const [chatsDropdown, setChatsDropdown] = useState(false)
   const [adminHistory, setAdminHistory] = useState(false)
@@ -34,6 +35,8 @@ const AdminDashboardLayout = ({socket})=>{
         case "chats": setChatsDropdown(!chatsDropdown)
         break;
         case "adminHistory": setAdminHistory(!adminHistory)
+        break;
+        case "report": setReportDropdown(!reportDropdown)
         break;
         default:null;
       }
@@ -377,14 +380,33 @@ const AdminDashboardLayout = ({socket})=>{
       </li>
       {trackingDropdown && (
         <>
-      {/* <li >
-        <a href="/admin/tracking/history" id='subMenu'>
-        History Tracking
-        </a> 
-      </li> */}
       <li >
-      <Link to="/admin/tracking/trips" id='subMenu'>
-       Trips
+        <Link to="/admin/tracking/trips/upcoming" id='subMenu'>
+        Upcoming Trips
+        </Link> 
+      </li>
+      <li >
+      <Link to="/admin/tracking/trips/ongoing" id='subMenu'>
+       OnGoing Trips
+      </Link> 
+    </li>
+    </>
+    )
+      } 
+      </>)}
+      {access.a_tracking ==1 && (
+      <>
+            <li id='report' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
+        <Link to="#">
+        <i class='bx bx-file'></i>
+          Reports
+        </Link>
+      </li>
+      {reportDropdown && (
+        <>
+      <li >
+      <Link to="/admin/reports/trips" id='subMenu'>
+       Delivery Reports
       </Link> 
     </li>
     </>

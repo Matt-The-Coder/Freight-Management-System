@@ -38,6 +38,24 @@ trackingRoute.get('/get-all-trip', async (req, res) => {
     }
   });
 
+  // status Pending
+trackingRoute.get('/get-pending-trips', async (req, res) => {
+  try {
+    const tripData = await db(`
+      SELECT * FROM trips WHERE t_trip_status = 'Pending'
+    `);
+
+    const driverData = await db("SELECT * FROM accounts");
+
+    const filteredDriver = tripData.map(trip => {
+      const matchingDriver = driverData.find(driver => driver.u_username === trip.t_driver);
+      return matchingDriver;
+    });
+    res.json({ driverData: filteredDriver, tripData });
+  } catch (error) {
+    console.log(error);
+  }
+});
 trackingRoute.get('/get-trip', async (req, res) => {
     try {
         const {username} = req.query
@@ -75,6 +93,25 @@ trackingRoute.get('/get-current-trip/:trip_id', async (req, res)=>{
     const {trip_id} = req.params
     const data = await db(`SELECT * FROM trips WHERE t_id = ${trip_id}`);
     res.json(data[0])
+} catch (error) {
+    console.log("error")
+}
+})
+
+trackingRoute.get('/get-trip-reports', async (req, res)=>{
+  try {
+    const data = await db(`SELECT * FROM trips`);
+    res.json(data)
+} catch (error) {
+    console.log("error")
+}
+})
+
+trackingRoute.get('/trip-search', async (req, res)=>{
+  try {
+    const {search} = req.query 
+    const data = await db(`SELECT * FROM trips where t_trip_status LIKE '%${search}%' OR (t_driver LIKE '%${search}%' OR t_vehicle LIKE '%${search}%')`);
+    res.json(data)
 } catch (error) {
     console.log("error")
 }

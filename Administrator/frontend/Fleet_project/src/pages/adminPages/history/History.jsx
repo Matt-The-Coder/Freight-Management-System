@@ -32,10 +32,10 @@ const AdminHistory = () => {
                         <h1>History</h1>
                         <ul className="breadcrumb">
                             <li><a href="#">
-                                Analytics
+                            History
                             </a></li>
                             /
-                            <li><a href="#" className="active">Trips</a></li>
+                            <li><a href="#" className="active">Deliveries</a></li>
                         </ul>
                     </div>
                 </div>

@@ -33,6 +33,18 @@ const DriverDeliveries = () => {
     const kilometers = meters / 1000;
     return kilometers.toFixed(2);
   }
+  function reverseObject(obj) {
+    // Convert the object into an array of key-value pairs
+    var entries = Object.entries(obj);
+  
+    // Reverse the order of the entries
+    var reversedEntries = entries.reverse();
+  
+    // Convert the reversed entries back into an object
+    var reversedObj = Object.fromEntries(reversedEntries);
+  
+    return reversedObj;
+  }
   const getDeliveries = async () => {
     try {
       setIsLoading(true);
@@ -49,9 +61,8 @@ const DriverDeliveries = () => {
         const travel = travelTime.data.routes[0];
         return travel;
       }));
-
-      console.log(travelRoutes)
-      setTravelData(travelRoutes);
+      const reverseTravel = travelRoutes.reverse()
+      setTravelData(reverseTravel);
       setIsLoading(false);
       const deliveriesObject = {};
       result.forEach((delivery) => {
@@ -60,6 +71,7 @@ const DriverDeliveries = () => {
           isShow: false,
         };
       });
+      console.log(reverseObject(deliveriesObject))
       setDeliveries(deliveriesObject);
     } catch (error) {
       console.log(error);
@@ -77,12 +89,12 @@ const DriverDeliveries = () => {
           <h1>Deliveries</h1>
           <ul className="breadcrumb">
             <li>
-              <a href="#">Analytics</a>
+              <a href="#">Deliveries</a>
             </li>
             /
             <li>
               <a href="#" className="active">
-                Metrics
+                List
               </a>
             </li>
           </ul>
@@ -94,7 +106,7 @@ const DriverDeliveries = () => {
             <h1>No Deliveries Yet</h1>
           </center>
         )}
-        {Object.entries(deliveries).map(([deliveryId, delivery], i) => {
+        {Object.entries(deliveries).reverse().map(([deliveryId, delivery], i) => {
           const { t_trip_status, t_trip_fromlocation, t_trip_tolocation, t_created_date } = delivery;
           let statusColor = '';
           if (t_trip_status === 'Completed') {

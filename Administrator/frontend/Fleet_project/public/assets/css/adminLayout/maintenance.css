@@ -15,6 +15,23 @@
     border-radius: 20px;
     background-color: var(--light);
 }
+.maintenance-details .report-export{
+    display: flex;
+    gap: 1%;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+}
+.maintenance-details .report-export button{
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background-color: var(--button);
+    cursor: pointer;
+}
+.maintenance-details .report-export p{
+    font-size: 20px;
+    font-weight: 600;
+}
 .maintenance-list{
     overflow:auto;
 }

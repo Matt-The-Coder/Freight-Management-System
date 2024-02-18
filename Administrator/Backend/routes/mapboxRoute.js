@@ -8,7 +8,6 @@ mapboxRoute.post("/getDirections", async (req, res) => {
     try {
         const result = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${fLongitude},${fLatitude};${dLongitude},${dLatitude}?access_token=${mapboxToken}`)
         res.json(result.data)
-        console.log(req.body)
     } catch (error) {
         console.log(error)
         res.json({ message: error })

@@ -122,12 +122,12 @@ const AddMaintenance = () => {
           <h1>Maintenance</h1>
           <ul className="breadcrumb">
             <li>
-              <Link to="/admin/dashboard" className="active">Dashboard</Link>
+              <a to="#">Maintenance</a>
             </li>
             /
             <li>
-              <a href="#" >
-                Vehicle Maintenance
+              <a href="#"  className="active">
+                Add Maintenance
               </a>
             </li>
           </ul>

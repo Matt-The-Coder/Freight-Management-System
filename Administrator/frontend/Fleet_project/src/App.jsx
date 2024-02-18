@@ -3,8 +3,8 @@ import { useState } from 'react'
 import io from 'socket.io-client'
 import AdminDashboardLayout from './layouts/AdminDashboardLayout'
 import {
-  AdminDashboard, Login, LiveTracking, TrackingTrips, AdminChat, EditMaintenance,
-  MaintenanceList, AddMaintenance, Settings, LandingPage, AddFuel, FuelManagement, EditFuel, AdminHistory
+  AdminDashboard, Login, LiveTracking, TrackingTrips, UpcomingTrips, AdminChat, EditMaintenance,
+  MaintenanceList, AddMaintenance, Settings, LandingPage, AddFuel, FuelManagement, EditFuel, AdminHistory, DeliveryReports
 } from './pages/adminPages/Components.js'
 import Notfound from './pages/Notfound'
 import { History, Deliveries, DriverDashboard, DeliveryTracking, DriverChat } from './pages/driverPages/driverComponents.js'
@@ -23,7 +23,9 @@ const App = () => {
           <Route path='/admin/history/list' element={<AdminHistory />} />
           <Route path='/admin/maintenance/edit/:maintenanceID' element={<EditMaintenance />} />
           <Route path='/account/settings' element={<Settings />} />
-          <Route path='/admin/tracking/trips' element={<TrackingTrips />} />
+          <Route path='/admin/tracking/trips/ongoing' element={<TrackingTrips />} />
+          <Route path='/admin/tracking/trips/upcoming' element={<UpcomingTrips />} />
+          <Route path='/admin/reports/trips' element={<DeliveryReports />} />
           <Route path='/admin/tracking/live/:trip_id' element={<LiveTracking />} />
           <Route path='/admin/fuel/manage' element={<FuelManagement />} />
           <Route path='/admin/fuel/add' element={<AddFuel />} />

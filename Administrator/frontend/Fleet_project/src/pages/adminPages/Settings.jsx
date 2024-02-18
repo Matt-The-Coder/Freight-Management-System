@@ -137,7 +137,7 @@ const Settings = () => {
                     <h1>Account settings</h1>
                     <ul className="breadcrumb">
                         <li><a href="#">
-                            User Access
+                            Settings
                         </a></li>
                         /
                         <li><a href="#" className="active">Account Info</a></li>

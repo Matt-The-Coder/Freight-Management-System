@@ -140,12 +140,12 @@ useEffect(() => {
           <h1>Maintenance</h1>
           <ul className="breadcrumb">
             <li>
-              <Link to="/admin/dashboard" className="active">Dashboard</Link>
+              <a href="#" >Maintenance</a>
             </li>
             /
             <li>
-              <a href="#" >
-                Vehicle Maintenance
+              <a href="#" className="active" >
+                Edit Maintenance
               </a>
             </li>
           </ul>

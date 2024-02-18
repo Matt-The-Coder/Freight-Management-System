@@ -2,7 +2,7 @@ import {Link, useOutletContext} from 'react-router-dom'
 import '/public/assets/css/adminLayout/trackingTrips.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-const TrackingTrips = () => {
+const UpcomingTrips = () => {
     const {image,u_role, u_first_name, u_last_name, setIsLoading} = useOutletContext()
     const VITE_UPLOADING_SERVER = import.meta.env.VITE_UPLOADING_SERVER
     const hostServer = import.meta.env.VITE_SERVER_HOST;
@@ -11,7 +11,7 @@ const TrackingTrips = () => {
     const getDeliveries = async () => {
         try {
             setIsLoading(true)
-            const data = await axios.get(`${hostServer}/get-all-trip`)
+            const data = await axios.get(`${hostServer}/get-pending-trips`)
             const result = data.data
             setDeliveries(result.tripData)
             setDeliveryDriver(result.driverData)
@@ -29,13 +29,13 @@ const TrackingTrips = () => {
             <div className="trips">
                 <div className="adminHeader">
                     <div className="left">
-                        <h1>OnGoing Trips</h1>
+                        <h1>Upcoming Trips</h1>
                         <ul className="breadcrumb">
                             <li><a href="#">
                                 Tracking
                             </a></li>
                             /
-                            <li><a href="#" className="active">OnGoing Trips</a></li>
+                            <li><a href="#" className="active">Upcoming Trips</a></li>
                         </ul>
                     </div>
                 </div>
@@ -85,9 +85,9 @@ const TrackingTrips = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="trips-button">
+                                {/* <div className="trips-button">
                                     <a href={`/admin/tracking/live/${e.t_id}`}><button>View On Map</button></a>
-                                </div>
+                                </div> */}
                             </div>
     
                         </div>
@@ -100,4 +100,4 @@ const TrackingTrips = () => {
     )
 }
 
-export default TrackingTrips
+export default UpcomingTrips

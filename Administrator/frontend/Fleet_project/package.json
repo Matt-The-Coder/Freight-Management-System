@@ -27,7 +27,8 @@
     "react-speedometer": "^0.1.2",
     "react-spinners": "^0.13.8",
     "socket.io-client": "^4.7.4",
-    "vite-plugin-pwa": "^0.16.6"
+    "vite-plugin-pwa": "^0.16.6",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

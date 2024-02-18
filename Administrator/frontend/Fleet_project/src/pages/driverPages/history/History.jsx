@@ -35,10 +35,10 @@ const DriverHistory = () => {
                     <h1>History</h1>
                     <ul className="breadcrumb">
                         <li><a href="#">
-                            Analytics
+                            History
                         </a></li>
                         /
-                        <li><a href="#" className="active">Metrics</a></li>
+                        <li><a href="#" className="active">List</a></li>
                     </ul>
                 </div>
             </div>
