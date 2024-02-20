@@ -116,4 +116,14 @@ trackingRoute.get('/trip-search', async (req, res)=>{
     console.log("error")
 }
 })
+
+trackingRoute.get('/sustain-search', async (req, res)=>{
+  try {
+    const {search} = req.query 
+    const data = await db(`SELECT * FROM sustainability_data where (sd_fuelcost LIKE '%${search}%' OR sd_id LIKE '%${search}%') OR (sd_carbon_emission LIKE '%${search}%' OR sd_trip_id LIKE '%${search}%')`);
+    res.json(data)
+} catch (error) {
+    console.log("error")
+}
+})
 module.exports = trackingRoute

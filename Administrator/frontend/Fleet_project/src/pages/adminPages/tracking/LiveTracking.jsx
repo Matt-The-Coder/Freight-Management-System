@@ -1,7 +1,7 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useOutletContext, useNavigate, useLocation } from 'react-router-dom';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
 import MapboxTraffic from '@mapbox/mapbox-gl-traffic'
 import '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions.css';
@@ -18,10 +18,15 @@ import Speedometer, {
 
 
 
-const LiveTracking = () => {
+const LiveTracking = ({socket}) => {
+  const nav = useNavigate()
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const miles = searchParams.get('miles');
+  const trip_id = searchParams.get('trip_id');
+  const weightInKG = searchParams.get('weight');
   axios.defaults.withCredentials = true;
   const { setIsLoading, mapStyle, setMapStyle } = useOutletContext();
-  const { trip_id } = useParams()
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
   mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
   const hostServer = import.meta.env.VITE_SERVER_HOST;
@@ -77,6 +82,18 @@ const LiveTracking = () => {
     }
 
   }
+
+  useEffect(() => {
+    socket.on('deliveryUpdate', (data) => {
+      alert("Delivery Status Updated")
+      if(data !== "In Progress"){
+        nav('/admin/tracking/trips/ongoing')
+      }
+
+    });
+    return () => socket.off('deliveryUpdate');
+
+  }, [socket]);
   useEffect(() => {
     const handleResize = () => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches;
@@ -213,7 +230,7 @@ const LiveTracking = () => {
 
   const calculteWeatherCondition = async (latitude, longitude) => {
     try {
-      const response = await axios.get(`${hostServer}/weatherdata?lat=${latitude}&lon=${longitude}`);
+      const response = await axios.get(`${hostServer}/get-driver-weatherdata?lat=${latitude}&lon=${longitude}`);
       const result = response.data.weatherData
       const alertResult = response.data.weatherAlert
       setWeatherConditon(result)
@@ -231,7 +248,7 @@ const LiveTracking = () => {
 
   const calculateCarbonEmissions = async () => {
     try {
-      const result = await axios.get(`${hostServer}/calculateFuelConsumptionWithPrice?miles=10&weightInKG=2000`)
+      const result = await axios.get(`${hostServer}/calculateFuelConsumptionWithPrice?miles=${miles}&weightInKG=${weightInKG}`)
       const data = result.data
       setVehicleStats(data)
     } catch (error) {
@@ -297,6 +314,7 @@ const LiveTracking = () => {
         mapContainer.current.classList.remove("mapboxgl-map")
         mapContainer.current.innerHTML = ""
         setupDarkMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat)
+        setInterval(() => { getDriverPosition() }, 2000)
         if (instructionContainer.current) {
           const instructions = instructionContainer.current
           instructionContainer.current.removeChild(instructions.children[0])
@@ -309,7 +327,7 @@ const LiveTracking = () => {
       }
       else {
         setupMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat);
-        setInterval(() => { getDriverPosition() }, 5000)
+        setInterval(() => { getDriverPosition() }, 2000)
 
         setIsMapSetup(!isMapSetup)
         if (instructionContainer.current.hasChildNodes()) {
@@ -431,8 +449,8 @@ const LiveTracking = () => {
                         <p>Destination: {currentTrip.t_trip_tolocation}</p>
                         <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
                         <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>
-                        <p>Fuel Consumption: {(vehicleStats.fuelConsumption).toFixed(2)}l</p>
-                        <p>Estimated Fuel Cost: ₱{(vehicleStats.fuelCost).toFixed(2)}</p>
+                        <p>Fuel Consumption: {vehicleStats.fuelConsumption}l</p>
+                        <p>Estimated Fuel Cost: ₱{vehicleStats.fuelCost}</p>
                       </div>
                       <div className="transportData2">
 
@@ -719,7 +737,7 @@ const LiveTracking = () => {
                       <i className='bx bx-sun' ></i>
                     </div>
                     <div>
-                      {weatherCondition && <p>UV Index: {weatherCondition.uv}</p>}
+                      {weatherCondition && <p>UV Index: {(weatherCondition.uv).toFixed(2)}</p>}
                       {weatherCondition && <p>Solar Radiation: {weatherCondition.solar_rad} W/m² </p>}
                     </div>
                   </div>
@@ -839,8 +857,8 @@ const LiveTracking = () => {
                           <p>Destination: {currentTrip.t_trip_tolocation}</p>
                           <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
                           <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>
-                          <p>Fuel Consumption: {(vehicleStats.fuelConsumption).toFixed(2)}l</p>
-                          <p>Estimated Fuel Cost: ₱{(vehicleStats.fuelCost).toFixed(2)}</p>
+                          <p>Fuel Consumption: {vehicleStats.fuelConsumption}l</p>
+                          <p>Estimated Fuel Cost: ₱{vehicleStats.fuelCost}</p>
                         </div>
                         <div className="transportData2">
 

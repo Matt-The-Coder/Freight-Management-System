@@ -29,6 +29,12 @@ const DriverDeliveries = () => {
     const formattedTime = `${hours}h ${minutes}m`;
     return formattedTime;
   }
+
+  function convertMiles (meters) {
+    const miles = 0.00062137 * meters
+    console.log(miles)
+    return miles
+  }
   function convertKm(meters) {
     const kilometers = meters / 1000;
     return kilometers.toFixed(2);
@@ -58,7 +64,7 @@ const DriverDeliveries = () => {
           dLatitude: e.t_trip_tolat,
           mapboxToken
         });
-        const travel = travelTime.data.routes[0];
+        const travel = travelTime.data?.routes[0];
         return travel;
       }));
       const reverseTravel = travelRoutes.reverse()
@@ -103,11 +109,11 @@ const DriverDeliveries = () => {
       <div className="deliveries-list">
         {Object.entries(deliveries).length === 0 && (
           <center>
-            <h1>No Deliveries Yet</h1>
+            <h1>No Assigned Deliveries Yet</h1>
           </center>
         )}
         {Object.entries(deliveries).reverse().map(([deliveryId, delivery], i) => {
-          const { t_trip_status, t_trip_fromlocation, t_trip_tolocation, t_created_date } = delivery;
+          const { t_trip_status, t_trip_fromlocation, t_trip_tolocation, t_created_date, t_totalweight } = delivery;
           let statusColor = '';
           if (t_trip_status === 'Completed') {
             statusColor = '#388E3C'; // Green
@@ -171,7 +177,7 @@ const DriverDeliveries = () => {
                       <input type="text" />
                     </div>
                     <div className="trips-button">
-                      <a href={`/driver/deliveries/tracking/${deliveryId}`}>
+                      <a href={`/driver/deliveries/tracking?trip_id=${deliveryId}&miles=${convertMiles(travelData[i].distance)}&weight=${t_totalweight}`}>
                         <button>View On Map</button>
                       </a>
                     </div>

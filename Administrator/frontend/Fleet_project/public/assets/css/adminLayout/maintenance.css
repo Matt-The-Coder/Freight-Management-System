@@ -441,6 +441,7 @@
     .Maintenance .maintenance-search{
         width: 100%;
         column-gap: 3%;
+        justify-content: center;
     }
     .Maintenance .maintenance-search p{
         font-size: 16px;
@@ -452,5 +453,11 @@
     }
     :is(.maintenance-list, .maintenance-table) :is(tr th, tr td){
         padding: 6px 12px;
+    }
+    .maintenance-details .report-export {
+        justify-content: center;
+    }
+    .maintenance-details .report-export button{
+        padding: 4px 8px;
     }
  }

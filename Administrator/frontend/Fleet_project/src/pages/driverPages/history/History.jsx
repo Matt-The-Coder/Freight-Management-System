@@ -43,7 +43,7 @@ const DriverHistory = () => {
                 </div>
             </div>
             <div className="deliveries-list">
-                {deliveries.length == 0 && <center><h1>No Deliveries Yet</h1></center>}
+                {deliveries.length == 0 && <center><h1>No Deliveries Completed</h1></center>}
                 {deliveries?.map((e, i) => {
                         let statusColor = '';
                         if (e.t_trip_status == 'Completed') {

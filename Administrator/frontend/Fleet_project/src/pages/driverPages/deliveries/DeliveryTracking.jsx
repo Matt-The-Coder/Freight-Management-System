@@ -1,6 +1,6 @@
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useRef, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom'
 import mapboxgl from 'mapbox-gl';
 import { useOutletContext } from 'react-router-dom';
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';
@@ -19,10 +19,14 @@ import Speedometer, {
 
 
 
-const DeliveryTracking = () => {
+const DeliveryTracking = ({socket}) => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const miles = searchParams.get('miles');
+  const trip_id = searchParams.get('trip_id');
+  const weightInKG = searchParams.get('weight');
   axios.defaults.withCredentials = true;
   const { setIsLoading, mapStyle } = useOutletContext();
-  const { trip_id } = useParams()
   const nav = useNavigate()
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
   mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
@@ -46,7 +50,7 @@ const DeliveryTracking = () => {
   const [isMobile, setIsMobile] = useState(false);
   const boxInfoNav = useRef([])
   const bInfo = useRef(null)
-  const [deliveryState, setDeliveryState] = useState('In Progress')
+  const [deliveryState, setDeliveryState] = useState(null)
   const [boxInfoMessage, setBoxInfoMessage] = useState(false)
   const [boxInfoReminder, setBoxInfoboxInfoReminder] = useState(false)
   const mapInstructions = useRef(null)
@@ -68,6 +72,7 @@ const DeliveryTracking = () => {
 
   }
   useEffect(() => {
+    console.log(miles)
     const handleResize = () => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches;
       setIsMobile(isMobileView);
@@ -196,20 +201,10 @@ const DeliveryTracking = () => {
     }
   }
 
-  // const addSustainData = async () => {
-  //   try {
-  //     const response = await axios.get(`${hostServer}/sustainability`, {
-  //       trip_id, carbonEmission, rainRate, cWeather, aQuality, wSpeed, wDirection, wAngle, temp, humid, vis, uIndex, sRad, press, slPress
-  //     });
-  //     const result = response.data.weatherData
 
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // } 
   const calculteWeatherCondition = async (latitude, longitude) => {
     try {
-      const response = await axios.get(`${hostServer}/weatherdata?lat=${latitude}&lon=${longitude}`);
+      const response = await axios.get(`${hostServer}/weatherdata?lat=${latitude}&lon=${longitude}&tripID=${trip_id}&miles=${miles}&weight=${weightInKG}`);
       const result = response.data.weatherData
       const alertResult = response.data.weatherAlert
       setWeatherConditon(result)
@@ -227,10 +222,9 @@ const DeliveryTracking = () => {
 
   const calculateCarbonEmissions = async () => {
     try {
-      const result = await axios.get(`${hostServer}/calculateFuelConsumptionWithPrice?miles=10&weightInKG=2000`)
+      const result = await axios.get(`${hostServer}/calculateFuelConsumptionWithPrice?miles=${miles}&weightInKG=${weightInKG}`)
       const data = result.data
       setVehicleStats(data)
-      console.log(data)
     } catch (error) {
       console.log(error)
     }
@@ -269,7 +263,6 @@ const DeliveryTracking = () => {
           heading: data.heading,
           accuracy: data.accuracy
         })
-        console.log(updatePosition.data)
       } catch (error) {
         console.log(error)
       }
@@ -291,7 +284,7 @@ const DeliveryTracking = () => {
 
       const currentTrip = await axios.get(`${hostServer}/get-current-trip/${trip_id}`)
       const result = currentTrip.data
-      console.log(result)
+      setDeliveryState(result.t_trip_status)
       setCurrentTrip(result)
       const data = position.coords;
       if (isMapSetup) {
@@ -341,7 +334,11 @@ const DeliveryTracking = () => {
       const result = data.data.message
       setIsLoading(false)
       alert(result)
-      nav('/driver/deliveries')
+      socket.emit('deliveryUpdate', {deliveryState})
+      if (deliveryState !== "In Progress") {
+        nav('/driver/deliveries')
+      }
+
     } catch (error) {
       console.log(error)
     }
@@ -372,20 +369,21 @@ const DeliveryTracking = () => {
                 <div className="transportCard">
 
                   <div className="card">
-                  <div className='trip-status'>
-                        <form onSubmit={(e) => { setDeliveryStatus(e) }}>
-                          <h3>Set Delivery Status</h3>
-                         <div className="status-form">
-                         <select id='status-update' onChange={(e) => { setDeliveryState(e.currentTarget.value) }}>
+                    <div className='trip-status'>
+                      <form onSubmit={(e) => { setDeliveryStatus(e) }}>
+                        <h3>Set Delivery Status</h3>
+                        <div className="status-form">
+                          <select id='status-update' onChange={(e) => { setDeliveryState(e.currentTarget.value) }} value={deliveryState}>
+                            <option value="Pending">Pending</option>
                             <option value="In Progress">In Progress</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
                           </select>
                           <button type='submit'>Submit</button>
-                          </div> 
+                        </div>
 
-                        </form>
-                      </div>
+                      </form>
+                    </div>
                     <div className="cardTitle">
                       <i className='bx bxs-car-mechanic' id='carBx'></i>
                       <h4>Vehicle Data</h4>
@@ -428,8 +426,8 @@ const DeliveryTracking = () => {
                         <p>Destination: {currentTrip.t_trip_tolocation}</p>
                         <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
                         <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>
-                        <p>Fuel Consumption: {(vehicleStats.fuelConsumption).toFixed(2)}l</p>
-                        <p>Estimated Fuel Cost: ₱{(vehicleStats.fuelCost).toFixed(2)}</p>
+                        <p>Fuel Consumption: {vehicleStats.fuelConsumption}l</p>
+                        <p>Estimated Fuel Cost: ₱{vehicleStats.fuelCost}</p>
                       </div>
                       <div className="transportData2">
 
@@ -586,7 +584,7 @@ const DeliveryTracking = () => {
 
           (<>
 
-
+            <div ref={mapContainer} className="map-container" />
             <div className="weatherTitle">
               <h3>Weather Condition</h3>
             </div>
@@ -715,7 +713,7 @@ const DeliveryTracking = () => {
                       <i className='bx bx-sun' ></i>
                     </div>
                     <div>
-                      {weatherCondition && <p>UV Index: {weatherCondition.uv}</p>}
+                      {weatherCondition && <p>UV Index: {(weatherCondition.uv).toFixed(2)}</p>}
                       {weatherCondition && <p>Solar Radiation: {weatherCondition.solar_rad} W/m² </p>}
                     </div>
                   </div>
@@ -756,10 +754,10 @@ const DeliveryTracking = () => {
                   <div className="flip-card-back">
                     <div className="airPressure">
                       {weatherCondition && <> {
-                        weatherCondition.slp < 950 ? <label>Very Low Air Pressure</label> :
-                          weatherCondition.slp < 980 ? <label>Low Air Pressure </label> :
-                            weatherCondition.slp < 1000 ? <label>Normal Air Pressure </label> :
-                              weatherCondition.slp < 1014 ? <label>Moderate Air Pressure </label> :
+                        weatherCondition.pres < 950 ? <label>Very Low Air Pressure</label> :
+                          weatherCondition.pres < 980 ? <label>Low Air Pressure </label> :
+                            weatherCondition.pres < 1000 ? <label>Normal Air Pressure </label> :
+                              weatherCondition.pres < 1014 ? <label>Moderate Air Pressure </label> :
                                 <label>High Air-Level Pressure: </label>
 
                       }</>}
@@ -834,8 +832,8 @@ const DeliveryTracking = () => {
                           <p>Destination: {currentTrip.t_trip_tolocation}</p>
                           <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
                           <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>
-                          <p>Fuel Consumption: {(vehicleStats.fuelConsumption).toFixed(2)}l</p>
-                          <p>Estimated Fuel Cost: ₱{(vehicleStats.fuelCost).toFixed(2)}</p>
+                          <p>Fuel Consumption: {vehicleStats.fuelConsumption}l</p>
+                          <p>Estimated Fuel Cost: ₱{vehicleStats.fuelCost}</p>
 
                         </div>
                         <div className="transportData2">
@@ -871,7 +869,8 @@ const DeliveryTracking = () => {
                       <div className='trip-status'>
                         <form onSubmit={(e) => { setDeliveryStatus(e) }}>
                           <h3>Set Delivery Status</h3>
-                          <select id='status-update' onChange={(e) => { setDeliveryState(e.currentTarget.value) }}>
+                          <select id='status-update' value={deliveryState} onChange={(e) => { setDeliveryState(e.currentTarget.value) }}>
+                            <option value="Pending">Pending</option>
                             <option value="In Progress">In Progress</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>

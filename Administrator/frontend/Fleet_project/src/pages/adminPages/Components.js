@@ -7,6 +7,7 @@ export { default as LiveTracking } from './tracking/LiveTracking';
 export {default as TrackingTrips} from './tracking/TrackingTrips'
 export {default as UpcomingTrips} from './tracking/UpcomingTrips'
 export {default as DeliveryReports} from './reports/DeliveryReports'
+export {default as SustainabilityReports} from './reports/SustainabilityReports'
 export { default as AdminDashboard } from './AdminDashboard';
 export { default as Login } from '../Login';
 export {default as LandingPage} from '../landingPages/LandingPage';

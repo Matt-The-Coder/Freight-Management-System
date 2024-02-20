@@ -409,11 +409,17 @@ const AdminDashboardLayout = ({socket})=>{
       </li>
       {reportDropdown && (
         <>
-      <li >
-      <Link to="/admin/reports/trips" id='subMenu'>
-       Delivery Reports
+            <li >
+      <Link to="/admin/reports/sustainability" id='subMenu'>
+       Environmental
       </Link> 
     </li>
+      <li >
+      <Link to="/admin/reports/trips" id='subMenu'>
+       Deliveries
+      </Link> 
+    </li>
+
     </>
     )
       } 

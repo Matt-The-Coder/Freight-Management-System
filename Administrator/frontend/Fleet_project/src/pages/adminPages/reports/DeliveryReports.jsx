@@ -3,7 +3,7 @@ import '/public/assets/css/adminLayout/maintenance.css'
 import axios from "axios"
 import * as XLSX from 'xlsx';
 import {Link, useNavigate, useOutletContext} from "react-router-dom"
-const DeliveryReports = () => {
+const DeliveryReports = ({socket}) => {
     const nav = useNavigate()
     
     const {setIsLoading} = useOutletContext()
@@ -27,6 +27,14 @@ const DeliveryReports = () => {
         setMaintenanceData(filteredData)
         setIsLoading(false)
     }
+    useEffect(() => {
+        socket.on('deliveryUpdate', (data) => {
+                alert("Delivery Status Updated")
+                location.reload()        
+        });
+        return () => socket.off('deliveryUpdate');
+    
+      }, [socket]);
     useEffect(()=>{
         getMaintenanceList()
     },[isDelete])
@@ -71,7 +79,7 @@ const DeliveryReports = () => {
                     <ul className="breadcrumb" >
                         <li><Link to="/admin/dashboard">Reports</Link></li>
                         /
-                        <li><a href="#" className='active'>Delivery Reports</a></li>
+                        <li><a href="#" className='active'>Deliveries Reports</a></li>
                     </ul>
                 </div>
             </div>

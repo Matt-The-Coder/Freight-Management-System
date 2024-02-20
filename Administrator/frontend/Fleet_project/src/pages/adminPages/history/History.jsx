@@ -2,18 +2,27 @@ import { Link, useOutletContext } from 'react-router-dom'
 import '/public/assets/css/adminLayout/trackingTrips.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-const AdminHistory = () => {
+const AdminHistory = ({socket}) => {
     const { image, u_role, u_first_name, u_last_name, setIsLoading } = useOutletContext()
     const VITE_UPLOADING_SERVER = import.meta.env.VITE_UPLOADING_SERVER
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     const [deliveries, setDeliveries] = useState([])
     const [deliveryDriver, setDeliveryDriver] = useState([])
+    useEffect(() => {
+        socket.on('deliveryUpdate', (data) => {
+                alert("Delivery Status Updated")
+                location.reload()        
+        });
+        return () => socket.off('deliveryUpdate');
+    
+      }, [socket]);
     const getDeliveries = async () => {
         try {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-trips-admin`)
             const result = data.data
             setDeliveries(result.tripData)
+            const deliverReverse = result.driverData.reverse()
             setDeliveryDriver(result.driverData)
             setIsLoading(false)
         } catch (error) {
@@ -40,7 +49,7 @@ const AdminHistory = () => {
                     </div>
                 </div>
                 <div className="trips-list">
-                {deliveries.length == 0 && <center><h1>No Deliveries Yet</h1></center>}
+                {deliveries.length == 0 && <center><h1>No Trips Have Been Made Yet</h1></center>}
                     {deliveries.map((e, i) => {
                         let statusColor = '';
                         if (e.t_trip_status == 'Completed') {

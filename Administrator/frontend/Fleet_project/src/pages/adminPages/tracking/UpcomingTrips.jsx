@@ -2,7 +2,7 @@ import {Link, useOutletContext} from 'react-router-dom'
 import '/public/assets/css/adminLayout/trackingTrips.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-const UpcomingTrips = () => {
+const UpcomingTrips = ({socket}) => {
     const {image,u_role, u_first_name, u_last_name, setIsLoading} = useOutletContext()
     const VITE_UPLOADING_SERVER = import.meta.env.VITE_UPLOADING_SERVER
     const hostServer = import.meta.env.VITE_SERVER_HOST;
@@ -21,6 +21,14 @@ const UpcomingTrips = () => {
         }
     }
     
+    useEffect(() => {
+        socket.on('deliveryUpdate', (data) => {
+                alert("Delivery Status Updated")
+                location.reload()        
+        });
+        return () => socket.off('deliveryUpdate');
+    
+      }, [socket]);
     useEffect(()=>{
         getDeliveries()
     },[])
@@ -40,7 +48,7 @@ const UpcomingTrips = () => {
                     </div>
                 </div>
                 <div className="trips-list">
-                {deliveries.length == 0 && <center><h1>No Deliveries Yet</h1></center>}
+                {deliveries.length == 0 && <center><h1>No Upcoming Trips Yet</h1></center>}
                     {deliveries.map((e, i)=>{
                         
                         return(

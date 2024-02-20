@@ -87,7 +87,10 @@ io.on('connection', async (socket) =>  {
       io.emit('receive_message', data); // Send Back to the sender
   })
 
-  
+  socket.on('deliveryUpdate', (data) =>{
+    const {deliveryState} = data
+    io.emit('deliveryUpdate', deliveryState)
+  })
 
 
 });

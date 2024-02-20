@@ -28,13 +28,12 @@ mapboxRoute.put("/updatePosition", async (req, res) => {
         } else {
             const insertPosition = await db(`Insert into positions (
                 trip_id,
-                v_id,
                 latitude,
                 longitude,
                 altitude,
                 speed,
                 heading,
-                accuracy) values (${trip_id},'${vehicle}',${latitude},${longitude},${altitude},${speed},${heading},${accuracy})`)
+                accuracy) values (${trip_id},${latitude},${longitude},${altitude},${speed},${heading},${accuracy})`)
 
                 res.json({message:"success"})
         }

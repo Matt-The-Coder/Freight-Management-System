@@ -12,13 +12,25 @@
 .switch-pager .switch-pager-content{
   height: auto;
   width: 100%;
+  border-radius: 10px;
 }
-.switch-pager h4{
+.switch-pager h4:first-child{
+  cursor: pointer;
+  padding: 10px;
+  border-top-left-radius: 10px;
+  border: 1px solid var(--dark);
+  font-weight: 700;
+  background-color: var(--button);
+  color: white;
+
+}
+.switch-pager h4:nth-child(2){
   cursor: pointer;
   padding: 10px;
   border: 1px solid var(--dark);
-  font-weight: 500;
-
+  font-weight: 700;
+  background-color: var(--button);
+  color: white;
 }
 h3{
   font-weight: 600;
@@ -38,7 +50,7 @@ p {
 
 }
 .map-container {
-    height: 70vh;
+    height: 80vh;
     width: 100%;
     border: var(--light) 2px solid;
     border-radius: 10px;
@@ -327,11 +339,15 @@ button{
       padding: 0px;
       height: auto;
       border: 1px solid var(--dark);
+      border-radius: 10px;
     }
     .instruction-container{
       display: flex;
       width: 100%;
       justify-content: center;
+    }
+    .map-container{
+      height: 69vh;
     }
     .mapboxgl-ctrl-directions.mapboxgl-ctrl{
       width: 100vw;
@@ -340,7 +356,7 @@ button{
     }
     .detail-slide{
       position: fixed;
-      bottom: -1px;
+      bottom: -20px;
       left: -0px;
       width: 100vw;
       height: 10vh;
@@ -379,6 +395,7 @@ button{
     }
     .switch-pager{
       background-color: var(--light);
+      border-radius: 10px;
     }
     .transportCard{
       position: static;
