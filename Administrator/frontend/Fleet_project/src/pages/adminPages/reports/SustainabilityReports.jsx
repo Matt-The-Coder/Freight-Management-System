@@ -7,7 +7,6 @@ const SustainabilityReports = ({ socket }) => {
     const nav = useNavigate()
 
     const { setIsLoading } = useOutletContext()
-    const [isDelete, setIsDelete] = useState(false)
     const [maintenanceData, setMaintenanceData] = useState([])
     const hostServer = import.meta.env.VITE_SERVER_HOST
     const [maintenanceSearch, setMaintenanceSearch] = useState('')
@@ -15,7 +14,7 @@ const SustainabilityReports = ({ socket }) => {
     const getMaintenanceList = async () => {
         setIsLoading(true)
         const fetchMaintenance = await axios.get(`${hostServer}/getSustainableData`)
-        const data = fetchMaintenance.data.result;
+        const data = fetchMaintenance.data;
         setMaintenanceData(data)
         setIsLoading(false)
     }
@@ -36,7 +35,7 @@ const SustainabilityReports = ({ socket }) => {
     }, [socket]);
     useEffect(() => {
         getMaintenanceList()
-    }, [isDelete])
+    }, [])
     const formatDate = (date) => {
         const formattedDate = new Date(date);
         formattedDate.setDate(formattedDate.getDate() + 1);

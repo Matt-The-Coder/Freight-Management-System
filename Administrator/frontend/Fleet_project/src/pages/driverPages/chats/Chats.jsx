@@ -3,7 +3,7 @@ import { useOutletContext } from "react-router-dom";
 const DriverChat = ({ socket }) => {
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
   const messageContainer = useRef()
-  const { u_username, u_role, u_profile_picture } = useOutletContext()
+  const { u_username, u_role, u_profile_picture, setIsLoading} = useOutletContext()
   const [messagesRecieved, setMessagesReceived] = useState([]);
   const [message, setMessage] = useState('');
   const [users, setUsers] = useState([])
@@ -61,6 +61,7 @@ const DriverChat = ({ socket }) => {
   }, [socket])
 
   useEffect(() => {
+    setIsLoading(true)
     // Last 100 messages sent in the chat room (fetched from the db in backend)
     socket.on('last_100_messages', (last100Messages) => {
       // Sort these messages by __createdtime__
@@ -68,7 +69,7 @@ const DriverChat = ({ socket }) => {
       setMessagesReceived((state) => [...state, ...last100Messages]);
       setScroll(!scroll)
     });
-
+    setIsLoading(false)
     return () => socket.off('last_100_messages');
   }, [socket]);
 

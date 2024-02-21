@@ -70,7 +70,7 @@ WFRoute.get('/weatherdata', async (req, res)=>
 WFRoute.get('/getSustainableData',  async (req, res)=> {
   try {
     const result = await db("Select * from sustainability_data")
-    res.json({result})
+    res.json(result)
   } catch (error) {
     console.log(error)
   }

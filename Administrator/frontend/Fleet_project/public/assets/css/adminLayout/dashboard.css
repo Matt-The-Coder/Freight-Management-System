@@ -633,17 +633,7 @@ body.dark{
    margin-bottom: 0;
 }
 
-.kpi-cards{
-    display: grid;
-    gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 
-}
-.kpi-card{
-    border-radius: 5px;
-    height: 300px;
-    background-color: var(--light);
-}
 @media screen and (max-width: 768px) {
     .adminSidebar{
         width: 200px;

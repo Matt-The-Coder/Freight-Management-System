@@ -17,7 +17,7 @@ const App = () => {
 
         <Route element={<AdminDashboardLayout socket={socket} />}>
           {/* Admin Side */}
-          <Route path='/admin/dashboard' element={<AdminDashboard />} />
+          <Route path='/admin/dashboard' element={<AdminDashboard socket={socket}/>} />
           <Route path='/admin/maintenance/add' element={<AddMaintenance />} />
           <Route path='/admin/maintenance/list' element={<MaintenanceList />} />
           <Route path='/admin/history/list' element={<AdminHistory socket={socket}/>} />
@@ -36,10 +36,10 @@ const App = () => {
           {/* Driver Side */}
 
           <Route path='/driver/chats' element={<DriverChat socket={socket}/>} />
-          <Route path='/driver/history' element={<History />} />
+          <Route path='/driver/history' element={<History socket={socket}/>} />
           <Route path='/driver/deliveries' element={<Deliveries />} />
           <Route path='/driver/deliveries/tracking/' element={<DeliveryTracking socket={socket}/>} />
-          <Route path='/driver/dashboard' element={<DriverDashboard />} />
+          <Route path='/driver/dashboard' element={<DriverDashboard socket={socket}/>} />
         </Route>
         <Route path='/' element={<LandingPage />} />
         <Route path='/login' element={<Login />} />

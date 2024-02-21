@@ -126,4 +126,21 @@ trackingRoute.get('/sustain-search', async (req, res)=>{
     console.log("error")
 }
 })
+
+
+trackingRoute.get('/get-all-trips', async (req, res)=>{
+  try {
+    const {user} = req.query
+    if(user){
+      const data = await db(`SELECT * FROM trips where t_driver = '${user}'`);
+      res.json(data)
+    }else{
+      const data = await db(`SELECT * FROM trips`);
+      res.json(data)
+    }
+
+} catch (error) {
+    console.log(error)
+}
+})
 module.exports = trackingRoute

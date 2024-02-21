@@ -27,7 +27,7 @@
 .switch-pager h4:nth-child(2){
   cursor: pointer;
   padding: 10px;
-  border: 1px solid var(--dark);
+  border-left: 2px  solid var(--light);
   font-weight: 700;
   background-color: var(--button);
   color: white;
