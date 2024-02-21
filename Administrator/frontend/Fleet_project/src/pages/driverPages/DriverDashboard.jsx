@@ -80,6 +80,19 @@ defaults.plugins.title.font.size = 25
             <div className="kpi-cards">
             <div className="trip-box">
                 <div className="trip-box-header">
+                    <h2>Overall Trips</h2>
+                </div>
+                <div className="trip-box-content">
+                    <div className="trip-box-logo">
+                    <i class='bx bx-car' id="trips-car-overall"></i>
+                    </div>
+                    <div className="trip-box-number">
+                        <h3>{deliveries.length}</h3>
+                    </div>
+                </div>
+            </div>
+            <div className="trip-box">
+                <div className="trip-box-header">
                     <h2>Completed Trips</h2>
                 </div>
                 <div className="trip-box-content">
@@ -131,116 +144,10 @@ defaults.plugins.title.font.size = 25
                 </div>
             </div>
 
-            {/* <div className="kpi-card">
-                <Bar data={{
-                    labels: ["Car1", "Car2", "Car3"],
-                    datasets:[
-                        {
-                        label:"Price",
-                        data:[50,60,70],
-                        backgroundColor: ["Blue", "Orange", "Yellow"],
-                        borderRadius:10
-                    },
-                    {
-                        label:"Fuel",
-                        data:[50,60,70]
-                    },
-                    ],
-                    
-                }}
-                options={{
-                    plugins: {
-                        title: {
-                            text:"Car Data"
-                        }
-                    }
-                }}/>
-            </div>
-            <div className="kpi-card">
-            <Doughnut data={{
-                    labels: ["Car1", "Car2", "Car3"],
-                    datasets:[
-                        {
-                        label:"Price",
-                        data:[50,60,70]
-                    },
-                    {
-                        label:"Fuel",
-                        data:[50,60,70]
-                    },
-                    ],
-
-                }}
-                options={{
-                    plugins: {
-                        title: {
-                            text:"Car Data"
-                        }
-                    }
-                }}/>
-            </div> */}
+           
 
             </div>
            
-           <div className="dashboard-charts">
-            <div className="dashboard-charts-container">
-                <div className="export">
-                    <h3>Export as:</h3>
-                    <button>PDF</button>
-                </div>
-                <div className="kpi-card">
-            <Line data={{
-                    labels: ["Car1", "Car2", "Car3"],
-                    datasets:[
-                    {
-                        label:"Price",
-                        data:[50,60,70]
-                    },
-                    {
-                        label:"Fuel",
-                        data:[20,10,90]
-                    },
-                    ],
-
-                }}
-                options={{
-                    plugins: {
-                        title: {
-                            text:"Annual Carbon Emissions"
-                        }
-                    }
-                }}/>
-            </div>
-
-            </div>
-            <div className="dashboard-charts-container">
-            {/* <div className="kpi-card">
-            <Bar data={{
-                    labels: ["Car1", "Car2", "Car3"],
-                    datasets:[
-                        {
-                        label:"Price",
-                        data:[50,60,70]
-                    },
-                    {
-                        label:"Fuel",
-                        data:[50,60,70]
-                    },
-                    ],
-
-                }}
-                options={{
-                    plugins: {
-                        title: {
-                            text:"Car Data"
-                        }
-                    }
-                }}/>
-            </div> */}
-                </div>
-
-
-           </div>
 
             </div>
 

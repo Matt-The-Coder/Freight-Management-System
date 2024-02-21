@@ -13,7 +13,6 @@ const AdminDashboard = ({socket}) => {
     const { u_name, theme, setIsLoading } = useOutletContext()
     const [deliveries, setDeliveries] = useState([])
     const [sustainData, setSustainData] = useState([])
-    const emissionTable = useRef(null)
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     useEffect(()=>{
         if(theme == "light")
@@ -41,7 +40,18 @@ const AdminDashboard = ({socket}) => {
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
         pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save("shipping_label.pdf");
+        pdf.save("annual_emission_chart.pdf");
+      
+    }
+    const downloadFuel = async () =>{
+        const pdf = new jsPDF("portrait", "pt", "a4");
+        const data = await html2canvas(document.querySelector("#fuelTable"));
+        const img = data.toDataURL("image/png");  
+        const imgProperties = pdf.getImageProperties(img);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProperties.height * pdfWidth) / imgProperties.width;
+        pdf.addImage(img, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("annual_fuel_chart.pdf");
       
     }
     const getDeliveries = async () => {
@@ -64,11 +74,27 @@ const AdminDashboard = ({socket}) => {
             setIsLoading(false)
             setSustainData(result)
 
+
         } catch (error) {
             console.log(error)
         }
     }
-
+    const getTotalSustainability = (type) =>{
+        let total = 0
+        if(type == "fuel"){
+            sustainData.fuelConsumption?.forEach((e)=>{
+                let parsed = e.total_fuel_consumption
+                total += parsed
+            })
+        }else{
+            sustainData.carbonEmissions?.forEach((e)=>{
+                let parsed = e.total_emission
+                total += parsed
+            })
+        }
+        
+        return total.toFixed(2)
+    }
     const getNumberTrips = (type) => {
         let numTrips = ""
         switch(type){
@@ -116,6 +142,19 @@ defaults.plugins.title.font.size = 25
                 </div>
             </div>
             <div className="kpi-cards">
+            <div className="trip-box">
+                <div className="trip-box-header">
+                    <h2>Overall Trips</h2>
+                </div>
+                <div className="trip-box-content">
+                    <div className="trip-box-logo">
+                    <i class='bx bx-car' id="trips-car-overall"></i>
+                    </div>
+                    <div className="trip-box-number">
+                        <h3>{deliveries.length}</h3>
+                    </div>
+                </div>
+            </div>
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Completed Trips</h2>
@@ -168,6 +207,33 @@ defaults.plugins.title.font.size = 25
                     </div>
                 </div>
             </div>
+            <div className="trip-box">
+                <div className="trip-box-header">
+                    <h2>Total Carbon Emissions</h2>
+                </div>
+                <div className="trip-box-content">
+                    <div className="trip-box-logo">
+                    <i class='bx bx-wind' id="trips-car-emission"></i>
+                    </div>
+                    <div className="trip-box-number">
+                        <h3>{getTotalSustainability("emission")}g</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div className="trip-box">
+                <div className="trip-box-header">
+                    <h2>Total Fuel Consumption</h2>
+                </div>
+                <div className="trip-box-content">
+                    <div className="trip-box-logo">
+                    <i class='bx bx-gas-pump' id="trips-car-fuel"></i>
+                    </div>
+                    <div className="trip-box-number">
+                        <h3>{getTotalSustainability("fuel")}l</h3>
+                    </div>
+                </div>
+            </div>
 
 
             </div>
@@ -178,13 +244,13 @@ defaults.plugins.title.font.size = 25
                     <h3>Export as:</h3>
                     <button onClick={downloadEmission}>PDF</button>
                 </div>
-                <div className="kpi-card" ref={emissionTable} id="emissionTable">
-            <Line  data={{
+                <div className="kpi-card" >
+            <Line id="emissionTable" data={{
                     labels: ["January","February","March","April","May","June","July","August","September","October","November","December"],
                     datasets:[
                     {
                         label:"Emissions in grams",
-                        data:[50,60,70]
+                        data:sustainData.carbonEmissions?.map((e)=>{return e.total_emission})
                     },
                     ],
 
@@ -199,7 +265,32 @@ defaults.plugins.title.font.size = 25
             </div>
 
             </div>
+            <div className="dashboard-charts-container">
+                <div className="export">
+                    <h3>Export as:</h3>
+                    <button onClick={downloadFuel}>PDF</button>
+                </div>
+                <div className="kpi-card" >
+            <Line  id="fuelTable"  data={{
+                    labels: ["January","February","March","April","May","June","July","August","September","October","November","December"],
+                    datasets:[
+                    {
+                        label:"Fuel Usage in Liters",
+                        data:sustainData.fuelConsumption?.map((e)=>{return e.total_fuel_consumption})
+                    },
+                    ],
 
+                }}
+                options={{
+                    plugins: {
+                        title: {
+                            text:"Annual Fuel Consumption"
+                        }
+                    }
+                }}/>
+            </div>
+
+            </div>
 
 
            </div>

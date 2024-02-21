@@ -69,8 +69,30 @@ WFRoute.get('/weatherdata', async (req, res)=>
 
 WFRoute.get('/getSustainableData',  async (req, res)=> {
   try {
-    const result = await db("Select * from sustainability_data")
-    res.json(result)
+    let carbonArray = ""
+    let carbonEmissions = []
+    let fuelArray = ""
+    let fuelConsumption = []
+    for(let i=1; i<13; i++){
+      carbonArray = await db(`SELECT SUM(sd_carbon_emission) AS total_emission
+       from sustainability_data where MONTH(sd_modified_date) = ${i}`)
+      carbonEmissions.push(carbonArray[0])
+    }
+    for(let i=1; i<13; i++){
+      fuelArray = await db(`SELECT SUM(sd_fuelconsumption) AS total_fuel_consumption
+       from sustainability_data where MONTH(sd_modified_date) = ${i}`)
+      fuelConsumption.push(fuelArray[0])
+    }
+    res.json({carbonEmissions, fuelConsumption})
+  } catch (error) {
+    console.log(error)
+  }
+})
+
+WFRoute.get('/getSustainableReports',  async (req, res)=> {
+  try {
+    const data = await db("Select * from sustainability_data")
+    res.json(data)
   } catch (error) {
     console.log(error)
   }

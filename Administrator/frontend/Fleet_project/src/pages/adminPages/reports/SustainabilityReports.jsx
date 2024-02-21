@@ -13,7 +13,7 @@ const SustainabilityReports = ({ socket }) => {
     const deliveryTable = useRef(null)
     const getMaintenanceList = async () => {
         setIsLoading(true)
-        const fetchMaintenance = await axios.get(`${hostServer}/getSustainableData`)
+        const fetchMaintenance = await axios.get(`${hostServer}/getSustainableReports`)
         const data = fetchMaintenance.data;
         setMaintenanceData(data)
         setIsLoading(false)
@@ -122,7 +122,7 @@ const SustainabilityReports = ({ socket }) => {
                         </thead>
                         <tbody>
                             {
-                                maintenanceData.map((e, i) => {
+                                maintenanceData?.map((e, i) => {
                                     return (
                                         <tr key={i}>
                                             <td>{e?.sd_id}</td>

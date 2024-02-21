@@ -31,12 +31,18 @@
     place-items: center;
 }
 .kpi-cards .trip-box .trip-box-content .trip-box-logo :is(#trips-car-pending,#trips-car-ongoing,
-#trips-car-completed, #trips-car-unsuccessful ){
+#trips-car-completed, #trips-car-unsuccessful, #trips-car-overall, #trips-car-emission, #trips-car-fuel ){
     background-color: var(--dark);
     color: var(--light);
     font-size: 40px;
     padding: 15px;
     border-radius: 10px;
+}
+.kpi-cards .trip-box .trip-box-content .trip-box-logo #trips-car-emission{
+    background-color: var(--primary);
+}
+.kpi-cards .trip-box .trip-box-content .trip-box-logo #trips-car-fuel{
+    background-color: var(--primary);
 }
 .kpi-cards .trip-box .trip-box-content .trip-box-logo #trips-car-pending{
     background-color: #9E9E9E;
@@ -49,6 +55,9 @@
 }
 .kpi-cards .trip-box .trip-box-content .trip-box-logo #trips-car-unsuccessful{
     background-color: #D32F2F;
+}
+.kpi-cards .trip-box .trip-box-content .trip-box-logo #trips-car-overall{
+    background-color: var(--primary);
 }
 .kpi-cards .trip-box .trip-box-content .trip-box-number{
     width: 70%;
@@ -66,11 +75,12 @@
 
 .dashboard-charts{
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    justify-content: center;
+    gap: 10px;
 }
 .dashboard-charts .dashboard-charts-container{
     padding: 40px;
+    width: 50%;
     background-color: var(--light);
     border-radius: 10px;
     display: flex;
@@ -96,7 +106,17 @@
     box-shadow: 1px 1px 2px 1px var(--dark);
     border-radius: 10px;
 }
-
+@media screen and (max-width:877px) {
+    .dashboard-charts .dashboard-charts-container .export{
+        justify-content: center;
+    }
+    .dashboard-charts{
+        flex-direction: column;
+    }
+    .dashboard-charts .dashboard-charts-container{
+        width: 100%;
+    }
+}
 @media screen and (max-width:567px) {
     .dashboard-charts .dashboard-charts-container{
         padding: 10px;
@@ -107,5 +127,11 @@
     .kpi-card{
         padding: 15px;
         overflow: auto;
+    }
+    .dashboard-charts{
+        flex-direction: column;
+    }
+    .dashboard-charts .dashboard-charts-container{
+        width: 100%;
     }
 }

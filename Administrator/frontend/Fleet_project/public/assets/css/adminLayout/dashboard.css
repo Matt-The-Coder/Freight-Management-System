@@ -16,6 +16,10 @@
     --button: #363949
 }
 
+#search-btn, #theme-toggle{
+    visibility: hidden;
+}
+
 .DashboardLayout *{
     margin: 0;
     padding: 0;

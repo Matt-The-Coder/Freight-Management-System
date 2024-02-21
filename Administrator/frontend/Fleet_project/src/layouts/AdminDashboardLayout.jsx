@@ -150,20 +150,20 @@ const AdminDashboardLayout = ({socket})=>{
         };
         
     
-        // Function to handle search button click
-        const handleSearchBtnClick = (e) => {
-          if (window.innerWidth < 576) {
-            e.preventDefault(); // Fixed a missing function call 'preventDefault'
-            const searchForm = document.querySelector('.content nav form');
-            searchForm.classList.toggle('show');
-            const searchBtnIcon = document.querySelector('.content nav form .form-input button .bx');
-            if (searchForm.classList.contains('show')) {
-              searchBtnIcon.classList.replace('bx-search', 'bx-x');
-            } else {
-              searchBtnIcon.classList.replace('bx-x', 'bx-search');
-            }
-          }
-        };
+        // // Function to handle search button click
+        // const handleSearchBtnClick = (e) => {
+        //   if (window.innerWidth < 576) {
+        //     e.preventDefault(); // Fixed a missing function call 'preventDefault'
+        //     const searchForm = document.querySelector('.content nav form');
+        //     searchForm.classList.toggle('show');
+        //     const searchBtnIcon = document.querySelector('.content nav form .form-input button .bx');
+        //     if (searchForm.classList.contains('show')) {
+        //       searchBtnIcon.classList.replace('bx-search', 'bx-x');
+        //     } else {
+        //       searchBtnIcon.classList.replace('bx-x', 'bx-search');
+        //     }
+        //   }
+        // };
 
         // // Function to handle window resize
         // const handleWindowResize = () => {
@@ -203,8 +203,8 @@ const AdminDashboardLayout = ({socket})=>{
         const menuBar = document.querySelector('.content nav .bx.bx-menu');
         menuBar.addEventListener('click', handleMenuBarClick);
     
-        const searchBtn = document.querySelector('.content nav form .form-input button');
-        searchBtn.addEventListener('click', handleSearchBtnClick);
+        // const searchBtn = document.querySelector('.content nav form .form-input button');
+        // searchBtn.addEventListener('click', handleSearchBtnClick);
     
         // window.addEventListener('resize', handleWindowResize);
     
@@ -217,7 +217,7 @@ const AdminDashboardLayout = ({socket})=>{
             item.removeEventListener('click', handleSideMenuItemClick);
           });
           menuBar.removeEventListener('click', handleMenuBarClick);
-          searchBtn.removeEventListener('click', handleSearchBtnClick);
+          // searchBtn.removeEventListener('click', handleSearchBtnClick);
           // window.removeEventListener('resize', handleWindowResize);
           toggler.removeEventListener('change', handleThemeToggle);
         };
@@ -472,7 +472,7 @@ const AdminDashboardLayout = ({socket})=>{
     {/* Navbar */}
     <nav >
       <i className="bx bx-menu" />
-      <form action="#">
+      <form action="#" id='search-btn'>
         <div className="form-input">
           <input type="search" placeholder="Search..." />
           <button className="search-btn" type="submit">
