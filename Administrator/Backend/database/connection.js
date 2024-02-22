@@ -17,10 +17,9 @@ const db = mysql.createPool({
 
 // const db = mysql.createPool({
 //     host: 'localhost',
-//     user:'sust_Admin',
-//     password:'admin',
-//     database: "sust_FreightDB"
-//     // port: "3306"
+//     user:'sust_matt',
+//     password:'123',
+//     database: "sust_fleet"
 // })
 
 module.exports = async (query) => {

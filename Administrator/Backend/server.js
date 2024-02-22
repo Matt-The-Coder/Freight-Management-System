@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT
 const origin = process.env.ORIGIN
+const origin2 = process.env.ORIGIN2
 const http = require('http');
 const { Server } = require('socket.io')
 const path = require('path')
@@ -19,7 +20,7 @@ const server = http.createServer(app);
 const io = new Server(server,
   {
     cors: {
-      origin: [origin],
+      origin: [origin, origin2],
       methods: ["POST", "GET", "DELETE", "PUT"]
     }
   })
@@ -37,7 +38,7 @@ app.use(session({
 }))
 
 var corsOptions = {
-  origin: [origin],
+  origin: [origin, origin2],
   methods: ["POST", "GET", "DELETE", "PUT"],
   credentials: true,
   optionsSuccessStatus: 200
@@ -88,8 +89,8 @@ io.on('connection', async (socket) =>  {
   })
 
   socket.on('deliveryUpdate', (data) =>{
-    const {deliveryState} = data
-    io.emit('deliveryUpdate', deliveryState)
+    const {deliveryState, trip_id} = data
+    io.emit('deliveryUpdate', {deliveryState, trip_id})
   })
 
 

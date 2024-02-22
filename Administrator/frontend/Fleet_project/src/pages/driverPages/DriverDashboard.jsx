@@ -24,8 +24,10 @@ const DriverDashboard = ({socket}) => {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-all-trips?user=${u_username}`)
             const result = data.data
-            setIsLoading(false)
+            console.log(result)
             setDeliveries(result)
+            setIsLoading(false)
+
 
         } catch (error) {
             console.log(error)
@@ -37,13 +39,14 @@ const DriverDashboard = ({socket}) => {
         switch(type){
             case "Pending": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
-            case "Unsuccessful ": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
+            case "Unsuccessful": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
-            case "Completed ": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
+            case "Completed": {numTrips = deliveries.filter((e)=>{return e.t_trip_status == type}) 
+        console.log(numTrips)}
             break;
             case "In Progress": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
-            default:console.log("Hello")
+            default:null
         }
         return numTrips.length;
     }

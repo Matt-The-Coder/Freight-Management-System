@@ -14,7 +14,9 @@ trackRoute.get('/retrieve-trip-details', async (req, res)=>
         else{
             return res.json({msg: "No Result Found!"})
         }
+
     } catch (error) {
+        console.log(error)
         return res.json({msg: "Database is unavailable right now!"})
     }
 })

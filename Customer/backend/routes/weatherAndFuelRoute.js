@@ -1,6 +1,7 @@
 const express = require('express')
 const WFRoute = express.Router()
 const axios = require('axios')
+const db = require('../database/connection')
 // Calculate Emissions and Consumptions
 WFRoute.get('/calculateFuelConsumptionWithPrice', (req, res)=>
 {
@@ -30,4 +31,15 @@ WFRoute.get('/weatherdata', async (req, res)=>
     res.json({weatherData:weatherData.data.data[0], weatherAlert:weatherAlert.data})
 })
 
+WFRoute.get('/get-vehicle-stats/:id', async (req, res)=> 
+{   
+    const {id} = req.params
+    try {
+      const result = await db(`Select * from sustainability_data where sd_trip_id = ${id}`)
+      res.json(result)
+    } catch (error) {
+      console.log(error)
+    }
+
+})
 module.exports = WFRoute

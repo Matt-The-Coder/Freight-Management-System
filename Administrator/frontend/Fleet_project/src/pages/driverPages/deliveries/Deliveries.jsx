@@ -172,10 +172,10 @@ const DriverDeliveries = () => {
                 </div>
                 {delivery.isShow && (
                   <>
-                    <div className="odometer">
+                    {/* <div className="odometer">
                       <p>Set Vehicle Odometer:</p>
                       <input type="text" />
-                    </div>
+                    </div> */}
                     <div className="trips-button">
                       <a href={`/driver/deliveries/tracking?trip_id=${deliveryId}&miles=${convertMiles(travelData[i].distance)}&weight=${t_totalweight}`}>
                         <button>View On Map</button>

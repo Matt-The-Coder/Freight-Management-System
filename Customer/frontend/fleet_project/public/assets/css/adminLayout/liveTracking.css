@@ -16,6 +16,7 @@ html,body {
   --warning: #FBC02D;
   --light-warning: #FFF2C6;
   --success: #1976D2;
+  --button: #363949;
   --light-success: #BBF7D0;
 }
 .LiveTracking *{
@@ -52,7 +53,8 @@ html{
   body.dark{
       --light: #181a1e;
       --grey: #25252c;
-      --dark: #fbfbfb
+      --dark: #fbfbfb;
+      --button: #1976D2;
   }
 }
 :is(.tracking-details) :is(button) {
@@ -96,6 +98,34 @@ h4{
   background-color: var(--light);
   z-index: 1991;
   padding: 24px;
+}
+
+.switch-pager{
+  width: auto;
+  display: flex;
+
+}
+.switch-pager .switch-pager-content{
+  height: auto;
+  width: 100%;
+  border-radius: 10px;
+}
+.switch-pager h4:first-child{
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid var(--dark);
+  font-weight: 700;
+  background-color: var(--button);
+  color: white;
+
+}
+.switch-pager h4:nth-child(2){
+  cursor: pointer;
+  padding: 10px;
+  border-left: 2px  solid var(--light);
+  font-weight: 700;
+  background-color: var(--button);
+  color: white;
 }
 .trackingLogo{
   display: flex;
@@ -252,16 +282,16 @@ button{
 }
 
 
-  .transportDetails {
-    position: fixed;
-    height: 100px;
-    width: 100px;
-    bottom: -70px;
-    right: 100px;
-  }
-  .transportDetails :is(p, h3){
-    color: var(--dark-grey);
-  }
+.transportDetails {
+  position: fixed;
+  height: 100px;
+  width: 100px;
+  bottom: -70px;
+  right: 100px;
+}
+.transportDetails :is(p, h3){
+  color: var(--dark-grey);
+}
   #showDetail, #showInfo{
     color: var(--primary);
     font-size: 40px;
@@ -305,7 +335,7 @@ button{
   }
   .transportCard {
     height: 200px;
-    width: 700px;
+    width: 800px;
     background-color: var(--light-primary);
     position: fixed;
     right: 30px;
@@ -328,16 +358,15 @@ button{
   }
   #speedometer{
     display: flex;
-    gap: 8%;
+    gap: 5%;
   }
-  .transportData{
-    display: flex;
-    gap: 50px;
+  .vehicleData p, .transportData p{
+    color: var(--dark);
+    font-size: 14px;
   }
   .vehicleData{
     width: 48%;
     display: flex;
-    justify-content: center;
     flex-direction: column;
   }
   .speedometer{
@@ -505,5 +534,111 @@ button{
     .trackingFooter .footer p{
       font-size: 12px;
     }
+    .tracking-details{
+      padding: 0px;
+      height: auto;
+      border: 1px solid var(--dark);
+      border-radius: 10px;
+    }
+    .instruction-container{
+      display: flex;
+      width: 100%;
+      justify-content: center;
+    }
+    .map-container{
+      height: 80vh;
+    }
+    .mapboxgl-ctrl-directions.mapboxgl-ctrl{
+      width: 100vw;
+      position: relative;
+      min-width: 90% !important;
+    }
+    .detail-slide{
+      position: fixed;
+      bottom: -20px;
+      left: -0px;
+      width: 100vw;
+      height: 10vh;
+      background-color: var(--light);
+      box-shadow: -3px -22px 20px -28px rgba(0,0,0,0.45);
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+      transition: height ease-in-out 0.8s;
+      z-index: 100;
+    }
+    .detail-slide.open{
+      height: 60vh;
+      overflow: auto;
+      z-index: 100;
+      transition: height ease-in-out 0.8s;
+      position: fixed;
+      bottom: -1px;
+      left: -0px;
+      width: 100vw;
+      box-shadow: -3px -22px 20px -28px rgba(0,0,0,0.45);
+      border-top-right-radius: 5px;
+      border-top-left-radius: 5px;
+      transition: height ease-in-out 0.8s;
+      background-color: var(--light);
+    }
+    .arrow-up{
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      background-color: var(--light);
+    }
+    #arrow-up{
+      margin-top: 20px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .switch-pager{
+      background-color: var(--light);
+      border-radius: 10px;
+    }
+    .transportCard{
+      position: static;
+      display: flex;
+      flex-direction: column;
+      width: auto;
+      height: auto;
+    }
+    .transportCard .card{
+      height: auto;
+      width: auto;
+      padding: 15px;
+      border-top: 1px solid var(--dark);
+    }
+    .transportCard .card .vehicleData{
+      width: 100%;
+  }
+  .trip-status{
+    margin-bottom: 5%;
+  }
+  .trip-status form{
+    gap: 5%;
+  }
+  .trip-status h3{
+    font-size: 20px;
+    font-weight: 600;
+  }
+  .trip-status :is(select, button){
+    padding: 5px;
+    border: 1px solid var(--dark);
+    border-radius: 5px;
+  }
+  .trip-status button{
+    background-color: var(--button);
+    color: white;
+  }
+  .trip-status select, .trip-status option{
+    color: black;
+  }
+  .trip-status .status-form{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 5%;
+  }
 
   }

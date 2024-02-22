@@ -334,7 +334,7 @@ const DeliveryTracking = ({socket}) => {
       const result = data.data.message
       setIsLoading(false)
       alert(result)
-      socket.emit('deliveryUpdate', {deliveryState})
+      socket.emit('deliveryUpdate', {deliveryState, trip_id })
       if (deliveryState !== "In Progress") {
         nav('/driver/deliveries')
       }

@@ -100,13 +100,13 @@ const AdminDashboard = ({socket}) => {
         switch(type){
             case "Pending": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
-            case "Unsuccessful ": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
+            case "Unsuccessful": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
-            case "Completed ": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
+            case "Completed": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
             case "In Progress": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
-            default:console.log("Hello")
+            default:null
         }
         return numTrips.length;
     }

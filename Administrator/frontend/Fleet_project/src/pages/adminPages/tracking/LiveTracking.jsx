@@ -85,8 +85,9 @@ const LiveTracking = ({socket}) => {
 
   useEffect(() => {
     socket.on('deliveryUpdate', (data) => {
+      const {deliveryState} = data
       alert("Delivery Status Updated")
-      if(data !== "In Progress"){
+      if(deliveryState !== "In Progress"){
         nav('/admin/tracking/trips/ongoing')
       }
 
