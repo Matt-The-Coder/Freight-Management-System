@@ -86,7 +86,7 @@ const DriverDeliveries = () => {
 
   useEffect(() => {
     getDeliveries();
-  }, []);
+  }, [username]);
 
   return (
     <div className="DriverDeliveries">

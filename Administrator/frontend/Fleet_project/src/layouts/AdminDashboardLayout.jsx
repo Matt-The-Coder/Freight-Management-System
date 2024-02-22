@@ -266,22 +266,22 @@ const AdminDashboardLayout = ({socket})=>{
     </Link>
     <ul className="side-menu">
       {access.a_admin_board==1 && 
-      <li>
+      <li onClick={closeSidebar}>
         <Link to="/admin/dashboard">
           <i className="bx bxs-dashboard" />
           Dashboard
         </Link>
       </li>}
       {access.a_driver_board==1 && 
-      <li>
+      <li onClick={closeSidebar}>
         <Link to="/driver/dashboard">
           <i className="bx bxs-dashboard" />
           Dashboard
         </Link>
       </li>}
       {access.a_deliveries ==1 && 
-            <li id='deliveries' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
-            <Link to="/driver/deliveries">
+            <li id='deliveries' onClick={(e)=>{toggleDropdown(e.currentTarget)}} >
+            <Link to="/driver/deliveries" onClick={closeSidebar}>
             <i className='bx bx-package' ></i>
               Deliveries
             </Link>
@@ -290,7 +290,7 @@ const AdminDashboardLayout = ({socket})=>{
       {access.a_history ==1 && 
      
             <li id='history' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
-            <Link to="/driver/history">
+            <Link to="/driver/history" onClick={closeSidebar}>
             <i className='bx bx-history' ></i>
               History
             </Link>
@@ -307,19 +307,19 @@ const AdminDashboardLayout = ({socket})=>{
       </>)}
       {access.a_maintenance ==1 && ( <>
             <li id='maintenance' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
-            <Link to="#">
+            <Link to="#" >
             <i className='bx bx-wrench'></i>
               Maintenance
             </Link>
           </li>
                 {maintenanceDropdown && (
                   <>
-                <li>
+                <li onClick={closeSidebar}>
                   <Link to="/admin/maintenance/list"  id='subMenu'>
                   Maintenance List
                   </Link> 
                 </li >
-                <li >
+                <li onClick={closeSidebar}>
                 <Link to="/admin/maintenance/add" id='subMenu'>
                 Add Maintenance
                 </Link> 
@@ -338,7 +338,7 @@ const AdminDashboardLayout = ({socket})=>{
           </li>
                 {adminHistory && (
                   <>
-                <li>
+                <li onClick={closeSidebar}>
                   <Link to="/admin/history/list"  id='subMenu'>
                   Deliveries
                   </Link> 
@@ -360,12 +360,12 @@ const AdminDashboardLayout = ({socket})=>{
       {
         fuel && (
           <>
-          <li>
+          <li onClick={closeSidebar}>
             <Link to="/admin/fuel/manage"  id='subMenu'>
             Fuel Management
             </Link> 
           </li >
-          <li >
+          <li onClick={closeSidebar}>
           <Link to="/admin/fuel/add" id='subMenu'>
           Add Fuel
           </Link> 
@@ -385,12 +385,12 @@ const AdminDashboardLayout = ({socket})=>{
       </li>
       {trackingDropdown && (
         <>
-      <li >
+      <li onClick={closeSidebar}>
         <Link to="/admin/tracking/trips/upcoming" id='subMenu'>
         Upcoming Trips
         </Link> 
       </li>
-      <li >
+      <li onClick={closeSidebar}>
       <Link to="/admin/tracking/trips/ongoing" id='subMenu'>
        OnGoing Trips
       </Link> 
@@ -409,12 +409,12 @@ const AdminDashboardLayout = ({socket})=>{
       </li>
       {reportDropdown && (
         <>
-            <li >
+            <li onClick={closeSidebar}>
       <Link to="/admin/reports/sustainability" id='subMenu'>
        Environmental
       </Link> 
     </li>
-      <li >
+      <li onClick={closeSidebar}>
       <Link to="/admin/reports/trips" id='subMenu'>
        Deliveries
       </Link> 
@@ -450,7 +450,7 @@ const AdminDashboardLayout = ({socket})=>{
       </>)}
 
       <li id='settings' onClick={(e)=>{toggleDropdown(e.currentTarget)}}>
-        <Link to="/account/settings">
+        <Link to="/account/settings" onClick={closeSidebar}>
           <i className="bx bx-cog" />
           Settings
         </Link>

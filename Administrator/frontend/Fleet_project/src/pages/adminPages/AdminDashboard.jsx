@@ -71,6 +71,7 @@ const AdminDashboard = ({socket}) => {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/getSustainableData`)
             const result = data.data
+            console.log(result)
             setIsLoading(false)
             setSustainData(result)
 
@@ -113,7 +114,7 @@ const AdminDashboard = ({socket}) => {
     useEffect(()=>{
         getDeliveries();
         getSustainData();
-    },[])
+    },[u_name])
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
                 alert("Delivery Status Updated")
@@ -148,7 +149,7 @@ defaults.plugins.title.font.size = 25
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-overall"></i>
+                    <i className='bx bx-car' id="trips-car-overall"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{deliveries.length}</h3>
@@ -161,7 +162,7 @@ defaults.plugins.title.font.size = 25
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-completed"></i>
+                    <i className='bx bx-car' id="trips-car-completed"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getNumberTrips("Completed")}</h3>
@@ -174,7 +175,7 @@ defaults.plugins.title.font.size = 25
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-unsuccessful"></i>
+                    <i className='bx bx-car' id="trips-car-unsuccessful"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getNumberTrips("Unsuccessful")}</h3>
@@ -187,7 +188,7 @@ defaults.plugins.title.font.size = 25
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-pending"></i>
+                    <i className='bx bx-car' id="trips-car-pending"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getNumberTrips("Pending")}</h3>
@@ -200,7 +201,7 @@ defaults.plugins.title.font.size = 25
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-ongoing"></i>
+                    <i className='bx bx-car' id="trips-car-ongoing"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getNumberTrips("In Progress")}</h3>
@@ -213,7 +214,7 @@ defaults.plugins.title.font.size = 25
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-wind' id="trips-car-emission"></i>
+                    <i className='bx bx-wind' id="trips-car-emission"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getTotalSustainability("emission")}g</h3>
@@ -227,7 +228,7 @@ defaults.plugins.title.font.size = 25
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-gas-pump' id="trips-car-fuel"></i>
+                    <i className='bx bx-gas-pump' id="trips-car-fuel"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getTotalSustainability("fuel")}l</h3>

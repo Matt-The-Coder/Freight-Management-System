@@ -24,6 +24,9 @@
   color: white;
 
 }
+.switch-pager h4:first-child:hover, .switch-pager h4:nth-child(2):hover {
+  background-color: #484d68;
+}
 .switch-pager h4:nth-child(2){
   cursor: pointer;
   padding: 10px;
