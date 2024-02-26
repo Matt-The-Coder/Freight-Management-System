@@ -1,21 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import {useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import '/public/assets/css/adminLayout/adminChat.css'
 const AdminChat = ({ socket }) => {
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
-  const { u_username, u_role, u_profile_picture } = useOutletContext()
+  const messageContainer = useRef()
+  const { u_username, u_role, u_profile_picture, setIsLoading} = useOutletContext()
   const [messagesRecieved, setMessagesReceived] = useState([]);
   const [message, setMessage] = useState('');
   const [users, setUsers] = useState([])
-  const [userName, setUserName] = useState('')
   const [scroll, setScroll] = useState(false)
-  const messageContainer = useRef()
-  useEffect(()=>{
-    if(u_username !== undefined){
-      setUserName(u_username)
-    }
-  },[u_username])
-
   useEffect(()=>{
     messageContainer.current.scrollTop = messageContainer.current.scrollHeight
   }, [scroll])
@@ -53,28 +46,31 @@ const AdminChat = ({ socket }) => {
 
   // Send users to the server
   useEffect(() => {
-    if(userName !== ''){
-      socket.emit('active', { username: userName })
+    if(u_username !== undefined){
+      socket.emit('active', { username: u_username })
     }
+    setScroll(!scroll)
     return () => socket.off('active')
-  }, [userName])
+  }, [u_username,socket])
 
   // Get All Current Users
   useEffect(() => {
     socket.on('usersActive', (activeUsers) => {
       setUsers(activeUsers)
     })
-    return () => socket.off('usersActive')
+    setScroll(!scroll)
   }, [socket])
 
   useEffect(() => {
+    setIsLoading(true)
     // Last 100 messages sent in the chat room (fetched from the db in backend)
     socket.on('last_100_messages', (last100Messages) => {
       // Sort these messages by __createdtime__
       last100Messages = sortMessagesByDate(last100Messages);
       setMessagesReceived((state) => [...state, ...last100Messages]);
+      setScroll(!scroll)
     });
-    setScroll(!scroll)
+    setIsLoading(false)
     return () => socket.off('last_100_messages');
   }, [socket]);
 
@@ -90,7 +86,7 @@ const AdminChat = ({ socket }) => {
     return date.toLocaleString();
   }
   return (
-    <div className="AdminChat">
+    <div className="DriverChat">
       <div className="AdminMessage">
         <div className="active">
           <h4> <span>Currently Active</span> </h4>

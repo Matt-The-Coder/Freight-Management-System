@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import axios from 'axios';
 import '/public/assets/css/adminLayout/deliveries.css';
 
-const DriverDeliveries = () => {
+const Inprogress = () => {
   const hostServer = import.meta.env.VITE_SERVER_HOST;
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
   const { u_username: username, setIsLoading, u_id: id } = useOutletContext();
@@ -56,7 +56,7 @@ const DriverDeliveries = () => {
       setIsLoading(true);
       const data = await axios.get(`${hostServer}/get-trip?username=${username}`);
       const result = data.data;
-      const pendingTrips = result.filter((e)=>{ return e.t_trip_status == "Pending"})
+      const pendingTrips = result.filter((e)=>{ return e.t_trip_status == "In Progress"})
       const travelRoutes = await Promise.all(pendingTrips.map(async (e) => {
         const travelTime = await axios.post(`${hostServer}/getDirections`, {
           fLongitude: e.t_trip_fromlog,
@@ -101,7 +101,7 @@ const DriverDeliveries = () => {
             /
             <li>
               <a href="#" className="active">
-                Pending
+                In Progress
               </a>
             </li>
           </ul>
@@ -193,4 +193,4 @@ const DriverDeliveries = () => {
   );
 };
 
-export default DriverDeliveries;
+export default Inprogress;

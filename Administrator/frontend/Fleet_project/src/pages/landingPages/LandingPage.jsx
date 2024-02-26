@@ -191,7 +191,7 @@ const LandingPage = () =>
       <div className="nav__toggle" id="nav-toggle">
         <i className="bx bx-grid-alt" />
       </div>
-      <a href="#" className="button button__header">
+      <a href="https://oms.kargadafreightservices.com" className="button button__header">
         Order Now!
       </a>
     </nav>

@@ -2,12 +2,32 @@ const express = require('express')
 const db = require('../database/connection')
 const mapboxRoute = express.Router()
 const axios = require('axios')
+function convertTime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+  
+    const formattedTime = `${hours}h ${minutes}m`;
+    return formattedTime;
+  }
 
+  function convertMiles (meters) {
+    const miles = 0.00062137 * meters
+    return miles
+  }
+  function convertKm(meters) {
+    const kilometers = meters / 1000;
+    return kilometers.toFixed(2);
+  }
 mapboxRoute.post("/getDirections", async (req, res) => {
-    const { fLongitude, fLatitude, dLongitude, dLatitude, mapboxToken } = req.body
+    const { fLongitude, fLatitude, dLongitude, dLatitude, mapboxToken, id } = req.body
     try {
-        const result = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${fLongitude},${fLatitude};${dLongitude},${dLatitude}?access_token=${mapboxToken}`)
+        const result = await axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving-traffic/${fLongitude},
+        ${fLatitude};${dLongitude},${dLatitude}?access_token=${mapboxToken}`)
+
+            await db(`Update trips set t_totaldistance = ${convertMiles(result.data.routes[0].distance)},
+            t_totaldrivetime = '${convertTime(result.data.routes[0].duration)}' where t_id = ${id}`)
         res.json(result.data)
+
     } catch (error) {
         console.log(error)
         res.json({ message: error })

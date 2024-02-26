@@ -5,6 +5,8 @@ import axios from 'axios'
 const DriverHistory = () => {
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     const { u_username: username, setIsLoading, u_id: id } = useOutletContext()
+    const [filter, setFilter] = useState("all")
+    const [deliveriesStorage, setDeliveriesStorage] = useState([])
     const [deliveries, setDeliveries] = useState([])
     const getDeliveries = async () => {
         try {
@@ -12,6 +14,7 @@ const DriverHistory = () => {
             const data = await axios.get(`${hostServer}/get-completed-trip?username=${username}`)
             const result = data.data.reverse()
             setIsLoading(false)
+            setDeliveriesStorage(result)
             setDeliveries(result)
 
         } catch (error) {
@@ -28,6 +31,11 @@ const DriverHistory = () => {
         return formattedDate;
       };
 
+      function convertKm(mile) {
+        const kilometers = 1.60934 * mile;
+        return kilometers.toFixed(2);
+      }
+
     return (
         <div className="DriverHistory">
             <div className="adminHeader">
@@ -38,10 +46,35 @@ const DriverHistory = () => {
                             History
                         </a></li>
                         /
-                        <li><a href="#" className="active">List</a></li>
+                        <li><a href="#" className="active">Deliveries</a></li>
                     </ul>
                 </div>
             </div>
+            <div className="filter">
+                    {/* <h3>Filter</h3> */}
+                    <i class='bx bx-filter' ></i>
+                    <select id="filter" value={filter} onChange={async(el)=>{
+                        if(el.currentTarget.value == "all"){
+                            setIsLoading(true)
+                            setDeliveries(deliveriesStorage)
+                            setFilter(el.currentTarget.value)
+                            setIsLoading(false)
+                        }
+                        else{
+                            setIsLoading(true)
+                            setFilter(el.currentTarget.value)
+                            const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
+                            console.log(filteredDeliveries)
+                            setDeliveries(filteredDeliveries)
+                            setIsLoading(false)
+                        }
+
+                        }}>
+                        <option value="all">All Trips</option>
+                        <option value="Completed">Completed Trips</option>
+                        <option value="Cancelled">Cancelled Trips</option>
+                    </select>
+                </div>
             <div className="deliveries-list">
                 {deliveries.length == 0 && <center><h1>No Deliveries Completed</h1></center>}
                 {deliveries?.map((e, i) => {
@@ -70,8 +103,8 @@ const DriverHistory = () => {
                             </div>
                             <div className="deliveries-header">
                                 <div className="header1">
-                                    <h4>Estimated Travel Time: 28 mins</h4>
-                                    <h4>Estimated Total Distance: 106 km</h4>
+                                    <h4>Estimated Travel Time: {e.t_totaldrivetime}</h4>
+                                    <h4>Estimated Total Distance: {convertKm(e.t_totaldistance)} km</h4>
                                 </div>
                             </div>
                             <div className="deliveries-content">

@@ -9,12 +9,12 @@ const mysql = require('mysql')
 //     })
 
 const db = mysql.createPool({
-        host: 'bjxwp9zadzdyfnlsid8b-mysql.services.clever-cloud.com',
-        user:'uyo3diweamt0qrca',
-        password:'SSSLkR8oQLwUFVl0kyWU',
-        database: "bjxwp9zadzdyfnlsid8b",
-        port: "3306"
-    })
+    host: '194.110.173.106',
+    user:'sust_matthew',
+    password:'qwe',
+    database: "sust_main",
+})
+
 module.exports = (query) => 
 {
     return new Promise((resolve, reject)=>

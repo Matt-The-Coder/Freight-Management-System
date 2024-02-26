@@ -6,7 +6,10 @@ const AdminHistory = ({socket}) => {
     const { image, u_role, u_first_name, u_last_name, setIsLoading } = useOutletContext()
     const VITE_UPLOADING_SERVER = import.meta.env.VITE_UPLOADING_SERVER
     const hostServer = import.meta.env.VITE_SERVER_HOST;
+    const [deliveriesStorage, setDeliveriesStorage] = useState([])
+    const [driverStorage, setDriverStorage] = useState([])
     const [deliveries, setDeliveries] = useState([])
+    const [filter, setFilter] = useState('All Trips')
     const [deliveryDriver, setDeliveryDriver] = useState([])
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
@@ -22,8 +25,11 @@ const AdminHistory = ({socket}) => {
             const data = await axios.get(`${hostServer}/get-trips-admin`)
             const result = data.data
             setDeliveries(result.tripData)
-            const deliverReverse = result.driverData.reverse()
-            setDeliveryDriver(result.driverData)
+            setDeliveryDriver(result.driverData);
+            setDeliveriesStorage(result.tripData)
+            setDriverStorage(result.driverData);
+            console.log(result.tripData)
+            console.log(result.driverData)
             setIsLoading(false)
         } catch (error) {
             console.log(error)
@@ -47,6 +53,38 @@ const AdminHistory = ({socket}) => {
                             <li><a href="#" className="active">Deliveries</a></li>
                         </ul>
                     </div>
+                </div>
+                <div className="filter">
+                    {/* <h3>Filter</h3> */}
+                    <i class='bx bx-filter' ></i>
+                    <select id="filter" value={filter} onChange={async(el)=>{
+                        if(el.currentTarget.value == "all"){
+                            setIsLoading(true)
+                            setDeliveries(deliveriesStorage)
+                            setDeliveryDriver(driverStorage);
+                            setFilter(el.currentTarget.value)
+                            setIsLoading(false)
+                        }
+                        else{
+                            setIsLoading(true)
+                            setFilter(el.currentTarget.value)
+                            const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
+                            let filteredDriver = []
+                            filteredDeliveries.forEach((deliveries)=>{
+                                filteredDriver = driverStorage.filter((dDriver)=>{return dDriver.u_username == deliveries.t_driver})
+                            })
+                            console.log(filteredDeliveries)
+                            console.log(filteredDriver)
+                            setDeliveries(filteredDeliveries)
+                            setDeliveryDriver(filteredDriver)
+                            setIsLoading(false)
+                        }
+
+                        }}>
+                        <option value="all">All Trips</option>
+                        <option value="Completed">Completed Trips</option>
+                        <option value="Cancelled">Cancelled Trips</option>
+                    </select>
                 </div>
                 <div className="trips-list">
                 {deliveries.length == 0 && <center><h1>No Trips Have Been Made Yet</h1></center>}

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
+import '/public/assets/css/adminLayout/adminChat.css'
 const DriverChat = ({ socket }) => {
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
   const messageContainer = useRef()
@@ -37,8 +38,9 @@ const DriverChat = ({ socket }) => {
           prof_pic: data.picture
         },
       ]);
-      setScroll(!scroll)
+
     });
+    setScroll(!scroll)
     return () => socket.off('receive_message');
 
   }, [socket]);

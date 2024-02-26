@@ -172,12 +172,12 @@ const AdminLogin = ()=>{
         <h3>New here ?</h3>
         <p>
         Ready to ship with ease?
-Sign up now and experience seamless freight management!
+Get an account now and experience seamless freight management!
 
         </p>
-        <button className="btn transparent" id="sign-up-btn" onClick={handleSignUp} >
+        {/* <button className="btn transparent" id="sign-up-btn" onClick={handleSignUp} >
           Sign up
-        </button>
+        </button> */}
       </div>
       <img src="/assets/img/log.svg" className="image" alt="" />
     </div>
