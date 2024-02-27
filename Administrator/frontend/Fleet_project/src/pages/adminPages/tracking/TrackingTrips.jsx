@@ -52,6 +52,7 @@ const TrackingTrips = ({socket}) => {
                 dLongitude: e.t_trip_tolog,
                 dLatitude: e.t_trip_tolat,
                 mapboxToken,
+                id: e.t_id
               });
               return travelTime.data.routes;
             });

@@ -10,6 +10,7 @@ export {default as DeliveryReports} from './reports/DeliveryReports'
 export {default as SustainabilityReports} from './reports/SustainabilityReports'
 export { default as AdminDashboard } from './AdminDashboard';
 export { default as Login } from '../Login';
+export { default as SubModules } from '../Modules';
 export {default as LandingPage} from '../landingPages/LandingPage';
 export {default as FuelManagement} from './fuel/FuelManagement'
 export {default as AddFuel} from './fuel/AddFuel'

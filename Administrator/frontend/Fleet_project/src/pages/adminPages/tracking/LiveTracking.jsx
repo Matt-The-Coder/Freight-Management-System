@@ -251,6 +251,7 @@ const LiveTracking = ({socket}) => {
     try {
       const result = await axios.get(`${hostServer}/calculateFuelConsumptionWithPrice?miles=${miles}&weightInKG=${weightInKG}`)
       const data = result.data
+      console.log(data)
       setVehicleStats(data)
     } catch (error) {
       console.log(error)

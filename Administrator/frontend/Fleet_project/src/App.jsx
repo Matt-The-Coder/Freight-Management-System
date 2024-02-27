@@ -3,7 +3,7 @@ import { useState } from 'react'
 import io from 'socket.io-client'
 import AdminDashboardLayout from './layouts/AdminDashboardLayout'
 import {
-  AdminDashboard, Login, LiveTracking, TrackingTrips, UpcomingTrips, AdminChat, EditMaintenance,
+  AdminDashboard, Login, LiveTracking, TrackingTrips, UpcomingTrips, AdminChat, EditMaintenance, SubModules,
   MaintenanceList, AddMaintenance, Settings, LandingPage, AddFuel, FuelManagement, EditFuel, AdminHistory, DeliveryReports, SustainabilityReports
 } from './pages/adminPages/Components.js'
 import Notfound from './pages/Notfound'
@@ -44,6 +44,7 @@ const App = () => {
         </Route>
         <Route path='/' element={<LandingPage />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/modules' element={<SubModules />} />
         <Route path='/*' element={<Notfound />} />
       </Routes>
     </>
