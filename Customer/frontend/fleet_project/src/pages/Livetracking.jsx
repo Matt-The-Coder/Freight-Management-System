@@ -64,6 +64,7 @@ const LiveTracking = () => {
   const [trackingCode, setTrackingCode] = useState("")
   const [tripDetail, setTripDetails] = useState({})
   const [isMapRender, setIsMapRender] = useState(false)
+  const background = useRef(null)
   const arrowUp = useRef(null)
   const arrowDown = useRef(null)
   const openDetail = (type) => {
@@ -88,11 +89,19 @@ const trackDriver = async (e)=>
     const result = await axios.get(`${hostServer}/retrieve-trip-details?trackingCode=${trackingCode}`)
     const tripData = result.data
     console.log(tripData)
-    setTripDetails(tripData[0])
+
     if(tripData.length !== 0){
+      if(tripData[0].t_trip_status !== "In Progress"){
+        setIsLoading(false)
+        alert("Delivery Status: " + tripData[0].t_trip_status)
+      }else{
+        background.current.style.display = "block";
+        setTripDetails(tripData[0])
         setIsMapRender(true)
         setIsLoading(false)
         setIsFormNotSubmitted(false)
+      }
+
     }
     else {alert("Invalid tracking code! Please enter a valid tracking code.")
     setIsLoading(false)}
@@ -104,6 +113,8 @@ const trackDriver = async (e)=>
 
 }
   useEffect(() => {
+    background.current = document.querySelector(".tracking-details")
+    background.current.style.display = "none"
     const handleResize = () => {
       const isMobileView = window.matchMedia('(max-width: 768px)').matches;
       setIsMobile(isMobileView);
@@ -138,9 +149,9 @@ const trackDriver = async (e)=>
       accessToken: mapboxgl.accessToken,
       profile: 'mapbox/driving',
       interactive: false,
+      alternatives: true,
       controls: { profileSwitcher: false, inputs: false },
       flyTo: true,
-      alternatives:true,
       geocoder: {
         accessToken: mapboxgl.accessToken,
       }
@@ -171,9 +182,9 @@ const trackDriver = async (e)=>
       accessToken: mapboxgl.accessToken,
       profile: 'mapbox/driving',
       interactive: false,
+      alternatives: true,
       controls: { profileSwitcher: false, inputs: false },
       flyTo: true,
-      alternatives:true,
       geocoder: {
         accessToken: mapboxgl.accessToken,
       }
@@ -941,9 +952,9 @@ const trackDriver = async (e)=>
                           <p>Driver: {tripDetail.t_driver} </p>
                           <p>Destination: {tripDetail.t_trip_tolocation}</p>
                           <p>Cargo Weight: {tripDetail.t_totalweight}kg</p>
-                          <p>Carbon Emissions: {vehicleStats.sd_carbon_emission}g</p>
-                          <p>Fuel Consumption: {vehicleStats.sd_fuelconsumption}l</p>
-                          <p>Estimated Fuel Cost: ₱{vehicleStats.sd_fuelcost}</p>
+                          <p>Carbon Emissions: {vehicleStats.sd_carbon_emission}</p>
+                          <p>Fuel Consumption: {vehicleStats.sd_fuelconsumption}</p>
+                          <p>Estimated Fuel Cost: {vehicleStats.sd_fuelcost}</p>
                         </div>
                         <div className="transportData2">
 
