@@ -4,8 +4,8 @@ const mysql = require('mysql');
 //     host: 'localhost',
 //     user:'root',
 //     password:'',
-//     database: "fleet",
-//     port: "3307"
+//     database: "freight",
+//     port: "3306"
 // })
 // const db = mysql.createPool({
 //     host: 'bjxwp9zadzdyfnlsid8b-mysql.services.clever-cloud.com',

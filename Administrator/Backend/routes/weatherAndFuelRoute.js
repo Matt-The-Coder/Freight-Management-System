@@ -44,15 +44,15 @@ WFRoute.get('/weatherdata', async (req, res)=>
       const alert = weatherAlert.data?.alerts[0]?.title?weatherAlert.data.alerts[0].title:"No Current Alerts"
       const fuelAndCarbon = await axios.get(`${host}/calculateFuelConsumptionWithPrice?miles=${miles}&weightInKG=${weight}`)
       const {fuelConsumption, fuelCost, carbonEmission} = fuelAndCarbon.data
-      const sustainData = await db(`Select * from sustainability_data where sd_trip_id = ${tripID}`)
+      const sustainData = await db(`Select * from fms_g11_sustainability_data where sd_trip_id = ${tripID}`)
     if (sustainData.length !== 0) {
-      await db(`Update sustainability_data set sd_carbon_emission = '${carbonEmission}g', sd_fuelcost = '₱${fuelCost}',	
+      await db(`Update fms_g11_sustainability_data set sd_carbon_emission = '${carbonEmission}g', sd_fuelcost = '₱${fuelCost}',	
       sd_fuelconsumption = '${fuelConsumption}l', sd_rainfall_rate = '${precip}mm/hr',
       sd_current_weather = '${description}', sd_air_quality = '${aqi}AQI', sd_wind_speed = '${wind_spd}m/s', sd_wind_direction = '${wind_cdir_full}',
       sd_wind_angle = '${wind_dir}°', sd_temperature = '${temp}°C',  sd_humidity = '${rh}%RH', sd_visibility = '${vis}km', sd_uv_index = '${formattedUV}UV Index',
       sd_solar_radiation = '${solar_rad}W/m2', sd_pressure = '${pres}mb', sd_sealevel_pressure = '${slp}mb', alerts = '${alert}' where sd_trip_id = ${tripID} `)
     }else{
-       await db(`Insert into sustainability_data 
+       await db(`Insert into fms_g11_sustainability_data 
       (sd_trip_id, sd_fuelcost,	sd_fuelconsumption, sd_carbon_emission,	sd_rainfall_rate,	sd_current_weather,	
         sd_air_quality,	
         sd_wind_speed,	sd_wind_direction,	sd_wind_angle,	sd_temperature,	sd_humidity,	sd_visibility,	
@@ -75,12 +75,12 @@ WFRoute.get('/getSustainableData',  async (req, res)=> {
     let fuelConsumption = []
     for(let i=1; i<13; i++){
       carbonArray = await db(`SELECT SUM(sd_carbon_emission) AS total_emission
-       from sustainability_data where MONTH(sd_modified_date) = ${i}`)
+       from fms_g11_sustainability_data where MONTH(sd_modified_date) = ${i}`)
       carbonEmissions.push(carbonArray[0])
     }
     for(let i=1; i<13; i++){
       fuelArray = await db(`SELECT SUM(sd_fuelconsumption) AS total_fuel_consumption
-       from sustainability_data where MONTH(sd_modified_date) = ${i}`)
+       from fms_g11_sustainability_data where MONTH(sd_modified_date) = ${i}`)
       fuelConsumption.push(fuelArray[0])
     }
     res.json({carbonEmissions, fuelConsumption})
@@ -91,7 +91,7 @@ WFRoute.get('/getSustainableData',  async (req, res)=> {
 
 WFRoute.get('/getSustainableReports',  async (req, res)=> {
   try {
-    const data = await db("Select * from sustainability_data")
+    const data = await db("Select * from fms_g11_sustainability_data")
     res.json(data)
   } catch (error) {
     console.log(error)

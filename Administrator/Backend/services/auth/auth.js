@@ -3,7 +3,7 @@ module.exports = () => {
 
     const getAccounts = async () => 
     {
-        const query = "Select * from accounts"
+        const query = "Select * from fms_g11_accounts"
         try {
             const data = await db(query)
             return data
@@ -13,9 +13,9 @@ module.exports = () => {
     }
     const getAccByUsername =  async (usernName) => 
     {
-        const query = `Select * from accounts where u_username = '${usernName}'`
+        const query = `Select * from fms_g11_accounts where u_username = '${usernName}'`
         try {
-            const data = await db(query)
+            const data = await db(query)    
             return data
         } catch (error) {
             throw error

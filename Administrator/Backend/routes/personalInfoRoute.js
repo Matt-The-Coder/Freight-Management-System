@@ -26,7 +26,7 @@ cloudinary.config({
 personalInfoRoute.post('/updatePersonalInfo', async (req, res)=>{
     const {fName, lName, uName, email, u_id:id} = req.body
     try {
-        const query = `UPDATE ACCOUNTS SET u_username = '${uName}', u_first_name = '${fName}', u_last_name = '${lName}', u_email = '${email}' WHERE u_id = ${id}`
+        const query = `UPDATE fms_g11_accounts SET u_username = '${uName}', u_first_name = '${fName}', u_last_name = '${lName}', u_email = '${email}' WHERE u_id = ${id}`
         const data = await db(query)
         res.json(data)
     } catch (error) {
@@ -37,7 +37,7 @@ personalInfoRoute.post('/updatePersonalInfo', async (req, res)=>{
 personalInfoRoute.post('/updateSecurityInfo', async (req, res)=>{
     const {nP:newPassword, u_id:id} = req.body
     const hashedPassword = await bcrypt.hash(newPassword, 10)
-    const query = `UPDATE ACCOUNTS SET u_password = '${hashedPassword}' WHERE u_id = ${id}`
+    const query = `UPDATE fms_g11_accounts SET u_password = '${hashedPassword}' WHERE u_id = ${id}`
     const result = await db(query)
    res.json({message:"Updated Successfully!"}) 
 })
@@ -45,7 +45,7 @@ personalInfoRoute.get('/getaccountbyid/:id', async (req, res) =>
 {
     try {
         const {id} = req.params
-        const query = `Select * from accounts where u_id = ${id}`
+        const query = `Select * from fms_g11_accounts where u_id = ${id}`
         const result = await db(query)
         res.json(result)
     } catch (error) {
@@ -56,7 +56,7 @@ personalInfoRoute.get('/getaccountbyid/:id', async (req, res) =>
 personalInfoRoute.get("/getAccess/:id", async (req, res) => 
 {
     const {id} = req.params
-    const query = `Select * from accounts_access where a_u_id = ${id}`
+    const query = `Select * from fms_g11_accounts_access where a_u_id = ${id}`
     const result = await db(query)
     res.json({data: result}) 
 })
@@ -69,7 +69,7 @@ personalInfoRoute.post("/upload/:id", upload.single("my_file"), async (req, res)
       let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
       const cldRes = await handleUpload(dataURI);
       const path = cldRes.url.split('/').pop()
-    const query = `Update accounts set u_profile_picture = '${path}' where u_id = ${id}`
+    const query = `Update fms_g11_accounts set u_profile_picture = '${path}' where u_id = ${id}`
       const result = await db(query)
       res.json(cldRes);
       
@@ -86,7 +86,7 @@ personalInfoRoute.post("/upload/:id", upload.single("my_file"), async (req, res)
 {
     try {
         const {username} = req.query
-        const query = `Select * from accounts where u_username = '${username}'`
+        const query = `Select * from fms_g11_accounts where u_username = '${username}'`
         const result = await db(query)
         res.json(result)
     } catch (error) {
@@ -124,7 +124,7 @@ personalInfoRoute.get('/getProfilePicture/:id', async (req, res) =>
 {   
     const {id} = req.params
     try {
-        const query = `Select u_profile_picture from accounts where u_id = ${id} `
+        const query = `Select u_profile_picture from fms_g11_accounts where u_id = ${id} `
         const result = await db(query)
         res.json({image: result})
     } catch (error) {

@@ -22,29 +22,35 @@ const Settings = () => {
     const [usernameError, setUsernameError] = useState(false)
     const profilePic = useRef(null)
     const nav = useNavigate()
-        useEffect(()=>{
-            const getInfo = async () => {
-                try {
-                    setIsLoading(true)
-                    const result = await axios.get(`${hostServer}/getaccountbyid/${u_id}`)
-                    if (result.data.message) {
-                        // nav("/login")
-                    } else {
-                        const userData = result.data
-                        setFName(userData[0].u_first_name)
-                        setLName(userData[0].u_last_name)
-                        setEmail(userData[0].u_email)
-                        setUName(userData[0].u_username)
-                        setUPassword(userData[0].u_password)
-                        setRole(userData[0].u_role)
-                    }
-                    setIsLoading(false)
-                } catch (error) {
-                    console.log(error)
-                }
+
+ 
+    const getInfo = async () => {
+        try {
+            setIsLoading(true)
+            const result = await axios.get(`${hostServer}/getaccountbyid/${u_id}`)
+            if (result.data.message) {
+                console.log(result.data)
+                // nav("/login")
+            } else {
+                const userData = result.data
+                console.log(userData[0].u_first_name)
+                setFName(userData[0].u_first_name)
+                setLName(userData[0].u_last_name)
+                setEmail(userData[0].u_email)
+                setUName(userData[0].u_username)
+                setUPassword(userData[0].u_password)
+                setRole(userData[0].u_role)
             }
+            setIsLoading(false)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+        useEffect(()=>{
+
             getInfo()
-        }, [refresh])
+            console.log("Hellp")
+        }, [u_id])
     
 
     const updateInformation = async (e) => {

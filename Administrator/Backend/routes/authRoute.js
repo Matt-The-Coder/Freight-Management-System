@@ -8,11 +8,12 @@ const authServices = require('../services/auth/auth')
 const {getAccounts, getAccByUsername } = authServices()
 const verifyToken = (req, res, next) => 
 {
-  const token = req.session.token
-  // const token = req.cookies.token
+  // const token = req.session.token
+  const token = req.cookies.token
     if(token){
-        req.sessionToken = token
-        // req.userToken = req.cookies.token
+
+        // req.sessionToken = token
+        req.sessionToken = req.cookies.token
         next()
     }else {
       return res.json({message:'No token provided.'});
@@ -21,19 +22,21 @@ const verifyToken = (req, res, next) =>
 }
 authRoute.get('/alreadyauthenticated', (req, res) => 
 {
-//   if(req.cookies.token){   
-//     res.json({auth: true, role: req.cookies.role})  
-// }
-  if(req.session.token){   
-      res.json({auth: true, role: req.session.role})  
-  }
-  else{
-    res.json({auth:false})
-  }
+  if(req.cookies.token){   
+    res.json({auth: true, role: req.cookies.role})  
+}else{
+  res.json({auth:false})
+}
+// console.log(req.session.token)
+//   if(req.session.token){   
+//       res.json({auth: true, role: req.session.role})  
+//   }
+
 })
 authRoute.get('/homeAuthentication', verifyToken, (req, res) => {
     jwt.verify(req.sessionToken, "secretkey", (err, authData)=>{
         if(err){
+          console.log(err)
           return res.json({message: "token is expired, not valid!"})
         }else {
           return res.json({authData})
@@ -43,8 +46,8 @@ authRoute.get('/homeAuthentication', verifyToken, (req, res) => {
 
 authRoute.delete("/logout", (req, res) => 
 {
-  // res.clearCookie("token")
-  // res.clearCookie("role")
+  res.clearCookie("token")
+  res.clearCookie("role")
   req.session.destroy((err) => {
     if (err) {
       console.error('Error destroying session:', err);
@@ -73,10 +76,10 @@ authRoute.post('/login', async (req, res)=>
           if(err){
             return res.json({message: "Cannot create token"})
           }
-          // res.cookie('token', token)
-          //  res.cookie('role', user[0].u_role)
-          req.session.token = token
-          req.session.role = user[0].u_role
+          res.cookie('token', token)
+           res.cookie('role', user[0].u_role)
+          // req.session.token = token
+          // req.session.role = user[0].u_role
           return res.json({success:"Login Success!", user})
         })
       }

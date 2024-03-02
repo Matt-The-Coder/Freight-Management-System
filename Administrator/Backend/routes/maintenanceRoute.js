@@ -26,7 +26,7 @@ maintenanceRouter.get("/maintenance-search", async (req, res) => {
 // get maintenance by id
 maintenanceRouter.get("/maintenancebyid/:id", async (req, res) => {
     const {id} = req.params
-    const maintenanceData = await db(`Select * from maintenance where m_id = ${id}`)
+    const maintenanceData = await db(`Select * from fms_g11_maintenance where m_id = ${id}`)
     res.json(maintenanceData)
 })
 // Update

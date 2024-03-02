@@ -31,9 +31,9 @@ app.use(session({
   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
   name: 'MyKargadaOnly', // This needs to be unique per-host.
   cookie: {
-    secure: true, // required for cookies to work on HTTPS
+    secure: false, // required for cookies to work on HTTPS
     httpOnly: false,
-    sameSite: 'none'
+    sameSite: 'lax'
   }
 }))
 
@@ -64,6 +64,7 @@ app.use(personalInfoRoute)
 let activeUsers = []
 io.on('connection', async (socket) =>  {
   console.log(`User connected ${socket.id}`);
+  
     socket.on('active', (data)=>{
       const {username} = data
       if(activeUsers.length == 0 || !activeUsers.includes(username) ){
@@ -79,12 +80,12 @@ io.on('connection', async (socket) =>  {
       io.emit('usersActive', activeUsers)
     });
     
-    const messages = await db("Select username,role,message,timesent,prof_pic from message limit 100")
+    const messages = await db("Select username,role,message,timesent,prof_pic from fms_g11_message limit 100")
     socket.emit('last_100_messages', messages)
 
     socket.on('send_message', async (data) => {
       const {  username, role, message, __createdtime__ , picture} = data;
-      await db(`Insert into message (username, role, message, timesent, prof_pic ) values('${username}', '${role}', '${message}', ${__createdtime__}, '${picture}')`)
+      await db(`Insert into fms_g11_message (username, role, message, timesent, prof_pic ) values('${username}', '${role}', '${message}', ${__createdtime__}, '${picture}')`)
       io.emit('receive_message', data); // Send Back to the sender
   })
 

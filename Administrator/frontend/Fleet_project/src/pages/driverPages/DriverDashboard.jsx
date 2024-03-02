@@ -39,7 +39,7 @@ const DriverDashboard = ({socket}) => {
         switch(type){
             case "Pending": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
-            case "Unsuccessful": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
+            case "Cancelled": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
             case "Completed": {numTrips = deliveries.filter((e)=>{return e.t_trip_status == type}) 
         console.log(numTrips)}
@@ -109,14 +109,14 @@ defaults.plugins.title.font.size = 25
             </div>
             <div className="trip-box">
                 <div className="trip-box-header">
-                    <h2>Unsuccessful Trips</h2>
+                    <h2>Cancelled Trips</h2>
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
                     <i class='bx bx-car' id="trips-car-unsuccessful"></i>
                     </div>
                     <div className="trip-box-number">
-                        <h3>{getNumberTrips("Unsuccessful")}</h3>
+                        <h3>{getNumberTrips("Cancelled")}</h3>
                     </div>
                 </div>
             </div>

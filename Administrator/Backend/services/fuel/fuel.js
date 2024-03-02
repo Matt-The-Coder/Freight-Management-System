@@ -3,7 +3,7 @@ module.exports = () => {
 
     const getFuelList = async () => 
     {
-        const query = "Select * from fuel"
+        const query = "Select * from fms_g11_fuel"
         try {
             const data = await db(query)
             return data
@@ -13,7 +13,7 @@ module.exports = () => {
     }
     const addFuel =  async (vehicle, driver, date, quantity, odometerReading, amount, remarks, created_date) => 
     {
-        const query = `INSERT INTO fuel (v_id, v_fuel_quantity, v_odometerreading,	
+        const query = `INSERT INTO fms_g11_fuel (v_id, v_fuel_quantity, v_odometerreading,	
             v_fuelprice, v_fuelfilldate, v_fueladdedby,	v_fuelcomments,	v_created_date)
             values ('${vehicle}', ${quantity}, ${odometerReading}, ${amount}, 
                 '${date}', '${driver}', '${remarks}', '${created_date}')`
@@ -26,7 +26,7 @@ module.exports = () => {
     }
     const updateFuel =  async (vehicle, driver, date, quantity, odometerReading, amount, remarks, f_id) => 
     {
-        const query = `UPDATE fuel set
+        const query = `UPDATE fms_g11_fuel set
         v_id ='${vehicle}',
         v_fuel_quantity	= ${quantity},
         v_odometerreading = ${odometerReading},
@@ -43,7 +43,7 @@ module.exports = () => {
         }
     }
     const fuelSearch = async (search) => {
-        const query = `SELECT * FROM fuel WHERE v_fueladdedby LIKE '%${search}%' OR v_fuelprice LIKE '%${search}%'`;
+        const query = `SELECT * FROM fms_g11_fuel WHERE v_fueladdedby LIKE '%${search}%' OR v_fuelprice LIKE '%${search}%'`;
         const data = await db(query)
         return data
 
