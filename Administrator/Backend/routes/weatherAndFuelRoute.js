@@ -98,4 +98,14 @@ WFRoute.get('/getSustainableReports',  async (req, res)=> {
   }
 })
 
+WFRoute.get('/getSustainableById/:id',  async (req, res)=> {
+  try {
+    const {id} = req.params
+    const data = await db(`Select * from fms_g11_sustainability_data where sd_trip_id = ${id}`)
+    res.json(data)
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 module.exports = WFRoute

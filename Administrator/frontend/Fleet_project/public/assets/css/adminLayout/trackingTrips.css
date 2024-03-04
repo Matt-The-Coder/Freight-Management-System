@@ -29,6 +29,18 @@
     font-weight: 600;
     color: white;
 }
+ .more-info{
+    height: 40px;
+    text-align: center;
+}
+ .more-info button{
+    background-color: var(--button);
+    padding: 6px 12px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    
+}
 .trips-header{
     height: 40%;
     width: 100%;

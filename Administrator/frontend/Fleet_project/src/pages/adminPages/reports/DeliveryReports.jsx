@@ -8,15 +8,18 @@ const DeliveryReports = ({socket}) => {
     
     const {setIsLoading} = useOutletContext()
     const [isDelete, setIsDelete] = useState(false)
-    const [maintenanceData, setMaintenanceData] = useState([])
+    const [DeliveryReports, setDeliveryReports] = useState([])
+    const [deliveryReportsStorage, setDeliveryReportsStorage] = useState([])
     const hostServer = import.meta.env.VITE_SERVER_HOST
     const [maintenanceSearch, setMaintenanceSearch] = useState('')
+    const [filter, setFilter] = useState('all')
     const deliveryTable = useRef(null)
     const getMaintenanceList = async () => {
         setIsLoading(true)
         const fetchMaintenance = await axios.get(`${hostServer}/get-trip-reports`)
         const  data = fetchMaintenance.data;
-        setMaintenanceData(data)
+        setDeliveryReports(data)
+        setDeliveryReportsStorage(data)
         setIsLoading(false)
     }
     const searchMaintenance = async() =>
@@ -24,7 +27,7 @@ const DeliveryReports = ({socket}) => {
         setIsLoading(true)
         const fetchMaintenance = await axios.get(`${hostServer}/trip-search?search=${maintenanceSearch}`)
         const filteredData = fetchMaintenance.data
-        setMaintenanceData(filteredData)
+        setDeliveryReports(filteredData)
         setIsLoading(false)
     }
     useEffect(() => {
@@ -83,6 +86,42 @@ const DeliveryReports = ({socket}) => {
                     </ul>
                 </div>
             </div>
+            <div className="filter">
+                    {/* <h3>Filter</h3> */}
+                    <i class='bx bx-filter' ></i>
+                    <select id="filter" value={filter} onChange={async(el)=>{
+                        if(el.currentTarget.value == "all"){
+                            setIsLoading(true)
+                            setDeliveryReports(deliveryReportsStorage)
+                            setFilter(el.currentTarget.value)
+                            setIsLoading(false)
+                        }
+                        else{
+                            setIsLoading(true)
+                            setFilter(el.currentTarget.value)
+                            const filterReports = deliveryReportsStorage.filter((e, i)=>{
+                                return e.t_trip_status == el.currentTarget.value
+                            })
+                            // const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
+                            // let filteredDriver = []
+                            // filteredDeliveries.forEach((deliveries)=>{
+                            //    let filterDriver = driverStorage.find((dDriver)=>{return dDriver.u_username == deliveries.t_driver})
+                            //    filteredDriver.push(filterDriver)
+                            // })
+                            setDeliveryReports(filterReports)
+                            console.log(deliveryReportsStorage)
+
+                            setIsLoading(false)
+                        }
+
+                        }}>
+                        <option value="all">All Trips</option>
+                        <option value="Completed">Completed Trips</option>
+                        <option value="Cancelled">Cancelled Trips</option>
+                        <option value="In Progress">In Progress Trips</option>
+                        <option value="Pending">Pending Trips</option>
+                    </select>
+                </div>
             <div className="maintenance-details">
                 <div className="report-export">
                 <p>Export as:</p>
@@ -114,7 +153,7 @@ const DeliveryReports = ({socket}) => {
                         </thead>
                         <tbody>
                             {
-                                maintenanceData.map((e, i)=> 
+                                DeliveryReports.map((e, i)=> 
                                 {
                                     return(
                                     <tr key={i}>

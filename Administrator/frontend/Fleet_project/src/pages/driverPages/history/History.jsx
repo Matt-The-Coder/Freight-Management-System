@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import '/public/assets/css/adminLayout/deliveries.css'
+import '/public/assets/css/adminLayout/trackingTrips.css'
 import axios from 'axios'
 const DriverHistory = () => {
     const hostServer = import.meta.env.VITE_SERVER_HOST;
@@ -8,6 +9,8 @@ const DriverHistory = () => {
     const [filter, setFilter] = useState("all")
     const [deliveriesStorage, setDeliveriesStorage] = useState([])
     const [deliveries, setDeliveries] = useState([])
+    const [sustain, setSustain] = useState([])
+    const [sustainStorage, setSustainStorage] = useState([])
     const getDeliveries = async () => {
         try {
             setIsLoading(true)
@@ -21,15 +24,41 @@ const DriverHistory = () => {
             console.log(error)
         }
     }
+
+
+    const openModal = (e) => {
+        const num = e
+        const modalInfo = document.querySelector("#modal" + e)
+        const modalbg = document.querySelector("#modalbg" + e)
+        const modalb = document.querySelector("#modalb" + e)
+            modalInfo.style.display = "block"
+            modalb.style.display = 'block' 
+            modalbg.style.display = 'block'
+
+            console.log(modalInfo)
+            console.log(modalbg)
+            console.log(modalb)
+    }
+    const closeModal = (e) => {
+        const num = e
+        const modalInfo = document.querySelector("#modal" + e)
+        const modalbg = document.querySelector("#modalbg" + e)
+        const modalb = document.querySelector("#modalb" + e)
+            modalInfo.style.display = "none"
+            modalb.style.display = 'none' 
+            modalbg.style.display = 'none'
+        
+    }
+    const formatDate = (date) => {
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate() + 1);
+        return formattedDate.toISOString().split("T")[0];
+      };
+
+
     useEffect(() => {
         getDeliveries()
     }, [])
-
-    const formatDate = (date) => {
-        const newDate = new Date(date);
-        const formattedDate = newDate.toLocaleString();
-        return formattedDate;
-      };
 
       function convertKm(mile) {
         const kilometers = 1.60934 * mile;
@@ -127,6 +156,36 @@ const DriverHistory = () => {
                                 </div>
 
                             </div>
+                            <div className="more-info">
+                                    <button onClick={()=>{openModal(i)}}>More Info</button>
+                                    <div className="more-info-modal" id={`modal${i}`}>
+                                        <div className="more-info-background" id={`modalbg${i}`}></div>
+                                        <div className="more-info-modal-box" id={`modalb${i}`}>
+                                            <div className="exit">
+                                            <i class='bx bx-window-close' onClick={()=>{closeModal(i)}}></i>
+                                            </div>
+                                            <h3>History Information</h3>
+                                            <div className="info">
+                                                <div className="info-1">
+                                                    <p>Start: {formatDate(e.t_start_date)}</p>
+                                                    <p>End: {formatDate(e.t_end_date)}</p>
+
+                                                
+                                              
+                                                
+                                                </div>
+                                                <div className="info-2">
+                                                <p>Vehicle: {e.t_vehicle}</p>
+                                                    <p>Total Weight: {e.t_totalweight}kg</p>
+                                                   
+                                                
+                                                
+                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     )
 

@@ -9,12 +9,16 @@ trackingRoute.get('/get-trips-admin', async (req, res) => {
         `);
     
         const driverData = await db("SELECT * FROM fms_g11_accounts");
-    
+        const sustainData = await db('Select * from fms_g11_sustainability_data')
         const filteredDriver = tripData.map(trip => {
-          const matchingDriver = driverData.find(driver => driver.u_username === trip.t_driver);
+          const matchingDriver = driverData.find(driver => driver.u_username == trip.t_driver);
           return matchingDriver;
         });
-        res.json({ driverData: filteredDriver, tripData });
+        const filteredSustain = tripData.map(trip => {
+          const matchingSustain = sustainData.find(sustain => sustain.sd_trip_id == trip.t_id);
+          return matchingSustain;
+        });
+        res.json({ driverData: filteredDriver, tripData, sustain:filteredSustain});
       } catch (error) {
         console.log(error);
       }

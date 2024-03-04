@@ -103,6 +103,7 @@ const AdminDashboard = ({socket}) => {
             break;
             default:null
         }
+        console.log(numTrips)
         return numTrips.length;
   
     }

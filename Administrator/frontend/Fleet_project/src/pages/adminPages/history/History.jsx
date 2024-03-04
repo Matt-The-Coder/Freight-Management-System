@@ -9,8 +9,10 @@ const AdminHistory = ({socket}) => {
     const [deliveriesStorage, setDeliveriesStorage] = useState([])
     const [driverStorage, setDriverStorage] = useState([])
     const [deliveries, setDeliveries] = useState([])
-    const [filter, setFilter] = useState('All Trips')
+    const [filter, setFilter] = useState('all')
     const [deliveryDriver, setDeliveryDriver] = useState([])
+    const [sustain, setSustain] = useState([])
+    const [sustainStorage, setSustainStorage] = useState([])
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
                 alert("Delivery Status Updated")
@@ -24,6 +26,8 @@ const AdminHistory = ({socket}) => {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-trips-admin`)
             const result = data.data
+            setSustain(result.sustain)
+            setSustainStorage(result.sustain)
             setDeliveries(result.tripData)
             setDeliveryDriver(result.driverData);
             setDeliveriesStorage(result.tripData)
@@ -35,6 +39,37 @@ const AdminHistory = ({socket}) => {
             console.log(error)
         }
     }
+
+    const openModal = (e) => {
+        const num = e
+        const modalInfo = document.querySelector("#modal" + e)
+        const modalbg = document.querySelector("#modalbg" + e)
+        const modalb = document.querySelector("#modalb" + e)
+            modalInfo.style.display = "block"
+            modalb.style.display = 'block' 
+            modalbg.style.display = 'block'
+
+            console.log(modalInfo)
+            console.log(modalbg)
+            console.log(modalb)
+    }
+    const closeModal = (e) => {
+        const num = e
+        const modalInfo = document.querySelector("#modal" + e)
+        const modalbg = document.querySelector("#modalbg" + e)
+        const modalb = document.querySelector("#modalb" + e)
+            modalInfo.style.display = "none"
+            modalb.style.display = 'none' 
+            modalbg.style.display = 'none'
+        
+    }
+    const formatDate = (date) => {
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate() + 1);
+        return formattedDate.toISOString().split("T")[0];
+      };
+
+
 
     useEffect(() => {
         getDeliveries()
@@ -70,14 +105,18 @@ const AdminHistory = ({socket}) => {
                             setFilter(el.currentTarget.value)
                             const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
                             let filteredDriver = []
+                            let filteredSustain = []
                             filteredDeliveries.forEach((deliveries)=>{
                                let filterDriver = driverStorage.find((dDriver)=>{return dDriver.u_username == deliveries.t_driver})
                                filteredDriver.push(filterDriver)
                             })
-                            console.log(filteredDeliveries)
-                            console.log(filteredDriver)
+                            filteredDeliveries.forEach((deliveries)=>{
+                                let filterSustain = sustainStorage.find((sus)=>{return sus.sd_trip_id == deliveries.t_id})
+                                filteredSustain.push(filterSustain)
+                             })
                             setDeliveries(filteredDeliveries)
                             setDeliveryDriver(filteredDriver)
+                            setSustain(filteredSustain)
                             setIsLoading(false)
                         }
 
@@ -142,6 +181,40 @@ const AdminHistory = ({socket}) => {
                                             <div className="location-to">
                                                 <h4>To:</h4>
                                                 <p>{e.t_trip_tolocation}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="more-info">
+                                    <button onClick={()=>{openModal(i)}}>More Info</button>
+                                    <div className="more-info-modal" id={`modal${i}`}>
+                                        <div className="more-info-background" id={`modalbg${i}`}></div>
+                                        <div className="more-info-modal-box" id={`modalb${i}`}>
+                                            <div className="exit">
+                                            <i class='bx bx-window-close' onClick={()=>{closeModal(i)}}></i>
+                                            </div>
+                                            <h3>History Information</h3>
+                                            <div className="info">
+                                                <div className="info-1">
+                                                    <p>Start: {formatDate(e.t_start_date)}</p>
+                                                    <p>End: {formatDate(e.t_end_date)}</p>
+                                                    <p>Duration: {e.t_totaldrivetime}</p>
+                                                    <p>Distance: {e.t_totaldistance?.toFixed(2)} km</p>
+                                                
+                                              
+                                                
+                                                </div>
+                                                <div className="info-2">
+                                                <p>Vehicle: {e.t_vehicle}</p>
+                                                    <p>Weather: {sustain[i]?.sd_current_weather}</p>
+                                                    <p>Total Emission: {sustain[i]?.sd_carbon_emission}</p>
+                                                    <p>Total Fuel Usage: {sustain[i]?.sd_fuelconsumption}</p>
+                                                    <p>Total Weight: {e.t_totalweight}kg</p>
+                                                   
+                                                
+                                                
+                                                
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

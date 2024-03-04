@@ -63,6 +63,10 @@ const AdminDashboardLayout = ({ socket }) => {
     const adminSidebar = document.querySelector('.adminSidebar');
     adminSidebar.classList.add('close')
     adminSidebar.style.display = 'none'
+    const notification = document.querySelector('.notif-container')
+    if(notification.style.display == "block"){
+      notification.style.display = "none"
+    }
   }
   const checkAuthentication = async () => {
 

@@ -218,6 +218,71 @@ button{
   .directions-control.directions-control-instructions, .mapboxgl-ctrl-directions.mapboxgl-ctrl{
     width: 100%;
   }
+  .more-info-modal{
+    display: none;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    place-items: center;
+    top: 0;
+    left: 0;
+    position: fixed;
+  }
+  .more-info-background{
+    display: none;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--dark);
+    opacity: 0.1;
+  }
+  .more-info-modal {
+    display: none;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    grid-template-columns: 1fr;
+    place-items: center;
+    position: fixed;
+  }
+  .more-info-modal-box{
+    height: 300px;
+    width: 400px;
+    position: fixed;
+    padding: 20px;
+    top: 30%;
+    left: 35% ;
+    border-radius: 10px;
+    background-color: var(--light);
+  }
+  .more-info-modal-box .info{
+    display: flex;
+    height: 80%;
+    margin-top: 5%;
+  }
+  .more-info-modal-box .info :is(.info-1 p, .info-2 p){
+    text-align: left;
+  }
+  .more-info-modal-box .info .info-1{
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    width: 50%;
+    gap: 5%;
+    align-items: flex-start;
+  }
+  .more-info-modal-box .info .info-2{
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    width: 50%;
+    gap: 5%;
+    align-items: flex-start;
+  }
+  .more-info-modal-box .exit{
+    text-align: end;
+    cursor: pointer;
+  }
   .transportCard {
     height: 220px;
     width: 800px;
@@ -334,6 +399,51 @@ button{
       border-bottom: 1px solid var(--dark);
       border-radius: 5px;
     }
+    @media screen and (max-width: 937px) {
+      .more-info-modal-box{
+        left: 33%;
+      }
+    }
+  @media screen and (max-width: 768px) {
+    .more-info-modal-box{
+      left: 23%;
+    }
+  }
+  @media screen and (max-width: 576px) {
+    .more-info-modal-box{
+      left: 13%;
+    }
+  
+  }
+  @media screen and (max-width: 440px) {
+    .more-info-modal-box{
+      padding: 10px;
+      left: 16%;
+      height: 300px;
+      width: 280px;
+    }
+    .more-info-modal-box h3{
+      font-size: 18px;
+    }
+    }
+  @media screen and (max-width: 388px) {
+  .more-info-modal-box{
+    padding: 10px;
+    left: 12%;
+    height: auto;
+    width: 280px;
+  }
+  .more-info-modal-box h3{
+    font-size: 18px;
+  }
+  }
+  @media screen and (max-width: 348px) {
+    .more-info-modal-box{
+      padding: 10px;
+      left: 7%;
+      height: auto;
+      width: 280px;
+    }}
   @media screen and (max-width: 768px) {
     
   }
