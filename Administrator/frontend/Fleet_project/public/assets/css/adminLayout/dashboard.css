@@ -13,7 +13,8 @@
     --light-warning: #FFF2C6;
     --success: #388E3C;
     --light-success: #BBF7D0;
-    --button: #363949
+    --button: #363949;
+    --notification: #e4edfe
 }
 
 #search-btn, #theme-toggle{
@@ -56,6 +57,8 @@ html{
         --grey: #25252c;
         --dark: #fbfbfb;
         --button: #1976D2;
+        --notification: #2f3237;
+
     }
 }
   
@@ -69,6 +72,46 @@ body.dark{
     --grey: #25252c;
     --dark: #fbfbfb;
     --button: #1976D2;
+    --notification: #2f3237;
+}
+#notif-container{
+    display: none;
+}
+.notif-container{
+    background-color: var(--light);
+    height: 400px;
+    width: 300px;
+    position: fixed;
+    right: 10px;
+    top: 55px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    overflow: auto;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+.notif-title h3{
+    padding: 5px 10px;
+    font-weight: 500;
+}
+#notif-date{
+    text-align: end;
+    font-size: 14px;
+
+}
+#notif-des{
+    font-size: 16px;
+    font-weight: 400;
+}
+.notif-message{
+    cursor: pointer;
+    height: auto;
+    padding: 5px 10px;
+    /* border-bottom: 1px solid var(--dark); */
+}
+
+.notif-message.not-read{
+    background-color: var(--notification);
 }
 
 .adminSidebar{
@@ -655,7 +698,7 @@ body.dark{
 }
 
 @media screen and (max-width: 576px) {
-    
+    .notif-container
     .content nav form .form-input input{
         display: none;
     }

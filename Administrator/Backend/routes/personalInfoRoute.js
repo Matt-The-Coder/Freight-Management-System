@@ -23,12 +23,43 @@ cloudinary.config({
     storage,
   });
   
+
+personalInfoRoute.get('/getNotifications', async (req, res)=>{
+  try {
+    const query = `Select * from fms_g11_notifications`
+    const data = await db(query)
+    res.json(data)
+} catch (error) {
+    console.log(error)
+}
+})
+
+personalInfoRoute.put('/updateNotifications/:id', async (req, res)=>{
+  try {
+    const {id} = req.params
+    const query = `Update fms_g11_notifications set n_isRead = 1 where n_id = ${id}`
+    const data = await db(query)
+    res.json(data)
+} catch (error) {
+    console.log(error)
+}
+})
+
+personalInfoRoute.post('/insertNotifications', async (req, res)=>{
+  try {
+    const {description } = req.body
+    const query = `Insert into fms_g11_notifications (n_description) values ('${description}')`
+    const data = await db(query)
+    res.json(data)
+} catch (error) {
+    console.log(error)
+}
+})
 personalInfoRoute.post('/updatePersonalInfo', async (req, res)=>{
     const {fName, lName, uName, email, u_id:id} = req.body
     try {
         const query = `UPDATE fms_g11_accounts SET u_username = '${uName}', u_first_name = '${fName}', u_last_name = '${lName}', u_email = '${email}' WHERE u_id = ${id}`
-        const data = await db(query)
-        res.json(data)
+        await db(query)
     } catch (error) {
         res.json({errorMessage:"Username already exists!"})
     }
@@ -132,4 +163,6 @@ personalInfoRoute.get('/getProfilePicture/:id', async (req, res) =>
         res.json({status: "Failed to get profile picture"})
     }
 })
+
+
 module.exports = personalInfoRoute

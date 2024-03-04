@@ -19,7 +19,7 @@ mapboxRoute.post("/getDirections", async (req, res) =>
 mapboxRoute.get("/getTrip", async (req, res) => 
 {
     try {
-        const result = await db("Select * from trips")
+        const result = await db("Select * from fms_g11_trips")
         if(result !== 0){
             res.json(result[0])
         }
@@ -34,7 +34,7 @@ mapboxRoute.put("/updatePosition", async (req, res) =>
 {
     try {
         const {latitude, longitude, altitude, speed, heading, accuracy} = req.body
-        const query = `UPDATE positions set latitude = ${latitude}, longitude = ${longitude}, altitude = ${altitude}, speed = ${speed}, heading = ${heading}, accuracy = ${accuracy}`
+        const query = `UPDATE fms_g11_positions set latitude = ${latitude}, longitude = ${longitude}, altitude = ${altitude}, speed = ${speed}, heading = ${heading}, accuracy = ${accuracy}`
         const updatePosition = await db(query)
     } catch (error) {
         console.log(error)
@@ -45,7 +45,7 @@ mapboxRoute.put("/updatePosition", async (req, res) =>
 mapboxRoute.get("/getPosition/:trip_id", async (req, res) => {
     try {
         const {trip_id} = req.params
-        const query = `Select * from positions where trip_id = ${trip_id}`
+        const query = `Select * from fms_g11_positions where trip_id = ${trip_id}`
         const positionData = await db(query)
         res.json(positionData[0])
     } catch (error) {

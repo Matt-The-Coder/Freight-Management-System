@@ -335,6 +335,26 @@ const DeliveryTracking = ({socket}) => {
       setIsLoading(false)
       alert(result)
       socket.emit('deliveryUpdate', {deliveryState, trip_id })
+      let message = ''
+      switch (deliveryState) {
+        case 'In Progress':
+          message = `Delivery in progress, handled by ${currentTrip.t_driver}. Review details for more info.`;
+          break;
+        case 'Completed':
+          message = `Delivery successfully completed by ${currentTrip.t_driver}. Thank you for your service!`;
+          break;
+        case 'Cancelled':
+          message = `Delivery cancelled by ${currentTrip.t_driver}. Take necessary action and notify relevant parties.`;
+          break;
+        case 'Pending':
+          message = `Delivery set as pending, awaiting action by ${currentTrip.t_driver}. Review details and provide instructions.`;
+          break;
+      }
+      
+      const insertNotif = await axios.post(`${hostServer}/insertNotifications`,
+      {
+        description:message
+      }) 
       if (deliveryState !== "In Progress") {
         nav('/driver/deliveries/ongoing')
       }

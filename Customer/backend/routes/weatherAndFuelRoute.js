@@ -35,7 +35,7 @@ WFRoute.get('/get-vehicle-stats/:id', async (req, res)=>
 {   
     const {id} = req.params
     try {
-      const result = await db(`Select * from sustainability_data where sd_trip_id = ${id}`)
+      const result = await db(`Select * from fms_g11_sustainability_data where sd_trip_id = ${id}`)
       res.json(result)
     } catch (error) {
       console.log(error)

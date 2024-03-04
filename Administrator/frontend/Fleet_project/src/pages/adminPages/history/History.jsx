@@ -71,7 +71,8 @@ const AdminHistory = ({socket}) => {
                             const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
                             let filteredDriver = []
                             filteredDeliveries.forEach((deliveries)=>{
-                                filteredDriver = driverStorage.filter((dDriver)=>{return dDriver.u_username == deliveries.t_driver})
+                               let filterDriver = driverStorage.find((dDriver)=>{return dDriver.u_username == deliveries.t_driver})
+                               filteredDriver.push(filterDriver)
                             })
                             console.log(filteredDeliveries)
                             console.log(filteredDriver)
@@ -87,7 +88,7 @@ const AdminHistory = ({socket}) => {
                     </select>
                 </div>
                 <div className="trips-list">
-                {deliveries.length == 0 && <center><h1>No Trips Have Been Made Yet</h1></center>}
+                {deliveries.length == 0 && <center><h1>No Trips Found</h1></center>}
                     {deliveries.map((e, i) => {
                         let statusColor = '';
                         if (e.t_trip_status == 'Completed') {

@@ -13,6 +13,8 @@ const AdminDashboard = ({socket}) => {
     const { u_name, theme, setIsLoading } = useOutletContext()
     const [deliveries, setDeliveries] = useState([])
     const [sustainData, setSustainData] = useState([])
+    const [fuelData, setFuelData] = useState()
+    const [emissionData, setEmissionData] = useState()
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     useEffect(()=>{
         if(theme == "light")
@@ -27,7 +29,6 @@ const AdminDashboard = ({socket}) => {
         var options = {
             month: 'long',
         };
-        console.log(datetime)
         // Format the date and time using options
         var formattedDateTime = datetime.toLocaleString('en-US', options);
         return formattedDateTime;
@@ -56,10 +57,8 @@ const AdminDashboard = ({socket}) => {
     }
     const getDeliveries = async () => {
         try {
-            setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-all-trips`)
             const result = data.data
-            setIsLoading(false)
             setDeliveries(result)
 
         } catch (error) {
@@ -71,31 +70,26 @@ const AdminDashboard = ({socket}) => {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/getSustainableData`)
             const result = data.data
-            console.log(result)
-            setIsLoading(false)
             setSustainData(result)
-
+            let totalFuel = 0
+            let totalEmission = 0
+            result.carbonEmissions?.forEach((e)=>{
+                let parsed = e.total_emission
+                totalEmission += parsed
+            })
+            result.fuelConsumption?.forEach((e)=>{
+                let parsed = e.total_fuel_consumption
+                totalFuel += parsed
+            })
+            setEmissionData(totalEmission.toFixed(2))
+            setFuelData(totalFuel.toFixed(2))
+            setIsLoading(false)
 
         } catch (error) {
             console.log(error)
         }
     }
-    const getTotalSustainability = (type) =>{
-        let total = 0
-        if(type == "fuel"){
-            sustainData.fuelConsumption?.forEach((e)=>{
-                let parsed = e.total_fuel_consumption
-                total += parsed
-            })
-        }else{
-            sustainData.carbonEmissions?.forEach((e)=>{
-                let parsed = e.total_emission
-                total += parsed
-            })
-        }
-        
-        return total.toFixed(2)
-    }
+ 
     const getNumberTrips = (type) => {
         let numTrips = ""
         switch(type){
@@ -109,7 +103,6 @@ const AdminDashboard = ({socket}) => {
             break;
             default:null
         }
-        console.log(numTrips)
         return numTrips.length;
   
     }
@@ -117,14 +110,6 @@ const AdminDashboard = ({socket}) => {
         getDeliveries();
         getSustainData();
     },[u_name])
-    useEffect(() => {
-        socket.on('deliveryUpdate', (data) => {
-                alert("Delivery Status Updated")
-                location.reload()        
-        });
-        return () => socket.off('deliveryUpdate');
-    
-      }, [socket]);
 defaults.maintainAspectRatio = false
 defaults.responsive = true
 defaults.plugins.title.display = true
@@ -219,7 +204,7 @@ defaults.plugins.title.font.size = 25
                     <i className='bx bx-wind' id="trips-car-emission"></i>
                     </div>
                     <div className="trip-box-number">
-                        <h3>{getTotalSustainability("emission")}g</h3>
+                        <h3>{emissionData}g</h3>
                     </div>
                 </div>
             </div>
@@ -233,7 +218,7 @@ defaults.plugins.title.font.size = 25
                     <i className='bx bx-gas-pump' id="trips-car-fuel"></i>
                     </div>
                     <div className="trip-box-number">
-                        <h3>{getTotalSustainability("fuel")}l</h3>
+                        <h3>{fuelData}l</h3>
                     </div>
                 </div>
             </div>

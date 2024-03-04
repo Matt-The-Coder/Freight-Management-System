@@ -110,7 +110,7 @@ const DriverDeliveries = () => {
       <div className="deliveries-list">
         {Object.entries(deliveries).length === 0 && (
           <center>
-            <h1>No Assigned Deliveries Yet</h1>
+            <h1>No Upcoming Deliveries Yet</h1>
           </center>
         )}
         {Object.entries(deliveries).reverse().map(([deliveryId, delivery], i) => {

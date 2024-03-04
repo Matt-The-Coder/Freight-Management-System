@@ -13,7 +13,7 @@ const TrackingTrips = ({socket}) => {
     const [refresh, setRefresh] = useState(false)
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
-                alert("Delivery Status Updated")
+                alert("Delivery Information Updated")
                 location.reload()        
         });
         return () => socket.off('deliveryUpdate');
@@ -84,7 +84,7 @@ const TrackingTrips = ({socket}) => {
                     </div>
                 </div>
                 <div className="trips-list">
-                    {deliveries.length == 0 && <center><h1>No OnGoing Trips Yet</h1></center>}
+                    {deliveries.length == 0 && <center><h1>No OnGoing Trips at the Moment</h1></center>}
                     {deliveries.map((e, i) => {
                         return (
                             <div className="trips-container" key={i}>

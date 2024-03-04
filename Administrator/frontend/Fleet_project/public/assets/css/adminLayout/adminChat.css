@@ -128,7 +128,6 @@
     .AdminMessage .active{
         flex-direction: row;
         overflow-y: hidden;
-        height: 200px;
 
     }
     .AdminMessage .active span{

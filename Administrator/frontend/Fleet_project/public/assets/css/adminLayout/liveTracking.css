@@ -219,7 +219,7 @@ button{
     width: 100%;
   }
   .transportCard {
-    height: 200px;
+    height: 220px;
     width: 800px;
     background-color: var(--light-primary);
     position: fixed;

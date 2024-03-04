@@ -26,6 +26,8 @@ const AdminDashboardLayout = ({ socket }) => {
   const [image, setImage] = useState('')
   const [hasImage, setHasImage] = useState(false)
   const [driverHistory, setDriverHistory] = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const notifMessage = useRef()
   const toggleDropdown = (e) => {
     switch (e.id) {
       case 'tracking': setTrackingDropdown(!trackingDropdown)
@@ -68,14 +70,12 @@ const AdminDashboardLayout = ({ socket }) => {
       const result = await axios.get(`${hostServer}/homeAuthentication`)
       if (result.data.message) {
         setAuthError(result.data.message)
-        console.log(result.data.message)
         nav("/login")
       } else {
         const userData = result.data
         setIsAuth(true);
         setUser(userData.authData.user[0])
         setRefresh(!refresh)
-        console.log("okay naman")
       }
     } catch (error) {
       console.log("Cannot fetch, server is down!")
@@ -106,6 +106,18 @@ const AdminDashboardLayout = ({ socket }) => {
     }
 
   }
+  const getNotifications = async () =>{
+    try {
+      setIsLoading(true)
+      const notif = await axios.get(`${hostServer}/getNotifications`);
+      const result = notif.data.reverse();
+      setNotifications(result)
+      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
   useEffect(() => {
     checkAuthentication()
 
@@ -113,7 +125,17 @@ const AdminDashboardLayout = ({ socket }) => {
   useEffect(() => {
     getAccess()
     getProfilePicture()
+    getNotifications()
   }, [refresh])
+
+  useEffect(() => {
+    socket.on('deliveryUpdate', (data) => {
+      getNotifications()
+      setRefresh(!refresh)
+    });
+    return () => socket.off('deliveryUpdate');
+
+  }, [socket]);
 
 
   useEffect(() => {
@@ -130,7 +152,7 @@ const AdminDashboardLayout = ({ socket }) => {
     const handleMenuBarClick = () => {
       const adminSidebar = document.querySelector('.adminSidebar');
       const sideMenu = document.querySelectorAll('#subMenu');
-
+      const notif = document.querySelector('.notif-container');
       // Toggle the 'close' class on the adminSidebar
       adminSidebar.classList.toggle('close');
 
@@ -141,12 +163,14 @@ const AdminDashboardLayout = ({ socket }) => {
           menu.style.opacity = '0.5';
         });
         adminSidebar.style.display = "none"
+        notif.style.display = "none"
       } else {
         sideMenu.forEach((menu) => {
           // Apply styles for smooth showing
           menu.style.opacity = '1';
         });
         adminSidebar.style.display = "block"
+        notif.style.display = "none"
       }
     };
 
@@ -235,6 +259,35 @@ const AdminDashboardLayout = ({ socket }) => {
       }
     }, 100)
 
+  }
+  const formatDate = (date) => {
+    const formattedDate = new Date(date);
+    formattedDate.setDate(formattedDate.getDate());
+    return formattedDate.toISOString().split("T")[0];
+  };
+  const openNotif = () => {
+    const notif = document.querySelector('.notif-container')
+    const notifbyid = document.querySelector('#notif-container')
+    if(notif.style.display !== "none"){
+      notif.style.display =  "none"
+    }else {
+      notif.style.display = "block"
+      notifbyid.style.display = "block"
+    }
+  }
+  
+  const getNotificationNumber = () => {
+    const notif = notifications.filter((e, i)=>{
+      return e.n_isRead == 0
+    })
+    return notif.length
+  }
+  const setIsRead = async (id) =>{
+    try {
+      const res = await axios.put(`${hostServer}/updateNotifications/${id}`)
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
 
@@ -504,8 +557,57 @@ const AdminDashboardLayout = ({ socket }) => {
               </button>
             </div>
           </form>
-          <input type="checkbox" id="theme-toggle" hidden="" onClick={setMapTheme} />
+          <input type="checkbox" id="theme-toggle" hidden onClick={setMapTheme} />
           <label htmlFor="theme-toggle" className="theme-toggle" onClick={setMapTheme} />
+          { access.a_admin_chat == 1
+            && (
+
+              <a href="#" className="notif" onClick={openNotif}>
+              <i className='bx bx-bell'></i>
+              {getNotificationNumber()!==0?
+                            <span className="count">{getNotificationNumber()}</span>:null}
+
+          </a>
+
+            )
+              
+        
+            }
+
+            { access.a_admin_chat == 1
+            && (
+                <>
+                <div className="notif-container" id='notif-container'>
+                  <div className="notif-title">
+                    <h3>Notifications</h3>
+                  </div>
+                {notifications?.map((e, i)=>{
+                  let notf = document.querySelectorAll('.notif-message')
+                  const setStyle = () => {
+                    if (notf[i]?.id == 0) {
+                      notf[i].classList.add('not-read')
+                    }
+                  }
+                  setStyle()
+                  return (
+                    <a href="/admin/history/list" key={i}>
+                      <div className="notif-message" ref={notifMessage} key={i} id={e.n_isRead} 
+                    onClick={()=>{setIsRead(e.n_id)}}>
+                      <p id='notif-date'>{formatDate(e.n_modified_date)}</p>               
+                    <p id='notif-des'> {e.n_description}</p>
+                  </div>
+                  </a> 
+                  )
+                })}
+                </div>
+                
+                </>
+            )
+              
+        
+            }
+
+
           <Link to="/account/settings" className="profile">
             <img src={hasImage && `${uploadingServer}${image}`} alt='Profile' />
           </Link>

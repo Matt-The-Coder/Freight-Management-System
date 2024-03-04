@@ -21,14 +21,7 @@ const UpcomingTrips = ({socket}) => {
         }
     }
     
-    useEffect(() => {
-        socket.on('deliveryUpdate', (data) => {
-                alert("Delivery Status Updated")
-                location.reload()        
-        });
-        return () => socket.off('deliveryUpdate');
-    
-      }, [socket]);
+
     useEffect(()=>{
         getDeliveries()
     },[])
@@ -48,7 +41,7 @@ const UpcomingTrips = ({socket}) => {
                     </div>
                 </div>
                 <div className="trips-list">
-                {deliveries.length == 0 && <center><h1>No Upcoming Trips Yet</h1></center>}
+                {deliveries.length == 0 && <center><h1>No Upcoming Trips at the Moment</h1></center>}
                     {deliveries.map((e, i)=>{
                         
                         return(
