@@ -84,6 +84,7 @@ const DriverDeliveries = () => {
       console.log(error);
     }
   };
+  
 
   useEffect(() => {
     getDeliveries();
@@ -114,7 +115,7 @@ const DriverDeliveries = () => {
           </center>
         )}
         {Object.entries(deliveries).reverse().map(([deliveryId, delivery], i) => {
-          const { t_trip_status, t_trip_fromlocation, t_trip_tolocation, t_created_date, t_totalweight } = delivery;
+          const { t_trip_status, t_trip_fromlocation, t_trip_tolocation, t_created_date, t_totalweight,t_start_date, t_end_date } = delivery;
           let statusColor = '';
           if (t_trip_status === 'Completed') {
             statusColor = '#388E3C'; // Green
@@ -147,6 +148,17 @@ const DriverDeliveries = () => {
                 </div>
               </div>
               <div className="deliveries-content">
+                <div className="trip-date">
+                  <div className="s-trip-date">
+                  <h4>Start Date:</h4>
+                  <p>{formatDate(t_start_date)}</p>
+                  </div>
+                  <div className="e-trip-date">
+                  <h4>End Date:</h4>
+                  <p>{formatDate(t_end_date)}</p>
+                  </div>
+
+                </div>
                 <div className="main-content">
                   <div className="content-design">
                     <h1>•</h1>

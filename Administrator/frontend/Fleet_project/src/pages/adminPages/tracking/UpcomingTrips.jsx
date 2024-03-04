@@ -22,6 +22,11 @@ const UpcomingTrips = ({socket}) => {
     }
     
 
+    const formatDate = (date) => {
+        const newDate = new Date(date);
+        const formattedDate = newDate.toLocaleString();
+        return formattedDate;
+      };
     useEffect(()=>{
         getDeliveries()
     },[])
@@ -69,6 +74,17 @@ const UpcomingTrips = ({socket}) => {
                                 </div>
                             </div>
                             <div className="trips-content">
+                            <div className="trip-date">
+                  <div className="s-trip-date">
+                  <h4>Start Date:</h4>
+                  <p>{formatDate(e.t_start_date)}</p>
+                  </div>
+                  <div className="e-trip-date">
+                  <h4>End Date:</h4>
+                  <p>{formatDate(e.t_end_date)}</p>
+                  </div>
+
+                </div>
                                 <div className="main-content">
                                     <div className="content-design">
                                         <h1>•</h1>

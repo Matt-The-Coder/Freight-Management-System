@@ -97,20 +97,31 @@ authRoute.get('/register', async (req, res)=>
   try {
     const email = 'superadmin@gmail.com'
     const username = 'superAdmin'
-    const fname = 'John'
-    const lName = 'Doe'
-    const password = 'Superadmin#17'
+    const fname = 'Albert'
+    const lName = 'Einstein'
+    const password = 'superAdmin#17'
     const role = 'admin'
     const hashedPassword = await bcrypt.hash(password, 10)
-    const sqlQuery = `INSERT INTO accounts ( u_username, u_first_name, u_last_name, u_password, u_email, u_role) 
-    VALUES('${username}','${fname}', '${lName}',  '${hashedPassword}', '${email}','${role}' )`;
-    await db(sqlQuery)
-
+    const sqlQuery = `INSERT INTO fms_g11_accounts ( u_username, u_first_name, u_last_name, u_password, u_email, u_role, u_profile_picture) 
+    VALUES('${username}','${fname}', '${lName}',  '${hashedPassword}', '${email}','${role}', 'qisl53c3a7bsjxqhzjpn.png' )`;
+    const result = await db(sqlQuery)
+    res.json(result)
 
   } catch (error) {
     console.error(error)
   }
 
 })
+authRoute.get('/addaccess', async (req, res) => {
+  try {
+    const sqlQuery = `select * from fms_g11_trips `;
+    
+    const result = await db(sqlQuery);
+    res.json(result);
+    console.log(result);
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 module.exports = authRoute

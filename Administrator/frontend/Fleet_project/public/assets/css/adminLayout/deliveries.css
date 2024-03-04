@@ -3,6 +3,18 @@
     flex-direction: column;
     gap: 20px;
 }
+
+.trip-date{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.trip-date :is(.s-trip-date, .e-trip-date){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
 .deliveries-container{
     width: 100%;
     height: auto;

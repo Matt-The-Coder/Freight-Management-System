@@ -9,6 +9,7 @@ import axios from "axios";
 const DriverDashboard = ({socket}) => {
     const { u_name, theme, u_username, setIsLoading } = useOutletContext()
     const [deliveries, setDeliveries] = useState([])
+    const [refresh, setRefresh] = useState(false)
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     useEffect(()=>{
         if(theme == "light")
@@ -26,6 +27,7 @@ const DriverDashboard = ({socket}) => {
             const result = data.data
             console.log(result)
             setDeliveries(result)
+            setRefresh(true)
             setIsLoading(false)
 
 
@@ -41,8 +43,7 @@ const DriverDashboard = ({socket}) => {
             break;
             case "Cancelled": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
-            case "Completed": {numTrips = deliveries.filter((e)=>{return e.t_trip_status == type}) 
-        console.log(numTrips)}
+            case "Completed": {numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})}
             break;
             case "In Progress": numTrips = deliveries.filter((e)=>{return e.t_trip_status == type})
             break;
@@ -52,7 +53,7 @@ const DriverDashboard = ({socket}) => {
     }
     useEffect(()=>{
         getDeliveries();
-    },[u_username])
+    },[refresh])
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
                 alert("Delivery Status Updated")
