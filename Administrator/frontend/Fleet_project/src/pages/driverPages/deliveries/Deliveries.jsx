@@ -1,21 +1,65 @@
 import { useEffect, useRef, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '/public/assets/css/adminLayout/deliveries.css';
 
-const DriverDeliveries = () => {
+const DriverDeliveries = ({socket}) => {
   const hostServer = import.meta.env.VITE_SERVER_HOST;
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
   const { u_username: username, setIsLoading, u_id: id } = useOutletContext();
   const [deliveries, setDeliveries] = useState({});
+  const nav= useNavigate()
   const [travelData, setTravelData]= useState([])
+  const [onGoing, setOnGoing] = useState([])
   const acceptButtonRef = useRef(null);
 
   const acceptOrder = (deliveryId) => {
-    const updatedDeliveries = { ...deliveries };
-    updatedDeliveries[deliveryId].isShow = true;
-    setDeliveries(updatedDeliveries);
+    if(onGoing.length !== 0){
+      alert('You can only accept one order at a time!');
+      return;
+    }else{
+      const updatedDeliveries = { ...deliveries };
+      updatedDeliveries[deliveryId].isShow = true;
+      setDeliveries(updatedDeliveries);
+    }
+
   };
+  const setInProgress = async (trip_id, t_driver, t_distance, t_weight) => {
+    try {
+      setIsLoading(true)
+      const data = await axios.post(`${hostServer}/update-trip/${trip_id}`, {
+        status: "In Progress"
+      })
+      console.log(data)
+      let deliveryState = "In Progress"
+      let message = ''
+      switch (deliveryState) {
+        case 'In Progress':
+          message = `Delivery in progress, handled by ${t_driver}. Review details for more info.`;
+          break;
+        case 'Completed':
+          message = `Delivery successfully completed by ${t_driver}. Thank you for your service!`;
+          break;
+        case 'Cancelled':
+          message = `Delivery cancelled by ${t_driver}. Take necessary action and notify relevant parties.`;
+          break;
+        case 'Pending':
+          message = `Delivery set as pending, awaiting action by ${t_driver}. Review details and provide instructions.`;
+          break;
+      }
+      
+      const insertNotif = await axios.post(`${hostServer}/insertNotifications`,
+      {
+        description:message
+      })
+      socket.emit('deliveryUpdate', {deliveryState, trip_id })
+      setIsLoading(false)
+      nav(`/driver/deliveries/tracking?trip_id=${trip_id}&miles=${convertMiles(t_distance)}&weight=${t_weight}`)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const formatDate = (date) => {
     const newDate = new Date(date);
@@ -56,6 +100,7 @@ const DriverDeliveries = () => {
       setIsLoading(true);
       const data = await axios.get(`${hostServer}/get-trip?username=${username}`);
       const result = data.data;
+      const ongoingTrips = result.filter((e)=>{ return e.t_trip_status == "In Progress"})
       const pendingTrips = result.filter((e)=>{ return e.t_trip_status == "Pending"})
       const travelRoutes = await Promise.all(pendingTrips.map(async (e) => {
         const travelTime = await axios.post(`${hostServer}/getDirections`, {
@@ -69,8 +114,8 @@ const DriverDeliveries = () => {
         return travel;
       }));
       const reverseTravel = travelRoutes.reverse()
+      setOnGoing(ongoingTrips)
       setTravelData(reverseTravel);
-      console.log(reverseTravel)
       setIsLoading(false);
       const deliveriesObject = {};
       pendingTrips.forEach((delivery) => {
@@ -115,7 +160,7 @@ const DriverDeliveries = () => {
           </center>
         )}
         {Object.entries(deliveries).reverse().map(([deliveryId, delivery], i) => {
-          const { t_trip_status, t_trip_fromlocation, t_trip_tolocation, t_created_date, t_totalweight,t_start_date, t_end_date } = delivery;
+          const { t_trip_status, t_trip_fromlocation, t_trip_tolocation, t_created_date, t_totalweight,t_start_date, t_end_date, t_driver } = delivery;
           let statusColor = '';
           if (t_trip_status === 'Completed') {
             statusColor = '#388E3C'; // Green
@@ -190,9 +235,7 @@ const DriverDeliveries = () => {
                       <input type="text" />
                     </div> */}
                     <div className="trips-button">
-                      <a href={`/driver/deliveries/tracking?trip_id=${deliveryId}&miles=${convertMiles(travelData[i].distance)}&weight=${t_totalweight}`}>
-                        <button>View On Map</button>
-                      </a>
+                        <button onClick={()=>{setInProgress(deliveryId, t_driver, travelData[i].distance, t_totalweight )}}>View On Map</button>
                     </div>
                   </>
                 )}

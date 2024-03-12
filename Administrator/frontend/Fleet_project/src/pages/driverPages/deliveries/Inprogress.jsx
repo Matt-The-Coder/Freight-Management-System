@@ -164,14 +164,6 @@ const Inprogress = () => {
                     </div>
                   </div>
                 </div>
-                <div className="trips-button">
-                  {!delivery.isShow && (
-                    <button onClick={() => acceptOrder(deliveryId)} ref={acceptButtonRef}>
-                      Accept Order
-                    </button>
-                  )}
-                </div>
-                {delivery.isShow && (
                   <>
                     {/* <div className="odometer">
                       <p>Set Vehicle Odometer:</p>
@@ -183,7 +175,7 @@ const Inprogress = () => {
                       </a>
                     </div>
                   </>
-                )}
+
               </div>
             </div>
           );

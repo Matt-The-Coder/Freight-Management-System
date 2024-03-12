@@ -19,7 +19,7 @@ const AdminDashboardLayout = ({ socket }) => {
   const [isAuth, setIsAuth] = useState(false)
   const [user, setUser] = useState(null)
   const [authError, setAuthError] = useState(null)
-  const [mapStyle, setMapStyle] = useState('streets-v12')
+  const [mapStyle, setMapStyle] = useState('light-v11')
   const [theme, setTheme] = useState("light")
   const [refresh, setRefresh] = useState(false)
   const [access, setAccess] = useState("")
@@ -57,14 +57,20 @@ const AdminDashboardLayout = ({ socket }) => {
     margin: "0 auto",
     position: "fixed"
   };
-
+  // Send users to the server
+  useEffect(() => {
+    if(user?.u_username !== undefined){
+      socket.emit('active', { username: user?.u_username })
+    }
+    return () => socket.off('active')
+  }, [user, socket])
 
   const closeSidebar = () => {
     const adminSidebar = document.querySelector('.adminSidebar');
     adminSidebar.classList.add('close')
     adminSidebar.style.display = 'none'
     const notification = document.querySelector('.notif-container')
-    if(notification.style.display == "block"){
+    if(notification?.style.display == "block"){
       notification.style.display = "none"
     }
   }
@@ -89,14 +95,22 @@ const AdminDashboardLayout = ({ socket }) => {
 
   }
   const getProfilePicture = async () => {
-    const result = await axios.get(`${hostServer}/getProfilePicture/${user.u_id}`)
-    setImage(result.data.image[0].u_profile_picture)
-    setHasImage(true)
+    if(user){
+      const result = await axios.get(`${hostServer}/getProfilePicture/${user?.u_id}`)
+      setImage(result.data.image[0].u_profile_picture)
+      setHasImage(true)
+    }
+    return
+
   }
   const getAccess = async () => {
-    const result = await axios.get(`${hostServer}/getAccess/${user.u_id}`)
-    const fetchedData = result.data.data[0]
-    setAccess(fetchedData)
+    if(user){
+      const result = await axios.get(`${hostServer}/getAccess/${user?.u_id}`)
+      const fetchedData = result.data.data[0]
+      setAccess(fetchedData)
+    }
+    return
+
   }
   const handleLogout = async () => {
     try {
@@ -256,10 +270,10 @@ const AdminDashboardLayout = ({ socket }) => {
   const setMapTheme = () => {
 
     setTimeout(() => {
-      if (mapStyle == 'streets-v12') {
+      if (mapStyle == 'light-v11') {
         setMapStyle('navigation-night-v1')
       } else {
-        setMapStyle('streets-v12')
+        setMapStyle('light-v11')
       }
     }, 100)
 
@@ -613,7 +627,7 @@ const AdminDashboardLayout = ({ socket }) => {
 
 
           <Link to="/account/settings" className="profile">
-            <img src={hasImage && `${uploadingServer}${image}`} alt='Profile' />
+            <img src={hasImage? `${uploadingServer}${image}`:''} alt='Profile' />
           </Link>
         </nav>
         {/* End of Navbar */}

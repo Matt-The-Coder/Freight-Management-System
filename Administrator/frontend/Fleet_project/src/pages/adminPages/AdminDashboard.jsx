@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, Link } from "react-router-dom";
 import { Chart as ChartJS, defaults } from "chart.js/auto";
 import {Line, Bar, Doughnut} from 'react-chartjs-2'
 import { jsPDF } from "jspdf";
@@ -131,6 +131,7 @@ defaults.plugins.title.font.size = 25
                 </div>
             </div>
             <div className="kpi-cards">
+            <Link to="/admin/history/list">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Overall Trips</h2>
@@ -143,7 +144,8 @@ defaults.plugins.title.font.size = 25
                         <h3>{deliveries.length}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
+            <Link to="/admin/history/list">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Completed Trips</h2>
@@ -156,7 +158,8 @@ defaults.plugins.title.font.size = 25
                         <h3>{getNumberTrips("Completed")}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
+            <Link to="/admin/history/list">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Cancelled Trips</h2>
@@ -169,7 +172,8 @@ defaults.plugins.title.font.size = 25
                         <h3>{getNumberTrips("Cancelled")}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
+            <Link to="/admin/tracking/trips/upcoming">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Pending Trips</h2>
@@ -182,7 +186,8 @@ defaults.plugins.title.font.size = 25
                         <h3>{getNumberTrips("Pending")}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
+            <Link to="/admin/tracking/trips/ongoing">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>In Progress Trips</h2>
@@ -195,7 +200,7 @@ defaults.plugins.title.font.size = 25
                         <h3>{getNumberTrips("In Progress")}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Total Carbon Emissions</h2>

@@ -200,6 +200,7 @@ const AdminHistory = ({socket}) => {
                                                     <p>End: {formatDate(e.t_end_date)}</p>
                                                     <p>Duration: {e.t_totaldrivetime}</p>
                                                     <p>Distance: {e.t_totaldistance?.toFixed(2)} km</p>
+                                                    <p>Report: {e.t_remarks}</p>
                                                 
                                               
                                                 

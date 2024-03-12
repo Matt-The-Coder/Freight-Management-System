@@ -36,7 +36,7 @@
   color: white;
 }
 h3{
-  font-weight: 600;
+  font-weight: 700;
   font-size: 24px;
 }
 h4{
@@ -169,6 +169,7 @@ button{
   #showDetail, #showInfo{
     color: var(--primary);
     font-size: 40px;
+    cursor: pointer;
   }
   .moreInfo {
     position: absolute;
@@ -195,8 +196,10 @@ button{
     border-bottom: 1px solid;
   }
   .boxInfoNav h4 {
-    padding: 10px;
+    padding: 8px;
+    width: 50%;
     cursor: pointer;
+    text-align: center;
   }
   .boxInfoDetail{
     height: 90%;
@@ -208,6 +211,13 @@ button{
     display: flex;
     flex-direction: column;
     gap: 10px;
+    align-items:stretch;
+  }
+  .boxInfoDetail .trip-status form h4{
+    justify-content: end;
+  }
+   #del-status{
+    border-left: 1px solid black;
   }
   .boxInfoDetail .trip-status form :is(select, button, option){
     padding: 6px 12px;
@@ -448,6 +458,9 @@ button{
     
   }
   @media screen and (max-width: 576px) {
+    .DeliveryTracking{
+      height: 120vh;
+    }
     .tracking-details{
       padding: 0px;
       height: auto;
@@ -551,7 +564,8 @@ button{
   .trip-status .status-form{
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    gap: 5%;
+    gap: 10px;
   }
 }

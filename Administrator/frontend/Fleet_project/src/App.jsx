@@ -37,8 +37,8 @@ const App = () => {
 
           <Route path='/driver/chats' element={<DriverChat socket={socket}/>} />
           <Route path='/driver/history/deliveries' element={<History socket={socket}/>} />
-          <Route path='/driver/deliveries/ongoing' element={<Inprogress />} />
-          <Route path='/driver/deliveries/pending' element={<Deliveries />} />
+          <Route path='/driver/deliveries/ongoing' element={<Inprogress socket={socket}/>} />
+          <Route path='/driver/deliveries/pending' element={<Deliveries socket={socket} />} />
           <Route path='/driver/deliveries/tracking/' element={<DeliveryTracking socket={socket}/>} />
           <Route path='/driver/dashboard' element={<DriverDashboard socket={socket}/>} />
         </Route>

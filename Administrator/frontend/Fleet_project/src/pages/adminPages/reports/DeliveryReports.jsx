@@ -147,6 +147,7 @@ const DeliveryReports = ({socket}) => {
                                 <th>Driver</th>
                                 <th>Vehicle</th>
                                 <th>Status</th>
+                                <th>Trip Report</th>
                                 <th>Tracking Code</th>
                                 <th>Created Date</th>
                             </tr>
@@ -165,6 +166,7 @@ const DeliveryReports = ({socket}) => {
                                         <td> {e?.t_driver}</td>
                                         <td> {e?.t_vehicle}</td>
                                         <td> {e?.t_trip_status}</td>
+                                        <td> {e?.t_remarks? e.t_remarks:"N/A"} </td>
                                         <td> {e?.t_trackingcode}</td>
                                         <td> {formatDateTime(e.t_created_date)}</td>
                                     </tr>

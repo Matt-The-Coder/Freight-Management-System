@@ -51,6 +51,7 @@ personalInfoRoute.post('/insertNotifications', async (req, res)=>{
     const query = `Insert into fms_g11_notifications (n_description) values ('${description}')`
     const data = await db(query)
     res.json(data)
+    console.log(data)
 } catch (error) {
     console.log(error)
 }

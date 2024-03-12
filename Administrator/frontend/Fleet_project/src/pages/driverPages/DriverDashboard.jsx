@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, Link } from "react-router-dom";
 import { Chart as ChartJS, defaults } from "chart.js/auto";
 import {Line, Bar, Doughnut} from 'react-chartjs-2'
 import '/public/assets/css/adminLayout/dashboardAdmin.css';
@@ -82,71 +82,76 @@ defaults.plugins.title.font.size = 25
                 </div>
             </div>
             <div className="kpi-cards">
+            <Link to="/driver/history/deliveries">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Overall Trips</h2>
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-overall"></i>
+                    <i className='bx bx-car' id="trips-car-overall"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{deliveries.length}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
+            <Link to="/driver/history/deliveries">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Completed Trips</h2>
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-completed"></i>
+                    <i className='bx bx-car' id="trips-car-completed"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getNumberTrips("Completed")}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
+            <Link to="/driver/history/deliveries">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Cancelled Trips</h2>
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-unsuccessful"></i>
+                    <i className='bx bx-car' id="trips-car-unsuccessful"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getNumberTrips("Cancelled")}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
+            <Link to="/driver/deliveries/pending">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Pending Trips</h2>
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-pending"></i>
+                    <i className='bx bx-car' id="trips-car-pending"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getNumberTrips("Pending")}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
+            <Link to="/driver/deliveries/ongoing">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>In Progress Trips</h2>
                 </div>
                 <div className="trip-box-content">
                     <div className="trip-box-logo">
-                    <i class='bx bx-car' id="trips-car-ongoing"></i>
+                    <i className='bx bx-car' id="trips-car-ongoing"></i>
                     </div>
                     <div className="trip-box-number">
                         <h3>{getNumberTrips("In Progress")}</h3>
                     </div>
                 </div>
-            </div>
+            </div></Link>
 
            
 

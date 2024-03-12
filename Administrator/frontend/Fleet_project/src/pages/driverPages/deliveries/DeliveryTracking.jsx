@@ -39,6 +39,7 @@ const DeliveryTracking = ({socket}) => {
   const directions = useRef(null);
   const markerTrack = useRef(null)
   const marker = useRef(null)
+  const [tripReport, setTripReport] = useState('')
   const [currentTrip, setCurrentTrip] = useState({})
   const [driveTime, setDriveTime] = useState(null);
   const [speed, setSpeed] = useState(0)
@@ -327,37 +328,45 @@ const DeliveryTracking = ({socket}) => {
   const setDeliveryStatus = async (e) => {
     e.preventDefault()
     try {
-      setIsLoading(true)
-      const data = await axios.post(`${hostServer}/update-trip/${trip_id}`, {
-        status: deliveryState
-      })
-      const result = data.data.message
-      setIsLoading(false)
-      alert(result)
-      socket.emit('deliveryUpdate', {deliveryState, trip_id })
-      let message = ''
-      switch (deliveryState) {
-        case 'In Progress':
-          message = `Delivery in progress, handled by ${currentTrip.t_driver}. Review details for more info.`;
-          break;
-        case 'Completed':
-          message = `Delivery successfully completed by ${currentTrip.t_driver}. Thank you for your service!`;
-          break;
-        case 'Cancelled':
-          message = `Delivery cancelled by ${currentTrip.t_driver}. Take necessary action and notify relevant parties.`;
-          break;
-        case 'Pending':
-          message = `Delivery set as pending, awaiting action by ${currentTrip.t_driver}. Review details and provide instructions.`;
-          break;
+      if (deliveryState == "In Progress") {
+        alert("The trip is already in progress!")
+        return;
+      }else{
+        setIsLoading(true)
+        console.log(tripReport)
+        const data = await axios.post(`${hostServer}/update-trip/${trip_id}`, {
+          status: deliveryState,
+          report: tripReport
+        })
+        const result = data.data.message
+        setIsLoading(false)
+        alert(result)
+        let message = ''
+        switch (deliveryState) {
+          case 'In Progress':
+            message = `Delivery in progress, handled by ${currentTrip.t_driver}. Review details for more info.`;
+            break;
+          case 'Completed':
+            message = `Delivery successfully completed by ${currentTrip.t_driver}. Thank you for your service!`;
+            break;
+          case 'Cancelled':
+            message = `Delivery cancelled by ${currentTrip.t_driver}. Take necessary action and notify relevant parties.`;
+            break;
+          case 'Pending':
+            message = `Delivery set as pending, awaiting action by ${currentTrip.t_driver}. Review details and provide instructions.`;
+            break;
+        }
+        
+        const insertNotif = await axios.post(`${hostServer}/insertNotifications`,
+        {
+          description:message
+        }) 
+        socket.emit('deliveryUpdate', {deliveryState, trip_id })
+        if (deliveryState !== "In Progress") {
+          nav('/driver/deliveries/ongoing')
+        }
       }
-      
-      const insertNotif = await axios.post(`${hostServer}/insertNotifications`,
-      {
-        description:message
-      }) 
-      if (deliveryState !== "In Progress") {
-        nav('/driver/deliveries/ongoing')
-      }
+
 
     } catch (error) {
       console.log(error)
@@ -391,14 +400,15 @@ const DeliveryTracking = ({socket}) => {
                   <div className="card">
                     <div className='trip-status'>
                       <form onSubmit={(e) => { setDeliveryStatus(e) }}>
-                        <h3>Set Delivery Status</h3>
+                        <h3> Delivery Status</h3>
                         <div className="status-form">
                           <select id='status-update' onChange={(e) => { setDeliveryState(e.currentTarget.value) }} value={deliveryState}>
-                            <option value="Pending">Pending</option>
                             <option value="In Progress">In Progress</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
                           </select>
+                          <h4>Trip Report</h4>
+                          <textarea id="remarks" cols="30" rows="5" required placeholder='Please provide details about the trip' onChange={(e)=>{setTripReport(e.currentTarget.value)}}></textarea>
                           <button type='submit'>Submit</button>
                         </div>
 
@@ -472,7 +482,7 @@ const DeliveryTracking = ({socket}) => {
             <div className="detail-slide" ref={detail}>
               <div className="arrow-up">
                 <i className='bx bx-arrow-from-bottom bx-fade-up' id='arrow-up' ref={arrowUp} onClick={() => { openDetail("up") }}></i>
-                <i class='bx bx-arrow-from-top bx-fade-down' id='arrow-up' style={{ display: "none" }} ref={arrowDown} onClick={() => { openDetail("down") }}></i>
+                <i className='bx bx-arrow-from-top bx-fade-down' id='arrow-up' style={{ display: "none" }} ref={arrowDown} onClick={() => { openDetail("down") }}></i>
               </div>
               <center><h3>Directions</h3></center>
               <div className="instruction-container" ref={instructionContainer}>
@@ -879,7 +889,7 @@ const DeliveryTracking = ({socket}) => {
                 <div className="boxInfo" ref={bInfo}>
                   <div className="boxInfoNav" ref={boxInfoNav}>
                     <h4 onClick={() => { openBoxInfo(1) }}>Directions</h4>
-                    <h4 onClick={() => { openBoxInfo(2) }}>Delivery Status</h4>
+                    <h4 id='del-status' onClick={() => { openBoxInfo(2) }}>Delivery Status</h4>
                     {/* <h4 onClick={() => { openBoxInfo(3) }}>Reminder</h4> */}
                   </div>
                   <div className="boxInfoDetail">
@@ -888,20 +898,17 @@ const DeliveryTracking = ({socket}) => {
                     {boxInfoMessage &&
                       <div className='trip-status'>
                         <form onSubmit={(e) => { setDeliveryStatus(e) }}>
-                          <h3>Set Delivery Status</h3>
+                          <h3>Delivery Status</h3>
                           <select id='status-update' value={deliveryState} onChange={(e) => { setDeliveryState(e.currentTarget.value) }}>
-                            <option value="Pending">Pending</option>
                             <option value="In Progress">In Progress</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
                           </select>
+                          <h4>Trip Report</h4>
+                          <textarea required id="remarks" cols="30" rows="5" placeholder='Please provide details about the trip' onChange={(e)=>{setTripReport(e.currentTarget.value)}}></textarea>
                           <button type='submit'>Submit</button>
                         </form>
                       </div>}
-                    {boxInfoReminder &&
-                      <>
-                        <h1>Reminder</h1>
-                      </>}
                   </div>
                 </div>
               </>

@@ -83,9 +83,16 @@ trackingRoute.get('/get-completed-trip', async (req, res) => {
 trackingRoute.post('/update-trip/:trip_id', async (req, res) => {
     try {
         const {trip_id} = req.params
-        const {status} = req.body
-        const data = await db(`UPDATE fms_g11_trips set t_trip_status = '${status}' where t_id = ${trip_id}`)
-        return res.json({message:"Delivery Status Updated!"})
+        const {status, report} = req.body
+        const data = await db(`UPDATE fms_g11_trips set t_trip_status = '${status}', t_remarks = '${report?report:'N/A'}' where t_id = ${trip_id}`)
+        if(status == "Completed"){
+          return res.json({message:"Delivery has been Completed!"})
+        }else if(status == "Cancelled"){
+          return res.json({message:"Delivery has been Cancelled!"})
+        }else{
+          return res.json({message:"Delivery has been Updated!"})
+        }
+
     } catch (error) {
         console.log(error)
     }
