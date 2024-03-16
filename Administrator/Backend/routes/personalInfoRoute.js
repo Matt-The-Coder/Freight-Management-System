@@ -51,7 +51,6 @@ personalInfoRoute.post('/insertNotifications', async (req, res)=>{
     const query = `Insert into fms_g11_notifications (n_description) values ('${description}')`
     const data = await db(query)
     res.json(data)
-    console.log(data)
 } catch (error) {
     console.log(error)
 }
@@ -166,4 +165,120 @@ personalInfoRoute.get('/getProfilePicture/:id', async (req, res) =>
 })
 
 
+
+
+// FOR DRIVERS
+
+
+
+personalInfoRoute.post('/updateDriverPersonalInfo', async (req, res)=>{
+  const {fName, lName, uName, email, d_id:id} = req.body
+  try {
+      const query = `UPDATE fms_g12_drivers SET d_username = '${uName}', d_first_name = '${fName}', d_last_name = '${lName}', d_email = '${email}' WHERE d_id = ${id}`
+      await db(query)
+      res.json({message:"success"})
+      console.log("success")
+  } catch (error) {
+      res.json({errorMessage:"Username already exists!"})
+  }
+
+})
+personalInfoRoute.post('/updateDriverSecurityInfo', async (req, res)=>{
+  const {nP:newPassword, u_id:id} = req.body
+  const hashedPassword = await bcrypt.hash(newPassword, 10)
+  const query = `UPDATE fms_g12_drivers SET d_password = '${hashedPassword}' WHERE d_id = ${id}`
+  const result = await db(query)
+ res.json({message:"Updated Successfully!"}) 
+})
+personalInfoRoute.get('/getdriveraccountbyid/:id', async (req, res) => 
+{
+  try {
+      const {id} = req.params
+      const query = `Select * from fms_g12_drivers where d_id = ${id}`
+      const result = await db(query)
+      res.json(result)
+  } catch (error) {
+      res.json({message: "Wrong ID"})
+  }
+
+})
+personalInfoRoute.get("/getDriverAccess/:id", async (req, res) => 
+{
+  const {id} = req.params
+  const query = `Select * from fms_g11_driver_access where a_u_id = ${id}`
+  const result = await db(query)
+  res.json({data: result}) 
+})
+
+personalInfoRoute.post("/driver/upload/:id", upload.single("my_file"), async (req, res) => {
+  try {
+
+          const {id} = req.params
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const cldRes = await handleUpload(dataURI);
+    const path = cldRes.url.split('/').pop()
+  const query = `Update fms_g12_drivers set d_picture = '${path}' where d_id = ${id}`
+    const result = await db(query)
+    res.json(cldRes);
+    
+
+  } catch (error) {
+    console.log("The error", error);
+    res.send({
+      message: error.message,
+    });
+  }
+});
+
+personalInfoRoute.get('/getdriveraccountbyusername', async (req, res) => 
+{
+  try {
+      const {username} = req.query
+      const query = `Select * from fms_g12_drivers where d_username = '${username}'`
+      const result = await db(query)
+      res.json(result)
+  } catch (error) {
+      res.json({message: "Wrong ID"})
+  }
+
+})
+
+// For localhost
+// Change profile picture
+// personalInfoRoute.post('/changeProfile/:id', upload.single('image'), async (req, res) => 
+// {
+//     const {id} = req.params
+//     try {
+//         const query = `Update accounts set u_profile_picture = '${req.file.filename}' where u_id = ${id}`
+//         await db(query)
+//         res.json({status: 'Success'})
+//     } catch (error) {
+//         res.json({status: 'Failed'})
+//     }
+// })
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, './images')
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+//     }
+// })
+
+// const upload = multer({
+//     storage:storage
+// })
+personalInfoRoute.get('/getDriverProfilePicture/:id', async (req, res) => 
+{   
+  const {id} = req.params
+  try {
+      const query = `Select d_picture from fms_g12_drivers where d_id = ${id} `
+      const result = await db(query)
+      res.json({image: result})
+  } catch (error) {
+      console.log("Cannot get profile picture")
+      res.json({status: "Failed to get profile picture"})
+  }
+})
 module.exports = personalInfoRoute

@@ -8,12 +8,15 @@ const FuelManagement = () => {
     const [isDelete, setIsDelete] = useState(false)
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     const [fuelList, setFuelList] = useState([])
+    const [filterData, setFilterData] = useState("")
+    const [fuelData, setFuelData] = useState([])
     const [fuelSearch, setFuelSearch] = useState('')
     const getFuelList = async () => {
         setIsLoading(true)
         const fetchFuel = await axios.get(`${hostServer}/retrieve-fuel`)
         const  data = fetchFuel.data;
         setFuelList(data)
+        setFuelData(data)
         setIsLoading(false)
     }
     const searchFuel = async() =>
@@ -27,8 +30,15 @@ const FuelManagement = () => {
     const updateData = (e) => {
         if(e){
             nav(`/admin/fuel/edit/${e}`)
-        }
-        
+        }  
+    }
+    const filterFuel = (e) => {
+        setFilterData(e)
+        const filtered = fuelData.filter((f)=>{
+            const formattedDate = f.v_modified_date.substring(0,10)
+            return formattedDate == e
+        })
+        setFuelList(filtered)
     }
     useEffect(()=>{
         getFuelList()
@@ -64,6 +74,11 @@ const FuelManagement = () => {
                     </ul>
                 </div>
             </div>
+            <div className="filter">
+                    {/* <h3>Filter</h3> */}
+                    <input type="date" id='date-input' value={filterData} onChange={(e)=>{filterFuel(e.currentTarget.value)}}/>
+                    <i className='bx bx-filter' ></i>
+                </div>
             <div className="fuel-content">
                 <div className="fuel-search">
 

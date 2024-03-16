@@ -22,7 +22,16 @@
 }
 textarea{
     resize: none;
-
+    cursor: pointer;
+}
+select, option, #date-input{
+    cursor: pointer;
+}
+#date-input{
+    border-radius: 5px;
+    width: 15%;
+    font-size: 12px;
+    padding: 5px 12px;
 }
 #remarks{
     color: black ;
@@ -705,10 +714,16 @@ body.dark{
         position: relative;
         left: -60%;
     }
+    #date-input{
+        width: 30%;
+    }
 
 }
 
 @media screen and (max-width: 576px) {
+    #date-input{
+        width: 50%;
+    }
     .notif-container
     .content nav form .form-input input{
         display: none;

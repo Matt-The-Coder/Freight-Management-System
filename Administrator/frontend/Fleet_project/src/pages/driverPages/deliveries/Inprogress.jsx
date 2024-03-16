@@ -6,7 +6,7 @@ import '/public/assets/css/adminLayout/deliveries.css';
 const Inprogress = () => {
   const hostServer = import.meta.env.VITE_SERVER_HOST;
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
-  const { u_username: username, setIsLoading, u_id: id } = useOutletContext();
+  const { d_username: username, setIsLoading, d_id: id } = useOutletContext();
   const [deliveries, setDeliveries] = useState({});
   const [travelData, setTravelData]= useState([])
   const acceptButtonRef = useRef(null);
@@ -54,7 +54,7 @@ const Inprogress = () => {
   const getDeliveries = async () => {
     try {
       setIsLoading(true);
-      const data = await axios.get(`${hostServer}/get-trip?username=${username}`);
+      const data = await axios.get(`${hostServer}/get-trip?username=${id}`);
       const result = data.data;
       const pendingTrips = result.filter((e)=>{ return e.t_trip_status == "In Progress"})
       const travelRoutes = await Promise.all(pendingTrips.map(async (e) => {

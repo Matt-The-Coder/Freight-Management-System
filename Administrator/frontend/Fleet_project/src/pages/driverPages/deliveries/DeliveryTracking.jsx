@@ -287,6 +287,7 @@ const DeliveryTracking = ({socket}) => {
       const result = currentTrip.data
       setDeliveryState(result.t_trip_status)
       setCurrentTrip(result)
+      console.log(result)
       const data = position.coords;
       if (isMapSetup) {
         mapContainer.current.classList.remove("mapboxgl-map")
@@ -344,16 +345,16 @@ const DeliveryTracking = ({socket}) => {
         let message = ''
         switch (deliveryState) {
           case 'In Progress':
-            message = `Delivery in progress, handled by ${currentTrip.t_driver}. Review details for more info.`;
+            message = `Delivery in progress, handled by ${currentTrip.d_first_name}. Review details for more info.`;
             break;
           case 'Completed':
-            message = `Delivery successfully completed by ${currentTrip.t_driver}. Thank you for your service!`;
+            message = `Delivery successfully completed by ${currentTrip.d_first_name}. Thank you for your service!`;
             break;
           case 'Cancelled':
-            message = `Delivery cancelled by ${currentTrip.t_driver}. Take necessary action and notify relevant parties.`;
+            message = `Delivery cancelled by ${currentTrip.d_first_name}. Take necessary action and notify relevant parties.`;
             break;
           case 'Pending':
-            message = `Delivery set as pending, awaiting action by ${currentTrip.t_driver}. Review details and provide instructions.`;
+            message = `Delivery set as pending, awaiting action by ${currentTrip.d_first_name}. Review details and provide instructions.`;
             break;
         }
         
@@ -452,7 +453,7 @@ const DeliveryTracking = ({socket}) => {
                     </div>
                     <div className="transportData">
                       <div className="transportData1">
-                        <p>Driver: {currentTrip.t_driver} </p>
+                        <p>Driver: {currentTrip.d_first_name + " " + currentTrip.d_last_name}  </p>
                         <p>Destination: {currentTrip.t_trip_tolocation}</p>
                         <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
                         <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>
@@ -858,7 +859,7 @@ const DeliveryTracking = ({socket}) => {
                       </div>
                       <div className="transportData">
                         <div className="transportData1">
-                          <p>Driver: {currentTrip.t_driver} </p>
+                          <p>Driver: {currentTrip.d_first_name + " " + currentTrip.d_last_name} </p>
                           <p>Destination: {currentTrip.t_trip_tolocation}</p>
                           <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
                           <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>

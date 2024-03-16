@@ -88,7 +88,6 @@ const DeliveryReports = ({socket}) => {
             </div>
             <div className="filter">
                     {/* <h3>Filter</h3> */}
-                    <i class='bx bx-filter' ></i>
                     <select id="filter" value={filter} onChange={async(el)=>{
                         if(el.currentTarget.value == "all"){
                             setIsLoading(true)
@@ -121,6 +120,7 @@ const DeliveryReports = ({socket}) => {
                         <option value="In Progress">In Progress Trips</option>
                         <option value="Pending">Pending Trips</option>
                     </select>
+                    <i className='bx bx-filter' ></i>
                 </div>
             <div className="maintenance-details">
                 <div className="report-export">

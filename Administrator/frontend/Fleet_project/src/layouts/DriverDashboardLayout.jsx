@@ -3,7 +3,7 @@ import '../../public/assets/css/adminLayout/dashboard.css'
 import { useEffect, useRef, useState } from 'react';
 import RiseLoader from "react-spinners/RiseLoader";
 import axios from 'axios';
-const AdminDashboardLayout = ({ socket }) => {
+const DriverDashboardLayout = ({ socket }) => {
   axios.defaults.withCredentials = true;
   const hostServer = import.meta.env.VITE_SERVER_HOST
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
@@ -59,8 +59,8 @@ const AdminDashboardLayout = ({ socket }) => {
   };
   // Send users to the server
   useEffect(() => {
-    if(user?.u_username !== undefined){
-      socket.emit('active', { username: user?.u_username })
+    if(user?.d_username !== undefined){
+      socket.emit('active', { username: user?.d_username })
     }
     return () => socket.off('active')
   }, [user, socket])
@@ -96,8 +96,8 @@ const AdminDashboardLayout = ({ socket }) => {
   }
   const getProfilePicture = async () => {
     if(user){
-      const result = await axios.get(`${hostServer}/getProfilePicture/${user?.u_id}`)
-      setImage(result.data.image[0].u_profile_picture)
+      const result = await axios.get(`${hostServer}/getDriverProfilePicture/${user?.d_id}`)
+      setImage(result.data.image[0].d_picture)
       setHasImage(true)
     }
     return
@@ -105,7 +105,7 @@ const AdminDashboardLayout = ({ socket }) => {
   }
   const getAccess = async () => {
     if(user){
-      const result = await axios.get(`${hostServer}/getAccess/${user?.u_id}`)
+      const result = await axios.get(`${hostServer}/getDriverAccess/${user?.d_id}`)
       const fetchedData = result.data.data[0]
       setAccess(fetchedData)
     }
@@ -115,7 +115,7 @@ const AdminDashboardLayout = ({ socket }) => {
   const handleLogout = async () => {
     try {
       setIsLoading(true)
-      socket.emit('logout', { username: user.u_username })
+      socket.emit('logout', { username: user.d_username })
       await axios.delete(`${hostServer}/logout`);
       setIsLoading(false)
       nav("/login")
@@ -328,7 +328,7 @@ const AdminDashboardLayout = ({ socket }) => {
         </>)}
       <noscript>You need to enable JavaScript to run this app.</noscript>
       <div className="adminSidebar close">
-        <Link to="/admin/dashboard" className="logo">
+        <Link to="/driver/dashboard" className="logo">
           <img src="/assets/img/kargada-logo.png" alt="Company Logo" />
           <div className="logo-name">
             <span>Kar</span>gada
@@ -545,7 +545,7 @@ const AdminDashboardLayout = ({ socket }) => {
             </>)}
 
           <li id='settings' onClick={(e) => { toggleDropdown(e.currentTarget) }}>
-            <Link to="/account/admin/settings" onClick={closeSidebar}>
+            <Link to="/account/driver/settings" onClick={closeSidebar}>
               <i className="bx bx-cog" />
               Settings
             </Link>
@@ -626,7 +626,7 @@ const AdminDashboardLayout = ({ socket }) => {
             }
 
 
-          <Link to="/account/admin/settings" className="profile">
+          <Link to="/account/driver/settings" className="profile">
             <img src={hasImage? `${uploadingServer}${image}`:''} alt='Profile' />
           </Link>
         </nav>
@@ -642,4 +642,4 @@ const AdminDashboardLayout = ({ socket }) => {
   )
 }
 
-export default AdminDashboardLayout;
+export default DriverDashboardLayout;

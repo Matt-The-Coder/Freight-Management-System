@@ -5,20 +5,12 @@ const trackingRoute = express.Router()
 trackingRoute.get('/get-trips-admin', async (req, res) => {
     try {
         const tripData = await db(`
-          SELECT * FROM fms_g11_trips WHERE t_trip_status = 'Completed' OR t_trip_status = "Cancelled"
+          SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers ON t_driver = d_id
+          INNER JOIN fms_g11_sustainability_data on t_id = sd_trip_id
+          WHERE t_trip_status = 'Completed' OR t_trip_status = "Cancelled"
         `);
     
-        const driverData = await db("SELECT * FROM fms_g11_accounts");
-        const sustainData = await db('Select * from fms_g11_sustainability_data')
-        const filteredDriver = tripData.map(trip => {
-          const matchingDriver = driverData.find(driver => driver.u_username == trip.t_driver);
-          return matchingDriver;
-        });
-        const filteredSustain = tripData.map(trip => {
-          const matchingSustain = sustainData.find(sustain => sustain.sd_trip_id == trip.t_id);
-          return matchingSustain;
-        });
-        res.json({ driverData: filteredDriver, tripData, sustain:filteredSustain});
+        res.json(tripData);
       } catch (error) {
         console.log(error);
       }
@@ -27,16 +19,10 @@ trackingRoute.get('/get-trips-admin', async (req, res) => {
 trackingRoute.get('/get-all-trip', async (req, res) => {
     try {
       const tripData = await db(`
-        SELECT * FROM fms_g11_trips WHERE t_trip_status = 'In Progress'
+      SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers on t_driver = d_id WHERE t_trip_status = 'In Progress'
       `);
   
-      const driverData = await db("SELECT * FROM fms_g11_accounts");
-  
-      const filteredDriver = tripData.map(trip => {
-        const matchingDriver = driverData.find(driver => driver.u_username === trip.t_driver);
-        return matchingDriver;
-      });
-      res.json({ driverData: filteredDriver, tripData });
+      res.json( tripData );
     } catch (error) {
       console.log(error);
     }
@@ -46,16 +32,9 @@ trackingRoute.get('/get-all-trip', async (req, res) => {
 trackingRoute.get('/get-pending-trips', async (req, res) => {
   try {
     const tripData = await db(`
-      SELECT * FROM fms_g11_trips WHERE t_trip_status = 'Pending'
+      SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers on t_driver = d_id WHERE t_trip_status = 'Pending'
     `);
-
-    const driverData = await db("SELECT * FROM fms_g11_accounts");
-
-    const filteredDriver = tripData.map(trip => {
-      const matchingDriver = driverData.find(driver => driver.u_username === trip.t_driver);
-      return matchingDriver;
-    });
-    res.json({ driverData: filteredDriver, tripData });
+    res.json(tripData);
   } catch (error) {
     console.log(error);
   }
@@ -73,7 +52,9 @@ trackingRoute.get('/get-trip', async (req, res) => {
 trackingRoute.get('/get-completed-trip', async (req, res) => {
     try {
         const {username} = req.query
-        const data = await db(`SELECT * FROM fms_g11_trips WHERE t_driver = '${username}' AND (t_trip_status = 'Completed' OR t_trip_status = 'Cancelled')`);
+        const data = await db(`SELECT * FROM fms_g11_trips INNER JOIN  fms_g12_drivers ON 
+        fms_g11_trips.t_driver = fms_g12_drivers.d_id
+        WHERE t_driver = '${username}' AND (t_trip_status = 'Completed' OR t_trip_status = 'Cancelled')`);
         res.json(data)
     } catch (error) {
         console.log(error)
@@ -102,10 +83,11 @@ trackingRoute.post('/update-trip/:trip_id', async (req, res) => {
 trackingRoute.get('/get-current-trip/:trip_id', async (req, res)=>{
   try {
     const {trip_id} = req.params
-    const data = await db(`SELECT * FROM fms_g11_trips WHERE t_id = ${trip_id}`);
+    const data = await db(`SELECT *, d_first_name, d_last_name FROM fms_g11_trips 
+INNER JOIN fms_g12_drivers on fms_g11_trips.t_driver = fms_g12_drivers.d_id where t_id = '${trip_id}'`);
     res.json(data[0])
 } catch (error) {
-    console.log("error")
+    console.log(error)
 }
 })
 
@@ -114,7 +96,7 @@ trackingRoute.get('/get-trip-reports', async (req, res)=>{
     const data = await db(`SELECT * FROM fms_g11_trips`);
     res.json(data)
 } catch (error) {
-    console.log("error")
+    console.log(error)
 }
 })
 
@@ -124,7 +106,7 @@ trackingRoute.get('/trip-search', async (req, res)=>{
     const data = await db(`SELECT * FROM fms_g11_trips where t_trip_status LIKE '%${search}%' OR (t_driver LIKE '%${search}%' OR t_vehicle LIKE '%${search}%')`);
     res.json(data)
 } catch (error) {
-    console.log("error")
+    console.log(error)
 }
 })
 
@@ -134,7 +116,7 @@ trackingRoute.get('/sustain-search', async (req, res)=>{
     const data = await db(`SELECT * FROM fms_g11_sustainability_data where (sd_fuelcost LIKE '%${search}%' OR sd_id LIKE '%${search}%') OR (sd_carbon_emission LIKE '%${search}%' OR sd_trip_id LIKE '%${search}%')`);
     res.json(data)
 } catch (error) {
-    console.log("error")
+    console.log(error)
 }
 })
 

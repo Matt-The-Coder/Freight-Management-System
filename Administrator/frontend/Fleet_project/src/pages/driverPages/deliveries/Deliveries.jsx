@@ -6,7 +6,7 @@ import '/public/assets/css/adminLayout/deliveries.css';
 const DriverDeliveries = ({socket}) => {
   const hostServer = import.meta.env.VITE_SERVER_HOST;
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
-  const { u_username: username, setIsLoading, u_id: id } = useOutletContext();
+  const { d_username: username, setIsLoading, d_id: id } = useOutletContext();
   const [deliveries, setDeliveries] = useState({});
   const nav= useNavigate()
   const [travelData, setTravelData]= useState([])
@@ -98,8 +98,9 @@ const DriverDeliveries = ({socket}) => {
   const getDeliveries = async () => {
     try {
       setIsLoading(true);
-      const data = await axios.get(`${hostServer}/get-trip?username=${username}`);
+      const data = await axios.get(`${hostServer}/get-trip?username=${id}`);
       const result = data.data;
+      console.log(result)
       const ongoingTrips = result.filter((e)=>{ return e.t_trip_status == "In Progress"})
       const pendingTrips = result.filter((e)=>{ return e.t_trip_status == "Pending"})
       const travelRoutes = await Promise.all(pendingTrips.map(async (e) => {

@@ -256,19 +256,21 @@ button{
     position: fixed;
   }
   .more-info-modal-box{
-    height: 300px;
+    height: auto;
     width: 400px;
     position: fixed;
     padding: 20px;
-    top: 30%;
+    top: 25%;
     left: 35% ;
     border-radius: 10px;
     background-color: var(--light);
   }
   .more-info-modal-box .info{
     display: flex;
+    flex-direction: column;
     height: 80%;
-    margin-top: 5%;
+    margin-top: 2%;
+    row-gap: 10px;
   }
   .more-info-modal-box .info :is(.info-1 p, .info-2 p){
     text-align: left;
@@ -277,7 +279,7 @@ button{
     display: flex;
     flex-direction: column;
     height: 95%;
-    width: 50%;
+    width: 100%;
     gap: 5%;
     align-items: flex-start;
   }
@@ -285,7 +287,7 @@ button{
     display: flex;
     flex-direction: column;
     height: 95%;
-    width: 50%;
+    width: 100%;
     gap: 5%;
     align-items: flex-start;
   }

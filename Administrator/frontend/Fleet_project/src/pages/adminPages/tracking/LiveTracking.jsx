@@ -447,7 +447,7 @@ const LiveTracking = ({socket}) => {
                     </div>
                     <div className="transportData">
                       <div className="transportData1">
-                        <p>Driver: {currentTrip.t_driver} </p>
+                        <p>Driver: {currentTrip.d_first_name} {currentTrip.d_last_name} </p>
                         <p>Destination: {currentTrip.t_trip_tolocation}</p>
                         <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
                         <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>
@@ -855,7 +855,7 @@ const LiveTracking = ({socket}) => {
                       </div>
                       <div className="transportData">
                         <div className="transportData1">
-                          <p>Driver: {currentTrip.t_driver} </p>
+                        <p>Driver: {currentTrip.d_first_name} {currentTrip.d_last_name} </p>
                           <p>Destination: {currentTrip.t_trip_tolocation}</p>
                           <p>Cargo Weight: {currentTrip.t_totalweight}kg</p>
                           <p>Carbon Emissions: {vehicleStats.carbonEmission}g</p>

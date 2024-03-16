@@ -7,7 +7,7 @@ import axios from "axios";
 
 
 const DriverDashboard = ({socket}) => {
-    const { u_name, theme, u_username, setIsLoading } = useOutletContext()
+    const { theme, d_username, d_id, setIsLoading } = useOutletContext()
     const [deliveries, setDeliveries] = useState([])
     const [refresh, setRefresh] = useState(false)
     const hostServer = import.meta.env.VITE_SERVER_HOST;
@@ -23,7 +23,7 @@ const DriverDashboard = ({socket}) => {
     const getDeliveries = async () => {
         try {
             setIsLoading(true)
-            const data = await axios.get(`${hostServer}/get-all-trips?user=${u_username}`)
+            const data = await axios.get(`${hostServer}/get-all-trips?user=${d_id}`)
             const result = data.data
             console.log(result)
             setDeliveries(result)

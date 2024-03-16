@@ -8,6 +8,8 @@ const SustainabilityReports = ({ socket }) => {
 
     const { setIsLoading } = useOutletContext()
     const [maintenanceData, setMaintenanceData] = useState([])
+    const [sustainData, setSustainData] = useState([])
+    const [sustainFilter, setSustainFilter] = useState([])
     const hostServer = import.meta.env.VITE_SERVER_HOST
     const [maintenanceSearch, setMaintenanceSearch] = useState('')
     const deliveryTable = useRef(null)
@@ -16,6 +18,7 @@ const SustainabilityReports = ({ socket }) => {
         const fetchMaintenance = await axios.get(`${hostServer}/getSustainableReports`)
         const data = fetchMaintenance.data;
         setMaintenanceData(data)
+        setSustainData(data)
         setIsLoading(false)
     }
     const searchMaintenance = async () => {
@@ -25,6 +28,15 @@ const SustainabilityReports = ({ socket }) => {
         setMaintenanceData(filteredData)
         setIsLoading(false)
     }
+    const filterData = (e) => {
+        setSustainFilter(e);
+        const filteredData = sustainData.filter((sus) => {
+          const dateOnly = sus.sd_modified_date.substring(0, 10);
+          return dateOnly === e;
+        });
+        console.log(filteredData);
+        setMaintenanceData(filteredData);
+      };
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
             alert("Delivery Status Updated")
@@ -81,6 +93,11 @@ const SustainabilityReports = ({ socket }) => {
                     </ul>
                 </div>
             </div>
+            <div className="filter">
+                    {/* <h3>Filter</h3> */}
+                    <input type="date" id='date-input' value={sustainFilter} onChange={(e)=>{filterData(e.currentTarget.value)}}/>
+                    <i className='bx bx-filter' ></i>
+                </div>
             <div className="maintenance-details">
                 <div className="report-export">
                     <p>Export as:</p>
@@ -100,7 +117,7 @@ const SustainabilityReports = ({ socket }) => {
                             <tr>
                                 <th>ID</th>
                                 <th>Trip ID</th>
-                                <th> Estimated Fuel Cost</th>
+                                <th>Fuel Cost</th>
                                 <th>Fuel Consumption</th>
                                 <th>Carbon Emission</th>
                                 <th>Rainfall Rate</th>
@@ -114,10 +131,10 @@ const SustainabilityReports = ({ socket }) => {
                                 <th>Visibility</th>
                                 <th>UV Index</th>
                                 <th>Solar Radiation</th>
-                                <th>Pressure</th>
+                                <th>Air Pressure</th>
                                 <th>Sea Level Pressure</th>
                                 <th>Alerts</th>
-                                <th>Modified Date</th>
+                                <th>Last Update</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -1,4 +1,5 @@
 export  {default as DriverDashboard} from './DriverDashboard'
+export  {default as DriverSettings} from './Settings'
 export  {default as DriverChat} from './chats/Chats'
 export  {default as Inprogress} from './deliveries/Inprogress'
 export  {default as Deliveries} from './deliveries/Deliveries'

@@ -7,12 +7,8 @@ const AdminHistory = ({socket}) => {
     const VITE_UPLOADING_SERVER = import.meta.env.VITE_UPLOADING_SERVER
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     const [deliveriesStorage, setDeliveriesStorage] = useState([])
-    const [driverStorage, setDriverStorage] = useState([])
     const [deliveries, setDeliveries] = useState([])
     const [filter, setFilter] = useState('all')
-    const [deliveryDriver, setDeliveryDriver] = useState([])
-    const [sustain, setSustain] = useState([])
-    const [sustainStorage, setSustainStorage] = useState([])
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
                 alert("Delivery Status Updated")
@@ -26,14 +22,8 @@ const AdminHistory = ({socket}) => {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-trips-admin`)
             const result = data.data
-            setSustain(result.sustain)
-            setSustainStorage(result.sustain)
-            setDeliveries(result.tripData)
-            setDeliveryDriver(result.driverData);
-            setDeliveriesStorage(result.tripData)
-            setDriverStorage(result.driverData);
-            console.log(result.tripData)
-            console.log(result.driverData)
+            setDeliveries(result.reverse())
+            setDeliveriesStorage(result.reverse())
             setIsLoading(false)
         } catch (error) {
             console.log(error)
@@ -48,10 +38,6 @@ const AdminHistory = ({socket}) => {
             modalInfo.style.display = "block"
             modalb.style.display = 'block' 
             modalbg.style.display = 'block'
-
-            console.log(modalInfo)
-            console.log(modalbg)
-            console.log(modalb)
     }
     const closeModal = (e) => {
         const num = e
@@ -91,12 +77,10 @@ const AdminHistory = ({socket}) => {
                 </div>
                 <div className="filter">
                     {/* <h3>Filter</h3> */}
-                    <i class='bx bx-filter' ></i>
                     <select id="filter" value={filter} onChange={async(el)=>{
                         if(el.currentTarget.value == "all"){
                             setIsLoading(true)
                             setDeliveries(deliveriesStorage)
-                            setDeliveryDriver(driverStorage);
                             setFilter(el.currentTarget.value)
                             setIsLoading(false)
                         }
@@ -104,19 +88,7 @@ const AdminHistory = ({socket}) => {
                             setIsLoading(true)
                             setFilter(el.currentTarget.value)
                             const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
-                            let filteredDriver = []
-                            let filteredSustain = []
-                            filteredDeliveries.forEach((deliveries)=>{
-                               let filterDriver = driverStorage.find((dDriver)=>{return dDriver.u_username == deliveries.t_driver})
-                               filteredDriver.push(filterDriver)
-                            })
-                            filteredDeliveries.forEach((deliveries)=>{
-                                let filterSustain = sustainStorage.find((sus)=>{return sus.sd_trip_id == deliveries.t_id})
-                                filteredSustain.push(filterSustain)
-                             })
-                            setDeliveries(filteredDeliveries)
-                            setDeliveryDriver(filteredDriver)
-                            setSustain(filteredSustain)
+                            setDeliveries(filteredDeliveries.reverse())
                             setIsLoading(false)
                         }
 
@@ -125,6 +97,7 @@ const AdminHistory = ({socket}) => {
                         <option value="Completed">Completed Trips</option>
                         <option value="Cancelled">Cancelled Trips</option>
                     </select>
+                    <i className='bx bx-filter' ></i>
                 </div>
                 <div className="trips-list">
                 {deliveries.length == 0 && <center><h1>No Trips Found</h1></center>}
@@ -149,10 +122,10 @@ const AdminHistory = ({socket}) => {
                                         <div className="header1">
                                             <div className="row1">
                                                 <div className="img">
-                                                    <img src={`${VITE_UPLOADING_SERVER}${deliveryDriver[i].u_profile_picture}`} alt="" />
+                                                    <img src={`${VITE_UPLOADING_SERVER}${e.d_picture}`} alt="" />
                                                 </div>
                                                 <div className="name">
-                                                    <h4>{`${deliveryDriver[i].u_first_name} ${deliveryDriver[i].u_last_name}`}</h4>
+                                                    <h4>{`${e.d_first_name} ${e.d_last_name}`}</h4>
                                                 </div>
 
 
@@ -191,25 +164,28 @@ const AdminHistory = ({socket}) => {
                                         <div className="more-info-background" id={`modalbg${i}`}></div>
                                         <div className="more-info-modal-box" id={`modalb${i}`}>
                                             <div className="exit">
-                                            <i class='bx bx-window-close' onClick={()=>{closeModal(i)}}></i>
+                                            <i className='bx bx-window-close' onClick={()=>{closeModal(i)}}></i>
                                             </div>
                                             <h3>History Information</h3>
                                             <div className="info">
                                                 <div className="info-1">
+                                                    <h4>Delivery Details</h4>
                                                     <p>Start: {formatDate(e.t_start_date)}</p>
                                                     <p>End: {formatDate(e.t_end_date)}</p>
-                                                    <p>Duration: {e.t_totaldrivetime}</p>
                                                     <p>Distance: {e.t_totaldistance?.toFixed(2)} km</p>
-                                                    <p>Report: {e.t_remarks}</p>
+
                                                 
                                               
                                                 
                                                 </div>
                                                 <div className="info-2">
+                                                <h4>Delivery Reports</h4>
+                                                <p>Report: {e.t_remarks}</p>
+                                                <p>Duration: {e.t_totaldrivetime}</p>
                                                 <p>Vehicle: {e.t_vehicle}</p>
-                                                    <p>Weather: {sustain[i]?.sd_current_weather}</p>
-                                                    <p>Total Emission: {sustain[i]?.sd_carbon_emission}</p>
-                                                    <p>Total Fuel Usage: {sustain[i]?.sd_fuelconsumption}</p>
+                                                    <p>Weather: {e.sd_current_weather}</p>
+                                                    <p>Total Emission: {e.sd_carbon_emission}</p>
+                                                    <p>Total Fuel Usage: {e.sd_fuelconsumption}</p>
                                                     <p>Total Weight: {e.t_totalweight}kg</p>
                                                    
                                                 

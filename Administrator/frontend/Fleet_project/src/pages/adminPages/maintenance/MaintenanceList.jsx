@@ -64,6 +64,11 @@ const MaintenanceList = () => {
                     </ul>
                 </div>
             </div>
+            <div className="filter">
+                    {/* <h3>Filter</h3> */}
+                    <input type="date" id='date-input' value="2024-03-12"/>
+                    <i className='bx bx-filter' ></i>
+                </div>
             <div className="maintenance-details">
                 <div className="maintenance-search">
                     <input type="text" id='search' onChange={(e)=>{setMaintenanceSearch(e.target.value)}}/>

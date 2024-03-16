@@ -4,7 +4,7 @@ import '/public/assets/css/adminLayout/adminChat.css'
 const DriverChat = ({ socket }) => {
   const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
   const messageContainer = useRef()
-  const { u_username, u_role, u_profile_picture, setIsLoading} = useOutletContext()
+  const { d_username, d_picture, setIsLoading} = useOutletContext()
   const [messagesRecieved, setMessagesReceived] = useState([]);
   const [message, setMessage] = useState('');
   const [users, setUsers] = useState([])
@@ -18,7 +18,7 @@ const DriverChat = ({ socket }) => {
     if (message !== '') {
       const __createdtime__ = Date.now();
       // Send message to server. We can't specify who we send the message to from the frontend. We can only send to server. Server can then send message to rest of users in room
-      socket.emit('send_message', { username: u_username, role: u_role, message, __createdtime__, picture: u_profile_picture });
+      socket.emit('send_message', { username: d_username, role: "Driver", message, __createdtime__, picture: d_picture });
       setMessage('');
       setScroll(!scroll)
     }
@@ -47,12 +47,12 @@ const DriverChat = ({ socket }) => {
 
   // Send users to the server
   useEffect(() => {
-    if(u_username !== undefined){
-      socket.emit('active', { username: u_username })
+    if(d_username !== undefined){
+      socket.emit('active', { username: d_username })
     }
     setScroll(!scroll)
     return () => socket.off('active')
-  }, [u_username,socket])
+  }, [d_username,socket])
 
   // Get All Current Users
   useEffect(() => {

@@ -5,7 +5,7 @@ import '/public/assets/css/adminLayout/trackingTrips.css'
 import axios from 'axios'
 const DriverHistory = () => {
     const hostServer = import.meta.env.VITE_SERVER_HOST;
-    const { u_username: username, setIsLoading, u_id: id } = useOutletContext()
+    const { d_username: username, setIsLoading, d_id: id } = useOutletContext()
     const [filter, setFilter] = useState("all")
     const [deliveriesStorage, setDeliveriesStorage] = useState([])
     const [deliveries, setDeliveries] = useState([])
@@ -14,7 +14,7 @@ const DriverHistory = () => {
     const getDeliveries = async () => {
         try {
             setIsLoading(true)
-            const data = await axios.get(`${hostServer}/get-completed-trip?username=${username}`)
+            const data = await axios.get(`${hostServer}/get-completed-trip?username=${id}`)
             const result = data.data.reverse()
             setIsLoading(false)
             setDeliveriesStorage(result)
@@ -81,7 +81,7 @@ const DriverHistory = () => {
             </div>
             <div className="filter">
                     {/* <h3>Filter</h3> */}
-                    <i class='bx bx-filter' ></i>
+                    <i className='bx bx-filter' ></i>
                     <select id="filter" value={filter} onChange={async(el)=>{
                         if(el.currentTarget.value == "all"){
                             setIsLoading(true)
@@ -162,7 +162,7 @@ const DriverHistory = () => {
                                         <div className="more-info-background" id={`modalbg${i}`}></div>
                                         <div className="more-info-modal-box" id={`modalb${i}`}>
                                             <div className="exit">
-                                            <i class='bx bx-window-close' onClick={()=>{closeModal(i)}}></i>
+                                            <i className='bx bx-window-close' onClick={()=>{closeModal(i)}}></i>
                                             </div>
                                             <h3>History Information</h3>
                                             <div className="info">

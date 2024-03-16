@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 const Settings = () => {
     const hostServer = import.meta.env.VITE_SERVER_HOST
     const uploadingServer = import.meta.env.VITE_UPLOADING_SERVER
-    const { u_id, setIsLoading,image, setImage } = useOutletContext()
+    const { d_id, setIsLoading,image, setImage } = useOutletContext()
     const [fName, setFName] = useState("")
     const [lName, setLName] = useState("")
     const [uName, setUName] = useState("")
@@ -27,17 +27,17 @@ const Settings = () => {
     const getInfo = async () => {
         try {
             setIsLoading(true)
-            const result = await axios.get(`${hostServer}/getaccountbyid/${u_id}`)
+            const result = await axios.get(`${hostServer}/getdriveraccountbyid/${d_id}`)
             if (result.data.message) {
                 // nav("/login")
             } else {
                 const userData = result.data
-                setFName(userData[0].u_first_name)
-                setLName(userData[0].u_last_name)
-                setEmail(userData[0].u_email)
-                setUName(userData[0].u_username)
-                setUPassword(userData[0].u_password)
-                setRole("Admin")
+                setFName(userData[0].d_first_name)
+                setLName(userData[0].d_last_name)
+                setEmail(userData[0].d_email)
+                setUName(userData[0].d_username)
+                setUPassword(userData[0].d_password)
+                setRole("Driver")
             }
             setIsLoading(false)
         } catch (error) {
@@ -47,17 +47,20 @@ const Settings = () => {
         useEffect(()=>{
 
             getInfo()
-        }, [u_id])
+        }, [d_id])
     
 
     const updateInformation = async (e) => {
         e.preventDefault()
+        console.log("hello")
         try {
-            const result = await axios.post(`${hostServer}/updatePersonalInfo`, {
-                fName, lName, uName, email, u_id
+            const result = await axios.post(`${hostServer}/updateDriverPersonalInfo`, {
+                fName, lName, uName, email, d_id
             })
             const data = result.data
+            console.log(data)
             if(data.errorMessage){
+                console.log(data.errorMessage)
                 setUsernameError(true)
                 setTimeout(()=>{setUsernameError(false)}, 2000)
             }else{
@@ -79,9 +82,9 @@ const Settings = () => {
             {
                 if(nP == cNP){
 
-            const result = await axios.post(`${hostServer}/updateSecurityInfo`,
+            const result = await axios.post(`${hostServer}/updateDriverSecurityInfo`,
             {
-                nP, u_id
+                nP, d_id
             })
             const data = result.data
             alert(data.message)
@@ -115,15 +118,13 @@ const Settings = () => {
             formData.append('my_file', result)
             try {
                 setIsLoading(true)
-                const upload = await axios.post(`${hostServer}/upload/${u_id}`, formData)
-                // img.src = URL.createObjectURL(result)
-                if(upload.data){
-                   const uploadedImage = await axios.get(`${hostServer}/getProfilePicture/${u_id}`)
+                const upload = await axios.post(`${hostServer}/driver/upload/${d_id}`, formData)
+                   const uploadedImage = await axios.get(`${hostServer}/getDriverProfilePicture/${d_id}`)
                    const fileImage = uploadedImage.data.image[0].u_profile_picture
-                   setImage(fileImage)
-                } else {
-                    console.log("Uploading failed.")
-                }
+                   setTimeout(()=>{
+                    setImage(fileImage)
+                   }, 1000)
+
                 setIsLoading(false)
             } catch (error) {
                 console.log(error)

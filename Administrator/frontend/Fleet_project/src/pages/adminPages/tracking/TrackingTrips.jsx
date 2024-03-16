@@ -7,9 +7,10 @@ const TrackingTrips = ({socket}) => {
     const VITE_UPLOADING_SERVER = import.meta.env.VITE_UPLOADING_SERVER
     const mapboxToken = import.meta.env.VITE_MAPBOX_API;
     const hostServer = import.meta.env.VITE_SERVER_HOST;
+    const [filterData, setFilterData] = useState('')
     const [travelData, setTravelData]= useState([])
     const [deliveries, setDeliveries] = useState([])
-    const [deliveryDriver, setDeliveryDriver] = useState([])
+    const [deliveriesStorage, setDeliveriesStorage] = useState([])
     const [refresh, setRefresh] = useState(false)
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
@@ -28,14 +29,35 @@ const TrackingTrips = ({socket}) => {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-all-trip`)
             const result = data.data
-            setDeliveries(result.tripData)
-            setDeliveryDriver(result.driverData)
+            setDeliveries(result)
+            setDeliveriesStorage(result)
             setIsLoading(false)
 
 
         } catch (error) {
             console.log(error)
         }
+    }
+    const filterDeliveries = (e) => {
+        if (e == "") {
+            setDeliveries(deliveriesStorage)
+            setFilterData(e)
+        } else {
+            setFilterData(e)
+            const filteredDeliveries = deliveriesStorage.filter((d) => {
+                const startDate = new Date(d.t_start_date);
+                startDate.setDate(startDate.getDate() + 1);
+                const formattedDate = startDate.toISOString().split('T')[0];
+                let result = formattedDate == e
+                return result;
+            })
+            setDeliveries(filteredDeliveries)
+        }
+        console.log(e)
+
+
+
+
     }
 
     const formatDate = (date) => {
@@ -64,6 +86,7 @@ const TrackingTrips = ({socket}) => {
       
             const travelData = await Promise.all(promises);
             setTravelData(travelData.flat());
+            console.log(travelData.flat())
             setIsLoading(false);
           } catch (error) {
             console.log(error);
@@ -88,6 +111,11 @@ const TrackingTrips = ({socket}) => {
                         </ul>
                     </div>
                 </div>
+                <div className="filter">
+                    {/* <h3>Filter</h3> */}
+                    <input type="date" id='date-input' value={filterData} onChange={(e) => { filterDeliveries(e.currentTarget.value) }} />
+                    <i className='bx bx-filter' ></i>
+                </div>
                 <div className="trips-list">
                     {deliveries.length == 0 && <center><h1>No OnGoing Trips at the Moment</h1></center>}
                     {deliveries.map((e, i) => {
@@ -98,10 +126,10 @@ const TrackingTrips = ({socket}) => {
                                         <div className="header1">
                                             <div className="row1">
                                                 <div className="img">
-                                                    <img src={`${VITE_UPLOADING_SERVER}${deliveryDriver[i].u_profile_picture}`} alt="" />
+                                                    <img src={`${VITE_UPLOADING_SERVER}${e.d_picture}`} alt="" />
                                                 </div>
                                                 <div className="name">
-                                                    <h4>{`${deliveryDriver[i].u_first_name} ${deliveryDriver[i].u_last_name}`}</h4>
+                                                    <h4>{`${e.d_first_name} ${e.d_last_name}`}</h4>
                                                 </div>
 
 

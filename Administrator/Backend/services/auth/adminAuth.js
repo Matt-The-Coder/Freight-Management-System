@@ -1,7 +1,7 @@
 const db = require('../../database/connection')
 module.exports = () => {
 
-    const getAccounts = async () => 
+    const getAdminAccounts = async () => 
     {
         const query = "Select * from fms_g11_accounts"
         try {
@@ -11,7 +11,7 @@ module.exports = () => {
             throw error
         }
     }
-    const getAccByUsername =  async (usernName) => 
+    const getAdminAccByUsername =  async (usernName) => 
     {
         const query = `Select * from fms_g11_accounts where u_username = '${usernName}'`
         try {
@@ -22,7 +22,7 @@ module.exports = () => {
         }
     }
     return{
-        getAccounts,
-        getAccByUsername
+        getAdminAccByUsername,
+        getAdminAccounts
     }
 }
