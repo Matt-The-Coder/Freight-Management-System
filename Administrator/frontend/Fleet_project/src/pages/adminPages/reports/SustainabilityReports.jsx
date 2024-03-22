@@ -5,7 +5,8 @@ import * as XLSX from 'xlsx';
 import { Link, useNavigate, useOutletContext } from "react-router-dom"
 const SustainabilityReports = ({ socket }) => {
     const nav = useNavigate()
-
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
     const { setIsLoading } = useOutletContext()
     const [maintenanceData, setMaintenanceData] = useState([])
     const [sustainData, setSustainData] = useState([])
@@ -15,9 +16,15 @@ const SustainabilityReports = ({ socket }) => {
     const deliveryTable = useRef(null)
     const getMaintenanceList = async () => {
         setIsLoading(true)
-        const fetchMaintenance = await axios.get(`${hostServer}/getSustainableReports`)
+        const fetchMaintenance = await axios.get(`${hostServer}/getSustainableReports?page=${page}&pageSize=${pageSize}`)
         const data = fetchMaintenance.data;
         setMaintenanceData(data)
+        setIsLoading(false)
+    }
+    const getFullList = async () => {
+        setIsLoading(true)
+        const fetchMaintenance = await axios.get(`${hostServer}/getSustainableReportsFull`)
+        const data = fetchMaintenance.data;
         setSustainData(data)
         setIsLoading(false)
     }
@@ -29,13 +36,22 @@ const SustainabilityReports = ({ socket }) => {
         setIsLoading(false)
     }
     const filterData = (e) => {
-        setSustainFilter(e);
-        const filteredData = sustainData.filter((sus) => {
-          const dateOnly = sus.sd_modified_date.substring(0, 10);
-          return dateOnly === e;
-        });
-        console.log(filteredData);
-        setMaintenanceData(filteredData);
+        if(e == [] || e == ""){
+            setMaintenanceData(sustainData)
+        }else{
+            setSustainFilter(e);
+            console.log(sustainData)
+            const filteredData = sustainData.filter((sus) => {
+              const dateOnly = formatDate(sus.sd_modified_date);
+              console.log(dateOnly)
+            if(dateOnly == e){
+                return sus
+            }
+            });
+            console.log(filteredData);
+            setMaintenanceData(filteredData);
+        }
+
       };
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
@@ -47,10 +63,11 @@ const SustainabilityReports = ({ socket }) => {
     }, [socket]);
     useEffect(() => {
         getMaintenanceList()
-    }, [])
+        getFullList()
+    }, [page])
     const formatDate = (date) => {
         const formattedDate = new Date(date);
-        formattedDate.setDate(formattedDate.getDate() + 1);
+        formattedDate.setDate(formattedDate.getDate());
         return formattedDate.toISOString().split("T")[0];
     };
 
@@ -94,10 +111,17 @@ const SustainabilityReports = ({ socket }) => {
                 </div>
             </div>
             <div className="filter">
-                    {/* <h3>Filter</h3> */}
+                {/* <h3>Filter</h3> */}
+                <div className="filter-container">
+                    <p htmlFor=""> Last Update</p>
+                    <div className="filter-input">
                     <input type="date" id='date-input' value={sustainFilter} onChange={(e)=>{filterData(e.currentTarget.value)}}/>
-                    <i className='bx bx-filter' ></i>
+                        <i className='bx bx-filter' ></i>
+                    </div>
+
                 </div>
+
+            </div>
             <div className="maintenance-details">
                 <div className="report-export">
                     <p>Export as:</p>
@@ -111,14 +135,14 @@ const SustainabilityReports = ({ socket }) => {
                     <button onClick={searchMaintenance}>Search</button>
 
                 </div>
-                <div className="maintenance-list">
+                <div className="maintenance-list" id='sustainReports'>
                     <table className='maintenance-table' ref={deliveryTable}>
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Trip ID</th>
+                                <th>E.No</th>
+                                <th>D.No</th>
                                 <th>Fuel Cost</th>
-                                <th>Fuel Consumption</th>
+                                <th>Fuel Usage</th>
                                 <th>Carbon Emission</th>
                                 <th>Rainfall Rate</th>
                                 <th>Current Weather</th>
@@ -142,8 +166,8 @@ const SustainabilityReports = ({ socket }) => {
                                 maintenanceData?.map((e, i) => {
                                     return (
                                         <tr key={i}>
-                                            <td>{e?.sd_id}</td>
-                                            <td>{e?.sd_trip_id}</td>
+                                            <td>ER-{e?.sd_id}</td>
+                                            <td>DR-{e?.sd_trip_id}</td>
                                             <td>{e?.sd_fuelcost} </td>
                                             <td>{e?.sd_fuelconsumption}</td>
                                             <td>{e?.sd_carbon_emission}</td>
@@ -169,7 +193,20 @@ const SustainabilityReports = ({ socket }) => {
                         </tbody>
 
                     </table>
+
                 </div>
+                <div className="pagination-container">
+                        <div className='pagination'>
+                            <button
+                                disabled={page === 1}
+                                onClick={() => setPage(page - 1)}
+                            >
+                                Previous
+                            </button>
+                            <span>Page {page}</span>
+                            <button disabled={maintenanceData.length < 5} onClick={() => {setPage(page + 1) }}>Next</button>
+                        </div>
+                    </div>
             </div>
 
         </div>

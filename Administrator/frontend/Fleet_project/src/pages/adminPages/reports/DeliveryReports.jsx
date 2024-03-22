@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import '/public/assets/css/adminLayout/maintenance.css'
 import axios from "axios"
 import * as XLSX from 'xlsx';
-import {Link, useNavigate, useOutletContext} from "react-router-dom"
-const DeliveryReports = ({socket}) => {
+import { Link, useNavigate, useOutletContext } from "react-router-dom"
+const DeliveryReports = ({ socket }) => {
     const nav = useNavigate()
-    
-    const {setIsLoading} = useOutletContext()
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const { setIsLoading } = useOutletContext()
+    const [filterData, setFilterData] = useState('')
     const [isDelete, setIsDelete] = useState(false)
     const [DeliveryReports, setDeliveryReports] = useState([])
     const [deliveryReportsStorage, setDeliveryReportsStorage] = useState([])
@@ -16,14 +18,13 @@ const DeliveryReports = ({socket}) => {
     const deliveryTable = useRef(null)
     const getMaintenanceList = async () => {
         setIsLoading(true)
-        const fetchMaintenance = await axios.get(`${hostServer}/get-trip-reports`)
-        const  data = fetchMaintenance.data;
+        const fetchMaintenance = await axios.get(`${hostServer}/get-trip-reports?page=${page}&pageSize=${pageSize}`)
+        const data = fetchMaintenance.data;
         setDeliveryReports(data)
         setDeliveryReportsStorage(data)
         setIsLoading(false)
     }
-    const searchMaintenance = async() =>
-    {
+    const searchMaintenance = async () => {
         setIsLoading(true)
         const fetchMaintenance = await axios.get(`${hostServer}/trip-search?search=${maintenanceSearch}`)
         const filteredData = fetchMaintenance.data
@@ -32,46 +33,66 @@ const DeliveryReports = ({socket}) => {
     }
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
-                alert("Delivery Status Updated")
-                location.reload()        
+            alert("Delivery Status Updated")
+            location.reload()
         });
         return () => socket.off('deliveryUpdate');
-    
-      }, [socket]);
-    useEffect(()=>{
+
+    }, [socket]);
+    useEffect(() => {
         getMaintenanceList()
-    },[isDelete])
+    }, [page])
     const formatDate = (date) => {
         const formattedDate = new Date(date);
         formattedDate.setDate(formattedDate.getDate() + 1);
         return formattedDate.toISOString().split("T")[0];
-      };
+    };
 
-      function formatDateTime(datetimeStr) {
+    function formatDateTime(datetimeStr) {
         // Create a new Date object from the datetime string
         var datetime = new Date(datetimeStr);
-      
+
         // Define options for formatting the date and time
         var options = {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          hour12: true
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true
         };
-      
+
         // Format the date and time using options
         var formattedDateTime = datetime.toLocaleString('en-US', options);
-      
+
         return formattedDateTime;
-      }
+    }
 
     const exportData = (type) => {
         const fileName = `delivery-report-sheet.${type}`
         const wb = XLSX.utils.table_to_book(deliveryTable.current)
         XLSX.writeFile(wb, fileName)
+    }
+    const filterDeliveries = (e) => {
+        if (e == "") {
+            setDeliveryReports(deliveryReportsStorage)
+            setFilterData(e)
+        } else {
+            setFilterData(e)
+            const filteredDeliveries = deliveryReportsStorage.filter((d, i) => {
+                const startDate = new Date(d.t_created_date);
+                startDate.setDate(startDate.getDate());
+                const formattedDate = startDate.toISOString().split('T')[0];
+                if (formattedDate == e) {
+                    return formattedDate
+
+                }
+
+            })
+            setDeliveryReports(filteredDeliveries)
+        }
+
     }
 
     return (
@@ -86,60 +107,81 @@ const DeliveryReports = ({socket}) => {
                     </ul>
                 </div>
             </div>
-            <div className="filter">
-                    {/* <h3>Filter</h3> */}
-                    <select id="filter" value={filter} onChange={async(el)=>{
-                        if(el.currentTarget.value == "all"){
-                            setIsLoading(true)
-                            setDeliveryReports(deliveryReportsStorage)
-                            setFilter(el.currentTarget.value)
-                            setIsLoading(false)
-                        }
-                        else{
-                            setIsLoading(true)
-                            setFilter(el.currentTarget.value)
-                            const filterReports = deliveryReportsStorage.filter((e, i)=>{
-                                return e.t_trip_status == el.currentTarget.value
-                            })
-                            // const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
-                            // let filteredDriver = []
-                            // filteredDeliveries.forEach((deliveries)=>{
-                            //    let filterDriver = driverStorage.find((dDriver)=>{return dDriver.u_username == deliveries.t_driver})
-                            //    filteredDriver.push(filterDriver)
-                            // })
-                            setDeliveryReports(filterReports)
-                            console.log(deliveryReportsStorage)
+            <div className="filter-flex">
+                <div className="filter">
+                {/* <h3>Filter</h3> */}
+                <div className="filter-container">
+                    <p htmlFor=""> Order Date</p>
+                    <div className="filter-input">
+                    <input type="date" id='date-input' value={filterData} onChange={(e) => { filterDeliveries(e.currentTarget.value) }} />
+                        <i className='bx bx-filter' ></i>
+                    </div>
 
-                            setIsLoading(false)
-                        }
-
-                        }}>
-                        <option value="all">All Trips</option>
-                        <option value="Completed">Completed Trips</option>
-                        <option value="Cancelled">Cancelled Trips</option>
-                        <option value="In Progress">In Progress Trips</option>
-                        <option value="Pending">Pending Trips</option>
-                    </select>
-                    <i className='bx bx-filter' ></i>
                 </div>
+
+            </div>
+            <div className="filter">
+                {/* <h3>Filter</h3> */}
+                <div className="filter-container">
+                    <p htmlFor=""> Trip Status </p>
+                    <div className="filter-input">
+                    <select id="filter" value={filter} onChange={async (el) => {
+                    if (el.currentTarget.value == "all") {
+                        setIsLoading(true)
+                        setDeliveryReports(deliveryReportsStorage)
+                        setFilter(el.currentTarget.value)
+                        setIsLoading(false)
+                    }
+                    else {
+                        setIsLoading(true)
+                        setFilter(el.currentTarget.value)
+                        const filterReports = deliveryReportsStorage.filter((e, i) => {
+                            return e.t_trip_status == el.currentTarget.value
+                        })
+                        // const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
+                        // let filteredDriver = []
+                        // filteredDeliveries.forEach((deliveries)=>{
+                        //    let filterDriver = driverStorage.find((dDriver)=>{return dDriver.u_username == deliveries.t_driver})
+                        //    filteredDriver.push(filterDriver)
+                        // })
+                        setDeliveryReports(filterReports)
+                        console.log(deliveryReportsStorage)
+
+                        setIsLoading(false)
+                    }
+
+                }}>
+                    <option value="all">All Trips</option>
+                    <option value="Completed">Completed Trips</option>
+                    <option value="Cancelled">Cancelled Trips</option>
+                    <option value="In Progress">In Progress Trips</option>
+                    <option value="Pending">Pending Trips</option>
+                </select>
+                        <i className='bx bx-filter' ></i>
+                    </div>
+
+                </div>
+
+            </div>
+            </div>
             <div className="maintenance-details">
                 <div className="report-export">
-                <p>Export as:</p>
-                <button onClick={()=>{exportData("Xlsx")}}>Xlsx</button>
-                <button onClick={()=>{exportData("Xls")}}>Xls</button>
-                <button onClick={()=>{exportData("CSV")}}>CSV</button>
+                    <p>Export as:</p>
+                    <button onClick={() => { exportData("Xlsx") }}>Xlsx</button>
+                    <button onClick={() => { exportData("Xls") }}>Xls</button>
+                    <button onClick={() => { exportData("CSV") }}>CSV</button>
 
                 </div>
                 <div className="maintenance-search">
-                <input type="text" id='search' onChange={(e)=>{setMaintenanceSearch(e.target.value)}}/>
+                    <input type="text" id='search' onChange={(e) => { setMaintenanceSearch(e.target.value) }} />
                     <button onClick={searchMaintenance}>Search</button>
 
                 </div>
-                <div className="maintenance-list">
+                <div className="maintenance-list" id='deliverReports'>
                     <table className='maintenance-table' ref={deliveryTable}>
                         <thead>
                             <tr>
-                                <th>Trip ID</th>
+                                <th>D.No</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Origin</th>
@@ -154,28 +196,42 @@ const DeliveryReports = ({socket}) => {
                         </thead>
                         <tbody>
                             {
-                                DeliveryReports.map((e, i)=> 
-                                {
-                                    return(
-                                    <tr key={i}>
-                                        <td>{e?.t_id}</td>
-                                        <td>{formatDate(e?.t_start_date)} </td>
-                                        <td> {formatDate(e?.t_end_date)}</td>
-                                        <td> {e.t_trip_fromlocation}</td>
-                                        <td>{e.t_trip_tolocation} </td>
-                                        <td> {e?.t_driver}</td>
-                                        <td> {e?.t_vehicle}</td>
-                                        <td> {e?.t_trip_status}</td>
-                                        <td> {e?.t_remarks? e.t_remarks:"N/A"} </td>
-                                        <td> {e?.t_trackingcode}</td>
-                                        <td> {formatDateTime(e.t_created_date)}</td>
-                                    </tr>
-                                )})
+                                DeliveryReports.map((e, i) => {
+                                    return (
+                                        <tr key={i}>
+                                            <td>DR-{e?.t_id}</td>
+                                            <td>{formatDate(e?.t_start_date)} </td>
+                                            <td> {formatDate(e?.t_end_date)}</td>
+                                            <td> {e.t_trip_fromlocation}</td>
+                                            <td>{e.t_trip_tolocation} </td>
+                                            <td> {e?.d_first_name}</td>
+                                            <td> {e?.t_vehicle}</td>
+                                            <td> {e?.t_trip_status}</td>
+                                            <td> {e?.t_remarks ? e.t_remarks : "N/A"} </td>
+                                            <td> {e?.t_trackingcode}</td>
+                                            <td> {formatDateTime(e.t_created_date)}</td>
+                                        </tr>
+                                    )
+                                })
                             }
                         </tbody>
 
                     </table>
+
                 </div>
+                <div className="pagination-container">
+                        <div className='pagination'>
+                            <button
+                                disabled={page === 1}
+                                onClick={() => setPage(page - 1)}
+                            >
+                                Previous
+                            </button>
+                            <span>Page {page}</span>
+                            <button disabled= {DeliveryReports.length < 5} onClick={() => setPage(page + 1)}>Next</button>
+                        </div>
+                    </div>
+
             </div>
 
         </div>

@@ -113,13 +113,13 @@ const AdminLogin = () => {
               <h2 className="title">Driver Login</h2>
               <div className="input-field">
                 <i className="fas fa-user" />
-                <input type="text" placeholder="Username"
+                <input type="text" placeholder="Username" required
                   onChange={(e) => { setUserName(e.currentTarget.value) }} />
               </div>
               <div className="input-field">
                 <i className="fas fa-lock" />
                 <input type="password" placeholder="Password" ref={passwordInput}
-                  onChange={(e) => { setPassword(e.currentTarget.value) }} />
+                  onChange={(e) => { setPassword(e.currentTarget.value) }} required />
                 {/* <i className="fa fa-eye-slash" id='eyes' aria-hidden="true" 
            style={{position:"relative", left:"23vw", bottom: "4.1vw"}}
             onClick={showPassword} ref={eye}></i> */}
@@ -145,12 +145,12 @@ const AdminLogin = () => {
               <h2 className="title">Admin Login</h2>
               <div className="input-field">
                 <i className="fas fa-user" />
-                <input type="text" placeholder="Username"  
+                <input type="text" placeholder="Username"  required
                 onChange={(e) => { setUserName(e.currentTarget.value) }} />
               </div>
               <div className="input-field">
                 <i className="fas fa-lock" />
-                <input type="password" placeholder="Password" ref={passwordInput}
+                <input type="password" required placeholder="Password" ref={passwordInput}
                   onChange={(e) => { setPassword(e.currentTarget.value) }} />
               </div>
               <input type="submit" className="btn" value="Login" />

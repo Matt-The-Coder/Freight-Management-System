@@ -34,6 +34,7 @@
 }
 .maintenance-list{
     overflow:auto;
+
 }
 .maintenance-table{
     width: 100%;
@@ -47,7 +48,8 @@
 
 .maintenance-table tr th, .maintenance-table tr td {
     border-bottom: 2px solid rgb(49, 47, 47);
-    padding: 10px 20px;
+    padding: 4px 8px;
+    font-size: 15px;
 }
 .maintenance-table tr td input{
     background: none;
@@ -452,7 +454,8 @@
         width: 60%;
     }
     :is(.maintenance-list, .maintenance-table) :is(tr th, tr td){
-        padding: 6px 12px;
+        padding: 2px 4px;
+        font-size: 14px;
     }
     .maintenance-details .report-export {
         justify-content: center;

@@ -15,8 +15,10 @@
   border-radius: 10px;
 }
 .switch-pager h4:first-child{
+  text-align: center;
   cursor: pointer;
   padding: 10px;
+  width: 50%;
   border-top-left-radius: 10px;
   border: 1px solid var(--dark);
   font-weight: 700;
@@ -28,12 +30,15 @@
   background-color: #484d68;
 }
 .switch-pager h4:nth-child(2){
+  text-align: center;
+  width: 50%;
   cursor: pointer;
   padding: 10px;
   border-left: 2px  solid var(--light);
   font-weight: 700;
   background-color: var(--button);
   color: white;
+  border-top-right-radius: 10px;
 }
 h3{
   font-weight: 700;
@@ -217,7 +222,7 @@ button{
     justify-content: end;
   }
    #del-status{
-    border-left: 1px solid black;
+    border-left: 1px solid var(--dark);
   }
   .boxInfoDetail .trip-status form :is(select, button, option){
     padding: 6px 12px;
@@ -298,13 +303,13 @@ button{
   .transportCard {
     height: 220px;
     width: 800px;
-    background-color: var(--light-primary);
+    background-color: var(--dark);
     position: fixed;
     right: 30px;
     bottom: 40px;
     display: flex;
-    gap: .2%;
-    box-shadow: 0px 0px  2px black ;
+    gap: .1%;
+    box-shadow: 0px 0px  2px var(--dark) ;
   }
   .transportCard .card{
     width: 49.9%;
@@ -461,7 +466,7 @@ button{
   }
   @media screen and (max-width: 576px) {
     .DeliveryTracking{
-      height: 120vh;
+      height: 130vh;
     }
     .tracking-details{
       padding: 0px;
@@ -522,6 +527,7 @@ button{
       margin-bottom: 20px;
     }
     .switch-pager{
+      width: 100%;
       background-color: var(--light);
       border-radius: 10px;
     }

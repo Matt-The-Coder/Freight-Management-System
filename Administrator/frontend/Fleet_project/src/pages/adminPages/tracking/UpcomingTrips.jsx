@@ -28,11 +28,10 @@ const UpcomingTrips = ({ socket }) => {
         } else {
             setFilterData(e)
             const filteredDeliveries = deliveriesStorage.filter((d) => {
-                const startDate = new Date(d.t_start_date);
-                startDate.setDate(startDate.getDate() + 1);
-                const formattedDate = startDate.toISOString().split('T')[0];
-                let result = formattedDate == e
-                return result;
+                const formattedDate = formatDateInput(d.t_start_date);
+                if(formattedDate == e){
+                    return d;
+                }
             })
             setDeliveries(filteredDeliveries)
         }
@@ -44,6 +43,11 @@ const UpcomingTrips = ({ socket }) => {
         const formattedDate = newDate.toLocaleString();
         return formattedDate;
     };
+    const formatDateInput = (date) => {
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate());
+        return formattedDate.toISOString().split("T")[0];
+      };
     useEffect(() => {
         getDeliveries()
     }, [])
@@ -63,10 +67,17 @@ const UpcomingTrips = ({ socket }) => {
                     </div>
                 </div>
                 <div className="filter">
-                    {/* <h3>Filter</h3> */}
-                    <input type="date" id='date-input' value={filterData} onChange={(e) => { filterDeliveries(e.currentTarget.value) }} />
-                    <i className='bx bx-filter' ></i>
+                {/* <h3>Filter</h3> */}
+                <div className="filter-container">
+                    <p htmlFor=""> Start Date</p>
+                    <div className="filter-input">
+                        <input type="date" id='date-input' value={filterData} onChange={(e) => { filterDeliveries(e.currentTarget.value) }} />
+                        <i className='bx bx-filter' ></i>
+                    </div>
+
                 </div>
+
+            </div>
                 <div className="trips-list">
                     {deliveries.length == 0 && <center><h1>No Upcoming Trips at the Moment</h1></center>}
                     {deliveries.map((e, i) => {
@@ -74,6 +85,9 @@ const UpcomingTrips = ({ socket }) => {
                         return (
                             <div className="trips-container" key={i}>
                                 <div className="trips-header">
+                                    <div className="time-container">
+                                        <p>Order Date: {formatDate(e.t_created_date)}</p>
+                                    </div>
                                     <div className="header-container">
                                         <div className="header1">
                                             <div className="row1">

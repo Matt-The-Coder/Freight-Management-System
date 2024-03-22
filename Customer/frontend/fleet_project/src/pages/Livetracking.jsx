@@ -541,7 +541,7 @@ const trackDriver = async (e)=>
                     </div>
                     <div className="transportData">
                       <div className="transportData1">
-                        <p>Driver: {tripDetail.t_driver} </p>
+                      <p>Driver: {tripDetail.d_first_name} {tripDetail.d_last_name} </p>
                         <p>Destination: {tripDetail.t_trip_tolocation}</p>
                         <p>Cargo Weight: {tripDetail.t_totalweight}kg</p>
                         <p>Carbon Emissions: {vehicleStats.sd_carbon_emission}</p>
@@ -949,7 +949,7 @@ const trackDriver = async (e)=>
                       </div>
                       <div className="transportData">
                         <div className="transportData1">
-                          <p>Driver: {tripDetail.t_driver} </p>
+                          <p>Driver: {tripDetail.d_first_name} {tripDetail.d_last_name} </p>
                           <p>Destination: {tripDetail.t_trip_tolocation}</p>
                           <p>Cargo Weight: {tripDetail.t_totalweight}kg</p>
                           <p>Carbon Emissions: {vehicleStats.sd_carbon_emission}</p>

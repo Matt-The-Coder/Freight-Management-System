@@ -1,9 +1,9 @@
 const db = require('../../database/connection')
 module.exports = () => {
 
-    const getFuelList = async () => 
+    const getFuelList = async (offset, limit) => 
     {
-        const query = "Select * from fms_g11_fuel"
+        const query = `Select * from fms_g11_fuel LIMIT ${limit} OFFSET ${offset}`
         try {
             const data = await db(query)
             return data

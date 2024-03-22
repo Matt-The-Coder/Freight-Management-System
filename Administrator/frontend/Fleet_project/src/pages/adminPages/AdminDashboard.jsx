@@ -200,6 +200,7 @@ defaults.plugins.title.font.size = 25
                     </div>
                 </div>
             </div></Link>
+            <a href="#Chart">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Total Carbon Emissions</h2>
@@ -213,7 +214,8 @@ defaults.plugins.title.font.size = 25
                     </div>
                 </div>
             </div>
-
+            </a>
+            <a href="#Chart">
             <div className="trip-box">
                 <div className="trip-box-header">
                     <h2>Total Fuel Consumption</h2>
@@ -227,11 +229,12 @@ defaults.plugins.title.font.size = 25
                     </div>
                 </div>
             </div>
+            </a>
 
 
             </div>
            
-           <div className="dashboard-charts">
+           <div className="dashboard-charts" id="Chart">
             <div className="dashboard-charts-container">
                 <div className="export">
                     <h3>Export as:</h3>

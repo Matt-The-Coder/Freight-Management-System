@@ -91,7 +91,18 @@ WFRoute.get('/getSustainableData',  async (req, res)=> {
 
 WFRoute.get('/getSustainableReports',  async (req, res)=> {
   try {
-    const data = await db("Select * from fms_g11_sustainability_data")
+    const { page, pageSize } = req.query;
+    const offset = (page - 1) * pageSize;
+    const limit = parseInt(pageSize);
+    const data = await db(`Select * from fms_g11_sustainability_data LIMIT ${limit} OFFSET ${offset}`)
+    res.json(data)
+  } catch (error) {
+    console.log(error)
+  }
+})
+WFRoute.get('/getSustainableReportsFull',  async (req, res)=> {
+  try {
+    const data = await db(`Select * from fms_g11_sustainability_data`)
     res.json(data)
   } catch (error) {
     console.log(error)

@@ -19,7 +19,7 @@ import Speedometer, {
 
 
 
-const DeliveryTracking = ({socket}) => {
+const DeliveryTracking = ({ socket }) => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const miles = searchParams.get('miles');
@@ -35,6 +35,8 @@ const DeliveryTracking = ({socket}) => {
   const map = useRef(null);
   const [transportDetail, setTransportDetail] = useState(false)
   const [transitData, setTransitData] = useState(false)
+  const [isCancelled, setIsCancelled] = useState(false)
+  const [isCompleted, setIsCompleted] = useState(false)
   const tDetail = useRef(null)
   const directions = useRef(null);
   const markerTrack = useRef(null)
@@ -52,6 +54,8 @@ const DeliveryTracking = ({socket}) => {
   const boxInfoNav = useRef([])
   const bInfo = useRef(null)
   const [deliveryState, setDeliveryState] = useState(null)
+  const [deliveryReport, setDeliveryReport] = useState(null)
+  const [deliveryProof, setDeliveryProof] = useState(null)
   const [boxInfoMessage, setBoxInfoMessage] = useState(false)
   const [boxInfoReminder, setBoxInfoboxInfoReminder] = useState(false)
   const mapInstructions = useRef(null)
@@ -285,7 +289,6 @@ const DeliveryTracking = ({socket}) => {
 
       const currentTrip = await axios.get(`${hostServer}/get-current-trip/${trip_id}`)
       const result = currentTrip.data
-      setDeliveryState(result.t_trip_status)
       setCurrentTrip(result)
       console.log(result)
       const data = position.coords;
@@ -325,20 +328,31 @@ const DeliveryTracking = ({socket}) => {
 
     setIsLoading(false);
   }, [mapStyle]);
+  const deliveryStateUpdate = (e) => {
+    setDeliveryState(e)
+    if (e == "Cancelled") {
+      setIsCompleted(false)
+      setIsCancelled(true)
+    } else if (e == "Completed") {
+      setIsCancelled(false)
+      setIsCompleted(true)
 
+    }
+  }
   const setDeliveryStatus = async (e) => {
     e.preventDefault()
     try {
-      if (deliveryState == "In Progress") {
-        alert("The trip is already in progress!")
+      if (deliveryState == "") {
         return;
-      }else{
+      } else {
         setIsLoading(true)
-        console.log(tripReport)
-        const data = await axios.post(`${hostServer}/update-trip/${trip_id}`, {
-          status: deliveryState,
-          report: tripReport
-        })
+        console.log(deliveryProof)
+        const formData = new FormData()
+        formData.append("my_file", deliveryProof);
+        formData.append("status", deliveryState);
+        formData.append("remarks", tripReport);
+        formData.append("report", deliveryReport);
+        const data = await axios.post(`${hostServer}/update-trip/${trip_id}`, formData)
         const result = data.data.message
         setIsLoading(false)
         alert(result)
@@ -357,12 +371,12 @@ const DeliveryTracking = ({socket}) => {
             message = `Delivery set as pending, awaiting action by ${currentTrip.d_first_name}. Review details and provide instructions.`;
             break;
         }
-        
+
         const insertNotif = await axios.post(`${hostServer}/insertNotifications`,
-        {
-          description:message
-        }) 
-        socket.emit('deliveryUpdate', {deliveryState, trip_id })
+          {
+            description: message
+          })
+        socket.emit('deliveryUpdate', { deliveryState, trip_id })
         if (deliveryState !== "In Progress") {
           nav('/driver/deliveries/ongoing')
         }
@@ -397,24 +411,41 @@ const DeliveryTracking = ({socket}) => {
             <div className="switch-pager-content">
               {transitData && <>
                 <div className="transportCard">
-
-                  <div className="card">
-                    <div className='trip-status'>
+                <div className="card">
+                <div className='trip-status'>
                       <form onSubmit={(e) => { setDeliveryStatus(e) }}>
-                        <h3> Delivery Status</h3>
+                        <h3>Trip Status</h3>
                         <div className="status-form">
-                          <select id='status-update' onChange={(e) => { setDeliveryState(e.currentTarget.value) }} value={deliveryState}>
-                            <option value="In Progress">In Progress</option>
+                          <select id='status-update' value={deliveryState} onChange={(e) => { deliveryStateUpdate(e.currentTarget.value) }}>
+                            <option value="">Select Status</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
                           </select>
+                          {isCancelled && (<>
+                            <h4>Reason</h4>
+                            <select required id='status-update' onChange={(e) => { setDeliveryReport(e.currentTarget.value) }} value={deliveryReport}>
+                              <option value="">Select Option</option>
+                              <option value="Lost Packages">Lost Packages</option>
+                              <option value="Vehicle Issues">Vehicle Issues</option>
+                              <option value="Inclement Weather">Inclement Weather</option>
+                              <option value="Personnel Shortages">Personnel Shortages</option>
+                              <option value="Inaccurate Information">Inaccurate Information</option>
+                            </select>
+                          </>)}
+                          {isCompleted && (<>
+                            <h4>Proof of Delivery</h4>
+                            <input required type="file" onChange={(e) => { setDeliveryProof(e.currentTarget.files[0]) }} />
+                          </>)}
                           <h4>Trip Report</h4>
-                          <textarea id="remarks" cols="30" rows="5" required placeholder='Please provide details about the trip' onChange={(e)=>{setTripReport(e.currentTarget.value)}}></textarea>
+                          <textarea id="remarks" cols="30" rows="3" required placeholder='Can you provide more details about the trip?' onChange={(e) => { setTripReport(e.currentTarget.value) }}></textarea>
                           <button type='submit'>Submit</button>
                         </div>
 
                       </form>
                     </div>
+                </div>
+                  <div className="card">
+
                     <div className="cardTitle">
                       <i className='bx bxs-car-mechanic' id='carBx'></i>
                       <h4>Vehicle Data</h4>
@@ -899,14 +930,29 @@ const DeliveryTracking = ({socket}) => {
                     {boxInfoMessage &&
                       <div className='trip-status'>
                         <form onSubmit={(e) => { setDeliveryStatus(e) }}>
-                          <h3>Delivery Status</h3>
-                          <select id='status-update' value={deliveryState} onChange={(e) => { setDeliveryState(e.currentTarget.value) }}>
-                            <option value="In Progress">In Progress</option>
+                          <h3 style={{ fontSize: "20px" }}>Trip Status</h3>
+                          <select id='status-update' value={deliveryState} onChange={(e) => { deliveryStateUpdate(e.currentTarget.value) }}>
+                            <option value="">Select Status</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
                           </select>
+                          {isCancelled && (<>
+                            <h4>Reason</h4>
+                            <select required id='status-update' onChange={(e) => { setDeliveryReport(e.currentTarget.value) }} value={deliveryReport}>
+                              <option value="">Select Option</option>
+                              <option value="Lost Packages">Lost Packages</option>
+                              <option value="Vehicle Issues">Vehicle Issues</option>
+                              <option value="Inclement Weather">Inclement Weather</option>
+                              <option value="Personnel Shortages">Personnel Shortages</option>
+                              <option value="Inaccurate Information">Inaccurate Information</option>
+                            </select>
+                          </>)}
+                          {isCompleted && (<>
+                            <h4>Proof of Delivery</h4>
+                            <input required type="file" onChange={(e) => { setDeliveryProof(e.currentTarget.files[0]) }} />
+                          </>)}
                           <h4>Trip Report</h4>
-                          <textarea required id="remarks" cols="30" rows="5" placeholder='Please provide details about the trip' onChange={(e)=>{setTripReport(e.currentTarget.value)}}></textarea>
+                          <textarea id="remarks" cols="30" rows="3" required placeholder='Please provide more details about the trip' value={tripReport} onChange={(e) => { setTripReport(e.currentTarget.value) }}></textarea>
                           <button type='submit'>Submit</button>
                         </form>
                       </div>}

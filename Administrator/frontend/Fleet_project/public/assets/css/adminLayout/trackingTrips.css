@@ -112,27 +112,51 @@
     flex-direction: column;
     gap: 5px;
 }
+.trips-content .trips-button-pending{
+    height: 20%;
+    text-align: center;
+}
+.trips-content .trips-button-pending button{
+    background-color: var(--button);
+    color: white;
+    padding: 6px 12px;
+    cursor: pointer;
+}
 .trips-content .trips-button{
     height: 20%;
     text-align: center;
 }
+
 .trips-content .trips-button button{
     background-color: var(--button);
     color: white;
     padding: 6px 12px;
     cursor: pointer;
 }
-.filter{
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 0 24px 10px 0;
+
+.trips-container .time-container{
+    width: 100%;
+    padding: 5px;
+    text-align: end;
+
 }
-.filter select, .filter option{
-    background-color: white !important;
-    color: black;
-    border-radius:5px;
-    padding: 6px 12px;
+
+dialog {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow-y: hidden;
+    height: 500px;
+    width: 500px;
+}
+dialog .proof{
+    width: 100%;
+    height: 100%;
+}
+dialog img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 @media screen and (max-width:576px) {
 
@@ -168,13 +192,13 @@
     .trips-container .delivery-info{
         display: grid;
         place-items:center;
-        margin: 5px 0 !important;
+        margin: 15px 0 !important;
     }
     .trips-container .delivery-info h3{
         font-size: 15px;
     }
-    .filter{
-        justify-content: center;
+    .trips-container .time-container{
+        text-align: center;
     }
 
 }

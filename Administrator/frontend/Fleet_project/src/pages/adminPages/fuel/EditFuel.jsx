@@ -84,9 +84,9 @@ const EditFuel = () => {
                             <h4>Vehicle</h4>
                             <select name="vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }} value={vehicle}>
                                 <option>Select Vehicle</option>
-                                {truckNames.map(e => {
+                                {truckNames.map((e,i) => {
                                     return (
-                                        <option value={e}>{e}</option>
+                                        <option key={i} value={e}>{e}</option>
                                     )
                                 })}
                             </select>

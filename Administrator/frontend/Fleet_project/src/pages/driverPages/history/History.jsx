@@ -5,10 +5,12 @@ import '/public/assets/css/adminLayout/trackingTrips.css'
 import axios from 'axios'
 const DriverHistory = () => {
     const hostServer = import.meta.env.VITE_SERVER_HOST;
+    const VITE_UPLOADING_SERVER = import.meta.env.VITE_UPLOADING_SERVER
     const { d_username: username, setIsLoading, d_id: id } = useOutletContext()
     const [filter, setFilter] = useState("all")
     const [deliveriesStorage, setDeliveriesStorage] = useState([])
     const [deliveries, setDeliveries] = useState([])
+    const [filterData, setFilterData] = useState('')
     const [sustain, setSustain] = useState([])
     const [sustainStorage, setSustainStorage] = useState([])
     const getDeliveries = async () => {
@@ -26,44 +28,78 @@ const DriverHistory = () => {
     }
 
 
+    const filterDeliveries = (e) => {
+        if (e == "") {
+            setDeliveries(deliveriesStorage)
+            setFilterData(e)
+        } else {
+            setFilterData(e)
+            const filteredDeliveries = deliveriesStorage.filter((d, i) => {
+                const startDate = new Date(d.t_created_date);
+                startDate.setDate(startDate.getDate());
+                const formattedDate = startDate.toISOString().split('T')[0];
+                console.log(formattedDate)
+                console.log(e)
+                if (formattedDate == e) {
+                    return formattedDate
+
+                }
+
+            })
+            setDeliveries(filteredDeliveries)
+        }
+
+    }
+
     const openModal = (e) => {
         const num = e
         const modalInfo = document.querySelector("#modal" + e)
         const modalbg = document.querySelector("#modalbg" + e)
         const modalb = document.querySelector("#modalb" + e)
-            modalInfo.style.display = "block"
-            modalb.style.display = 'block' 
-            modalbg.style.display = 'block'
+        modalInfo.style.display = "block"
+        modalb.style.display = 'block'
+        modalbg.style.display = 'block'
 
-            console.log(modalInfo)
-            console.log(modalbg)
-            console.log(modalb)
+        console.log(modalInfo)
+        console.log(modalbg)
+        console.log(modalb)
     }
     const closeModal = (e) => {
         const num = e
         const modalInfo = document.querySelector("#modal" + e)
         const modalbg = document.querySelector("#modalbg" + e)
         const modalb = document.querySelector("#modalb" + e)
-            modalInfo.style.display = "none"
-            modalb.style.display = 'none' 
-            modalbg.style.display = 'none'
-        
+        modalInfo.style.display = "none"
+        modalb.style.display = 'none'
+        modalbg.style.display = 'none'
+
+    }
+    const openPictureModal = (e) => {
+        const dialog = document.querySelector(`#dialog${e}`)
+        dialog.showModal()
+
+
+    }
+    const closePictureModal = (e) => {
+        const dialog = document.querySelector(`#dialog${e}`)
+        dialog.close()
+
     }
     const formatDate = (date) => {
-        const formattedDate = new Date(date);
-        formattedDate.setDate(formattedDate.getDate() + 1);
-        return formattedDate.toISOString().split("T")[0];
-      };
+        const newDate = new Date(date);
+        const formattedDate = newDate.toLocaleString();
+        return formattedDate;
+    };
 
 
     useEffect(() => {
         getDeliveries()
     }, [])
 
-      function convertKm(mile) {
+    function convertKm(mile) {
         const kilometers = 1.60934 * mile;
         return kilometers.toFixed(2);
-      }
+    }
 
     return (
         <div className="DriverHistory">
@@ -79,55 +115,78 @@ const DriverHistory = () => {
                     </ul>
                 </div>
             </div>
-            <div className="filter">
-                    {/* <h3>Filter</h3> */}
-                    <i className='bx bx-filter' ></i>
-                    <select id="filter" value={filter} onChange={async(el)=>{
-                        if(el.currentTarget.value == "all"){
-                            setIsLoading(true)
-                            setDeliveries(deliveriesStorage)
-                            setFilter(el.currentTarget.value)
-                            setIsLoading(false)
-                        }
-                        else{
-                            setIsLoading(true)
-                            setFilter(el.currentTarget.value)
-                            const filteredDeliveries = deliveriesStorage.filter((e)=>{return e.t_trip_status == el.currentTarget.value})
-                            console.log(filteredDeliveries)
-                            setDeliveries(filteredDeliveries)
-                            setIsLoading(false)
-                        }
 
-                        }}>
-                        <option value="all">All Trips</option>
-                        <option value="Completed">Completed Trips</option>
-                        <option value="Cancelled">Cancelled Trips</option>
-                    </select>
+        <div className="filter-flex">
+        <div className="filter">
+                {/* <h3>Filter</h3> */}
+                <div className="filter-container">
+                    <p htmlFor=""> Trip Status</p>
+                    <div className="filter-input">
+                    <select id="filter" value={filter} onChange={async (el) => {
+                    if (el.currentTarget.value == "all") {
+                        setIsLoading(true)
+                        setDeliveries(deliveriesStorage)
+                        setFilter(el.currentTarget.value)
+                        setIsLoading(false)
+                    }
+                    else {
+                        setIsLoading(true)
+                        setFilter(el.currentTarget.value)
+                        const filteredDeliveries = deliveriesStorage.filter((e) => { return e.t_trip_status == el.currentTarget.value })
+                        console.log(filteredDeliveries)
+                        setDeliveries(filteredDeliveries)
+                        setIsLoading(false)
+                    }
+
+                }}>
+                    <option value="all">All Trips</option>
+                    <option value="Completed">Completed Trips</option>
+                    <option value="Cancelled">Cancelled Trips</option>
+                </select>
+                        <i className='bx bx-filter' ></i>
+                    </div>
+
                 </div>
+
+            </div>
+                <div className="filter">
+                {/* <h3>Filter</h3> */}
+                <div className="filter-container">
+                    <p htmlFor=""> Order Date</p>
+                    <div className="filter-input">
+                    <input type="date" id='date-input' value={filterData} onChange={(e) => { filterDeliveries(e.currentTarget.value) }} />
+                        <i className='bx bx-filter' ></i>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
             <div className="deliveries-list">
                 {deliveries.length == 0 && <center><h1>No Trips Found!</h1></center>}
                 {deliveries?.map((e, i) => {
-                        let statusColor = '';
-                        if (e.t_trip_status == 'Completed') {
-                            statusColor = "#388E3C";
-                        } else if (e.t_trip_status == 'In Progress') {
-                            statusColor = '#FBC02D';
-                        } else if (e.t_trip_status == 'Cancelled') {
-                            statusColor = '#D32F2F';
-                        }
-                                
+                    let statusColor = '';
+                    if (e.t_trip_status == 'Completed') {
+                        statusColor = "#388E3C";
+                    } else if (e.t_trip_status == 'In Progress') {
+                        statusColor = '#FBC02D';
+                    } else if (e.t_trip_status == 'Cancelled') {
+                        statusColor = '#D32F2F';
+                    }
+
                     return (
                         <div className="deliveries-container" key={i}>
+                            <div className="time-container">
+                                <p>Order Date: {formatDate(e.t_created_date)}</p>
+                            </div>
                             <div className="delivery-info">
-                                <div className="first-container"></div>
                                 <div className="second-container">
-                                <div className="h3-container" style={{backgroundColor:statusColor}}>
-                                    <h3 >{e.t_trip_status}</h3>
+                                    <div className="h3-container" style={{ backgroundColor: statusColor }}>
+                                        <h3 >{e.t_trip_status}</h3>
+                                    </div>
                                 </div>
-                                </div>
-                                <div className="time-container">
-                                    <p>{formatDate(e.t_modified_date)}</p>
-                                </div>
+
 
                             </div>
                             <div className="deliveries-header">
@@ -157,35 +216,55 @@ const DriverHistory = () => {
 
                             </div>
                             <div className="more-info">
-                                    <button onClick={()=>{openModal(i)}}>More Info</button>
-                                    <div className="more-info-modal" id={`modal${i}`}>
-                                        <div className="more-info-background" id={`modalbg${i}`}></div>
-                                        <div className="more-info-modal-box" id={`modalb${i}`}>
-                                            <div className="exit">
-                                            <i className='bx bx-window-close' onClick={()=>{closeModal(i)}}></i>
-                                            </div>
-                                            <h3>History Information</h3>
-                                            <div className="info">
-                                                <div className="info-1">
-                                                    <p>Start: {formatDate(e.t_start_date)}</p>
-                                                    <p>End: {formatDate(e.t_end_date)}</p>
+                                <button onClick={() => { openModal(i) }}>More Info</button>
+                                <div className="more-info-modal" id={`modal${i}`}>
+                                    <div className="more-info-background" id={`modalbg${i}`}></div>
+                                    <div className="more-info-modal-box" id={`modalb${i}`}>
+                                        <div className="exit">
+                                            <i className='bx bx-window-close' onClick={() => { closeModal(i) }}></i>
+                                        </div>
+                                        <h3>History Information</h3>
+                                        <div className="info">
+                                            <div className="info-1">
+                                                <h4>Delivery Details</h4>
+                                                <p>Start: {formatDate(e.t_start_date)}</p>
+                                                <p>End: {formatDate(e.t_end_date)}</p>
+                                                <p>Distance: {e.t_totaldistance?.toFixed(2)} km</p>
 
-                                                
-                                              
-                                                
-                                                </div>
-                                                <div className="info-2">
+
+                                                {/* <img src={`${VITE_UPLOADING_SERVER}${e.t_picture}`} alt="" /> */}
+
+                                            </div>
+                                            <div className="info-2">
+                                                <h4>Delivery Reports</h4>
+                                                {e.t_picture == "N/A" ?
+                                                    <p>Reason: {e.t_reason}</p> :
+                                                    <p>Proof of Delivery: <button onClick={() => { openPictureModal(i) }} style={{ padding: "1px 4px", fontSize: "12px" }}>View</button></p>}
+                                                <dialog id={`dialog${i}`}>
+                                                    <div className="proof">
+                                                        <div className="exit">
+                                                            <i className='bx bx-window-close' onClick={() => { closePictureModal(i) }}></i>
+                                                        </div>
+                                                        <img src={`${VITE_UPLOADING_SERVER}${e.t_picture}`} />
+                                                    </div>
+
+                                                </dialog>
+                                                <p>Report: {e.t_remarks}</p>
+                                                <p>Duration: {e.t_totaldrivetime}</p>
                                                 <p>Vehicle: {e.t_vehicle}</p>
-                                                    <p>Total Weight: {e.t_totalweight}kg</p>
-                                                   
-                                                
-                                                
-                                                
-                                                </div>
+                                                <p>Weather: {e.sd_current_weather}</p>
+                                                <p>Total Emission: {e.sd_carbon_emission}</p>
+                                                <p>Total Fuel Usage: {e.sd_fuelconsumption}</p>
+                                                <p>Total Weight: {e.t_totalweight}kg</p>
+
+
+
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         </div>
                     )
 

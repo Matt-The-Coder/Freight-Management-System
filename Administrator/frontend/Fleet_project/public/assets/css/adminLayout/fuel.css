@@ -155,7 +155,7 @@
 :is(.fuel-list .fuel-table tr) :is(th, td){
     border-bottom: 2px #4e4a4a solid;
     text-align: left;
-    padding: 10px 20px;
+    padding: 4px 8px;
 }
 :is(.fuel-list .fuel-table tr) :is(th, td) button{
     color: white;

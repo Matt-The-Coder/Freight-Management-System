@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import '/public/assets/css/adminLayout/maintenance.css'
 import axios from "axios"
-import {Link, useNavigate, useOutletContext} from "react-router-dom"
+import {Link, useNavigate, useOutletContext, useParams} from "react-router-dom"
 const MaintenanceList = () => {
     const nav = useNavigate()
+    const {MaintenanceID} = useParams()
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const {setIsLoading} = useOutletContext()

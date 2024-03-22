@@ -16,7 +16,47 @@
     --button: #363949;
     --notification: #e4edfe
 }
-
+html{
+    scroll-behavior: smooth;
+}
+input[type=file]{
+    border: 1px solid black;
+    border-radius: 10px;
+}
+input[type=file]::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #1976d2;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+  }
+  
+  input[type=file]::file-selector-button:hover {
+    background: #0d45a5;
+  }
+.pagination-container{
+    margin-top: 10px !important;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.pagination {
+    width: 250px;
+    display: flex;
+    justify-content: space-evenly;
+}
+.pagination button{
+    padding: 6px 12px;
+    font-weight: 500;
+    background-color: var(--button);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
 #search-btn, #theme-toggle{
     visibility: hidden;
 }
@@ -28,10 +68,11 @@ select, option, #date-input{
     cursor: pointer;
 }
 #date-input{
+    background-color: white !important;
+    color: black;
     border-radius: 5px;
-    width: 15%;
-    font-size: 12px;
-    padding: 5px 12px;
+    padding: 6px 12px;
+    border: 0.1px solid black;
 }
 #remarks{
     color: black ;
@@ -699,7 +740,32 @@ body.dark{
 .content main .bottom-data .reminders .task-list li:last-child{
    margin-bottom: 0;
 }
-
+.filter{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 0 24px 10px 0;
+}
+.filter .filter-container p{
+    font-weight: 400;
+    font-size: 15px;
+}
+.filter .filter-container .filter-input{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.filter select, .filter option{
+    background-color: white !important;
+    color: black;
+    border-radius:5px;
+    padding: 6px 12px;
+}
+.filter-flex{
+    display: flex;
+    justify-content: flex-end;
+}
 
 @media screen and (max-width: 768px) {
     .adminSidebar{
@@ -714,15 +780,13 @@ body.dark{
         position: relative;
         left: -60%;
     }
-    #date-input{
-        width: 30%;
-    }
-
 }
 
 @media screen and (max-width: 576px) {
-    #date-input{
-        width: 50%;
+    .filter-flex{
+        flex-direction: column;
+        justify-content: center;
+        align-items:end;
     }
     .notif-container
     .content nav form .form-input input{
@@ -773,6 +837,9 @@ body.dark{
     .adminSidebar .logo .logo-name{
         position: relative;
         left: -60%;
+    }
+    .pagination-container{
+        justify-content: center
     }
 
 }

@@ -159,7 +159,7 @@ personalInfoRoute.get('/getProfilePicture/:id', async (req, res) =>
         const result = await db(query)
         res.json({image: result})
     } catch (error) {
-        console.log("Cannot get profile picture")
+        console.log(error)
         res.json({status: "Failed to get profile picture"})
     }
 })
@@ -177,7 +177,6 @@ personalInfoRoute.post('/updateDriverPersonalInfo', async (req, res)=>{
       const query = `UPDATE fms_g12_drivers SET d_username = '${uName}', d_first_name = '${fName}', d_last_name = '${lName}', d_email = '${email}' WHERE d_id = ${id}`
       await db(query)
       res.json({message:"success"})
-      console.log("success")
   } catch (error) {
       res.json({errorMessage:"Username already exists!"})
   }
@@ -277,7 +276,7 @@ personalInfoRoute.get('/getDriverProfilePicture/:id', async (req, res) =>
       const result = await db(query)
       res.json({image: result})
   } catch (error) {
-      console.log("Cannot get profile picture")
+      console.log(error)
       res.json({status: "Failed to get profile picture"})
   }
 })

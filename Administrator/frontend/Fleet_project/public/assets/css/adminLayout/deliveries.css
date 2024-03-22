@@ -26,11 +26,9 @@
 }
 .deliveries-container .delivery-info{
     display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-}
-.deliveries-container .delivery-info :is(.first-container, .second-container, .time-container ){
-    width: 35%;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
 }
 .deliveries-container .delivery-info .h3-container{
     border-radius: 5px;
@@ -46,12 +44,13 @@
     place-items: center;
 
 }
-.deliveries-container .delivery-info .time-container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.deliveries-container .time-container{
+    width: 100%;
+    padding: 5px;
+    text-align: end;
 
 }
+
 .deliveries-header{
     height: 40%;
     display: flex;
@@ -100,6 +99,27 @@
     flex-direction: column;
     gap: 5px;
 }
+.deliveries-content .trips-button-pending{
+    height: 20%;
+    text-align: center;
+}
+.deliveries-content .trips-button-pending button{
+    background-color: var(--button);
+    color: white;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.deliveries-content .trips-button-view{
+    height: 20%;
+    text-align: center;
+    display: none;
+}
+.deliveries-content .trips-button-view button{
+    background-color: var(--button);
+    color: white;
+    padding: 6px 12px;
+    cursor: pointer;
+}
 .deliveries-content .trips-button{
     height: 20%;
     text-align: center;
@@ -122,6 +142,28 @@
 .deliveries-content .odometer p{
     font-size: 18px;
     font-weight: 500;
+}
+.filter{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 0 24px 10px 0;
+}
+.filter .filter-container p{
+    font-weight: 400;
+    font-size: 15px;
+}
+.filter .filter-container .filter-input{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.filter select, .filter option{
+    background-color: white !important;
+    color: black;
+    border-radius:5px;
+    padding: 6px 12px;
 }
 @media screen and (max-width:576px) {
 
@@ -154,8 +196,9 @@
     .deliveries-container .delivery-info .first-container{
         display: none;
     }
-    .deliveries-container .delivery-info :is(.second-container, .time-container ){
-        width: 50%;
+    .deliveries-container .time-container{
+        text-align: center;
+    
     }
 
 }

@@ -8,7 +8,8 @@ import {
   MaintenanceList, AddMaintenance, Settings, LandingPage, AddFuel, FuelManagement, EditFuel, AdminHistory, DeliveryReports, SustainabilityReports
 } from './pages/adminPages/Components.js'
 import Notfound from './pages/Notfound'
-import { History, Deliveries, DriverDashboard, DeliveryTracking, DriverChat, Inprogress, DriverSettings } from './pages/driverPages/driverComponents.js'
+import { History, Deliveries, DriverDashboard, MaintenanceDriverList,
+  DeliveryTracking, DriverChat, Inprogress, DriverSettings } from './pages/driverPages/driverComponents.js'
 const hostServer = import.meta.env.VITE_SERVER_HOST
 const socket = io.connect(`${hostServer}`)
 const App = () => {
@@ -41,6 +42,8 @@ const App = () => {
         <Route element={<DriverDashboardLayout socket={socket}/>}>
           <Route path='/driver/chats' element={<DriverChat socket={socket} />} />
           <Route path='/driver/history/deliveries' element={<History socket={socket} />} />
+          <Route path='/driver/maintenance/add' element={<AddMaintenance />} />
+          <Route path='/driver/maintenance/list/:maintenanceID' element={<MaintenanceDriverList />} />
           <Route path='/driver/deliveries/ongoing' element={<Inprogress socket={socket} />} />
           <Route path='/driver/deliveries/pending' element={<Deliveries socket={socket} />} />
           <Route path='/driver/deliveries/tracking/' element={<DeliveryTracking socket={socket} />} />

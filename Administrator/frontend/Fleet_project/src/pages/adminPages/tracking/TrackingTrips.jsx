@@ -2,24 +2,24 @@ import { Link, useOutletContext } from 'react-router-dom'
 import '/public/assets/css/adminLayout/trackingTrips.css'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-const TrackingTrips = ({socket}) => {
+const TrackingTrips = ({ socket }) => {
     const { image, u_role, u_first_name, u_last_name, setIsLoading } = useOutletContext()
     const VITE_UPLOADING_SERVER = import.meta.env.VITE_UPLOADING_SERVER
     const mapboxToken = import.meta.env.VITE_MAPBOX_API;
     const hostServer = import.meta.env.VITE_SERVER_HOST;
     const [filterData, setFilterData] = useState('')
-    const [travelData, setTravelData]= useState([])
+    const [travelData, setTravelData] = useState([])
     const [deliveries, setDeliveries] = useState([])
     const [deliveriesStorage, setDeliveriesStorage] = useState([])
     const [refresh, setRefresh] = useState(false)
     useEffect(() => {
         socket.on('deliveryUpdate', (data) => {
-                alert("Delivery Information Updated")
-                location.reload()        
+            alert("Delivery Information Updated")
+            location.reload()
         });
         return () => socket.off('deliveryUpdate');
-    
-      }, [socket]);
+
+    }, [socket]);
     function convertMiles(meters) {
         const miles = 0.00062137 * meters
         return miles
@@ -45,11 +45,10 @@ const TrackingTrips = ({socket}) => {
         } else {
             setFilterData(e)
             const filteredDeliveries = deliveriesStorage.filter((d) => {
-                const startDate = new Date(d.t_start_date);
-                startDate.setDate(startDate.getDate() + 1);
-                const formattedDate = startDate.toISOString().split('T')[0];
-                let result = formattedDate == e
-                return result;
+                const formattedDate = formatInputDate(d.t_start_date);
+                if(formattedDate == e){
+                    return d;
+                }
             })
             setDeliveries(filteredDeliveries)
         }
@@ -64,38 +63,43 @@ const TrackingTrips = ({socket}) => {
         const newDate = new Date(date);
         const formattedDate = newDate.toLocaleString();
         return formattedDate;
+    };
+    const formatInputDate = (date) => {
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate());
+        return formattedDate.toISOString().split("T")[0];
       };
     useEffect(() => {
         getDeliveries()
     }, [refresh])
     useEffect(() => {
         const fetchTravelData = async () => {
-          try {
-            setIsLoading(true);
-            const promises = deliveries.map(async (e) => {
-              const travelTime = await axios.post(`${hostServer}/getDirections`, {
-                fLongitude: e.t_trip_fromlog,
-                fLatitude: e.t_trip_fromlat,
-                dLongitude: e.t_trip_tolog,
-                dLatitude: e.t_trip_tolat,
-                mapboxToken,
-                id: e.t_id
-              });
-              return travelTime.data.routes;
-            });
-      
-            const travelData = await Promise.all(promises);
-            setTravelData(travelData.flat());
-            console.log(travelData.flat())
-            setIsLoading(false);
-          } catch (error) {
-            console.log(error);
-          }
+            try {
+                setIsLoading(true);
+                const promises = deliveries.map(async (e) => {
+                    const travelTime = await axios.post(`${hostServer}/getDirections`, {
+                        fLongitude: e.t_trip_fromlog,
+                        fLatitude: e.t_trip_fromlat,
+                        dLongitude: e.t_trip_tolog,
+                        dLatitude: e.t_trip_tolat,
+                        mapboxToken,
+                        id: e.t_id
+                    });
+                    return travelTime.data.routes;
+                });
+
+                const travelData = await Promise.all(promises);
+                setTravelData(travelData.flat());
+                console.log(travelData.flat())
+                setIsLoading(false);
+            } catch (error) {
+                console.log(error);
+            }
         };
-      
+
         fetchTravelData();
-      }, [deliveries]);
-      
+    }, [deliveries]);
+
     return (
         <>
             <div className="trips">
@@ -112,15 +116,25 @@ const TrackingTrips = ({socket}) => {
                     </div>
                 </div>
                 <div className="filter">
-                    {/* <h3>Filter</h3> */}
-                    <input type="date" id='date-input' value={filterData} onChange={(e) => { filterDeliveries(e.currentTarget.value) }} />
-                    <i className='bx bx-filter' ></i>
+                {/* <h3>Filter</h3> */}
+                <div className="filter-container">
+                    <p htmlFor=""> Start Date</p>
+                    <div className="filter-input">
+                        <input type="date" id='date-input' value={filterData} onChange={(e) => { filterDeliveries(e.currentTarget.value) }} />
+                        <i className='bx bx-filter' ></i>
+                    </div>
+
                 </div>
+
+            </div>
                 <div className="trips-list">
                     {deliveries.length == 0 && <center><h1>No OnGoing Trips at the Moment</h1></center>}
                     {deliveries.map((e, i) => {
                         return (
                             <div className="trips-container" key={i}>
+                                <div className="time-container">
+                                    <p>Order Date: {formatDate(e.t_created_date)}</p>
+                                </div>
                                 <div className="trips-header">
                                     <div className="header-container">
                                         <div className="header1">
@@ -144,17 +158,17 @@ const TrackingTrips = ({socket}) => {
                                     </div>
                                 </div>
                                 <div className="trips-content">
-                                <div className="trip-date">
-                  <div className="s-trip-date">
-                  <h4>Start Date:</h4>
-                  <p>{formatDate(e.t_start_date)}</p>
-                  </div>
-                  <div className="e-trip-date">
-                  <h4>End Date:</h4>
-                  <p>{formatDate(e.t_end_date)}</p>
-                  </div>
+                                    <div className="trip-date">
+                                        <div className="s-trip-date">
+                                            <h4>Start Date:</h4>
+                                            <p>{formatDate(e.t_start_date)}</p>
+                                        </div>
+                                        <div className="e-trip-date">
+                                            <h4>End Date:</h4>
+                                            <p>{formatDate(e.t_end_date)}</p>
+                                        </div>
 
-                </div>
+                                    </div>
                                     <div className="main-content">
                                         <div className="content-design">
                                             <h1>•</h1>

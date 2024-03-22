@@ -1,6 +1,27 @@
 const express = require('express')
 const db = require('../database/connection')
 const trackingRoute = express.Router()
+const multer = require('multer')
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET,
+  });
+  async function handleUpload(file) {
+    const res = await cloudinary.uploader.upload(file, {
+      resource_type: "auto",
+    });
+    return res;
+  }
+
+  const storage = new multer.memoryStorage();
+  const upload = multer({
+    storage,
+  });
+  
+
 // All trips for admin
 trackingRoute.get('/get-trips-admin', async (req, res) => {
     try {
@@ -42,7 +63,9 @@ trackingRoute.get('/get-pending-trips', async (req, res) => {
 trackingRoute.get('/get-trip', async (req, res) => {
     try {
         const {username} = req.query
-        const data = await db(`SELECT * FROM fms_g11_trips WHERE t_driver = '${username}' AND (t_trip_status = 'Pending' OR t_trip_status = 'In Progress')`);
+        const data = await db(`SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers
+        on t_driver = d_id WHERE t_driver = '${username}' AND (t_trip_status = 'Pending' 
+        OR t_trip_status = 'In Progress')`);
         res.json(data)
     } catch (error) {
         console.log(error)
@@ -61,7 +84,7 @@ trackingRoute.get('/get-completed-trip', async (req, res) => {
     }
 })
 
-trackingRoute.post('/update-trip/:trip_id', async (req, res) => {
+trackingRoute.post('/update-trip-pending/:trip_id', async (req, res) => {
     try {
         const {trip_id} = req.params
         const {status, report} = req.body
@@ -79,6 +102,38 @@ trackingRoute.post('/update-trip/:trip_id', async (req, res) => {
     }
 })
 
+trackingRoute.post('/update-trip/:trip_id', upload.single("my_file"), async (req, res) => {
+  try {
+    const { trip_id } = req.params;
+    const { status, report, remarks } = req.body;
+    let path = 'N/A';
+
+    if (req.file) {
+      // File was uploaded
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const cldRes = await handleUpload(dataURI);
+      path = cldRes.url.split('/').pop();
+    }
+
+    const query = `UPDATE fms_g11_trips SET t_trip_status = '${status}',
+      t_remarks = '${remarks || 'N/A'}', t_reason = '${report || 'N/A'}',
+      t_picture = '${path || 'N/A'}' WHERE t_id = ${trip_id}`;
+
+    const data = await db(query);
+
+    if (status === "Completed") {
+      return res.json({ message: "Delivery has been Completed!" });
+    } else if (status === "Cancelled") {
+      return res.json({ message: "Delivery has been Cancelled!" });
+    } else {
+      return res.json({ message: "Delivery has been Updated!" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 trackingRoute.get('/get-current-trip/:trip_id', async (req, res)=>{
   try {
@@ -91,19 +146,38 @@ INNER JOIN fms_g12_drivers on fms_g11_trips.t_driver = fms_g12_drivers.d_id wher
 }
 })
 
-trackingRoute.get('/get-trip-reports', async (req, res)=>{
+trackingRoute.get('/get-trip-reports', async (req, res) => {
   try {
-    const data = await db(`SELECT * FROM fms_g11_trips`);
-    res.json(data)
-} catch (error) {
-    console.log(error)
-}
-})
+    const { page, pageSize } = req.query;
+    const offset = (page - 1) * pageSize;
+    const limit = parseInt(pageSize);
+    const query = `SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers 
+    on fms_g11_trips.t_driver = fms_g12_drivers.d_id LIMIT ${limit} OFFSET ${offset}`;
+    const data = await db(query);
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+trackingRoute.get('/get-trip-reports-all', async (req, res) => {
+  try {
+    const query = `SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers 
+    on fms_g11_trips.t_driver = fms_g12_drivers.d_id `;
+    const data = await db(query);
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 trackingRoute.get('/trip-search', async (req, res)=>{
   try {
     const {search} = req.query 
-    const data = await db(`SELECT * FROM fms_g11_trips where t_trip_status LIKE '%${search}%' OR (t_driver LIKE '%${search}%' OR t_vehicle LIKE '%${search}%')`);
+    const data = await db(`SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers 
+    on fms_g11_trips.t_driver = fms_g12_drivers.d_id
+     where t_trip_status LIKE '%${search}%' OR (d_first_name LIKE '%${search}%' OR t_vehicle LIKE '%${search}%')`);
     res.json(data)
 } catch (error) {
     console.log(error)

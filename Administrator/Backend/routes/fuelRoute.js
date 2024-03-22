@@ -16,7 +16,14 @@ fuelRoute.post("/add-fuel", async (req, res) => {
 })
 // Get Fuel
 fuelRoute.get("/retrieve-fuel", async (req, res) => {
-    const fuelData = await getFuelList()
+    const { page, pageSize } = req.query;
+    const offset = (page - 1) * pageSize;
+    const limit = parseInt(pageSize);
+    const fuelData = await getFuelList(offset, limit)
+    res.json(fuelData)
+})
+fuelRoute.get("/retrieve-fuel-full", async (req, res) => {
+    const fuelData = await db("Select * from fms_g11_fuel")
     res.json(fuelData)
 })
 // Search
@@ -34,14 +41,14 @@ fuelRoute.put("/fuel-update", async (req, res) => {
 // get fuel by id
 fuelRoute.get("/fuelbyid/:id", async (req, res) => {
     const {id} = req.params
-    const fuelData = await db(`Select * from fuel where v_fuel_id = ${id}`)
+    const fuelData = await db(`Select * from fms_g11_fuel where v_fuel_id = ${id}`)
     res.json(fuelData)
 })
 
 fuelRoute.put('/fuel-delete/:id', async (req, res) => {
     const {id} = req.params;
     console.log(id)
-    const query = `Delete from fuel where v_fuel_id = ${id}`
+    const query = `Delete from v_fuel_id where v_fuel_id = ${id}`
     try {
         await db(query)
         res.json({message:"Deleted Successfully!"})

@@ -4,6 +4,8 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 
 const FuelManagement = () => {
     const nav = useNavigate()
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
     const {setIsLoading} = useOutletContext()
     const [isDelete, setIsDelete] = useState(false)
     const hostServer = import.meta.env.VITE_SERVER_HOST;
@@ -13,9 +15,15 @@ const FuelManagement = () => {
     const [fuelSearch, setFuelSearch] = useState('')
     const getFuelList = async () => {
         setIsLoading(true)
-        const fetchFuel = await axios.get(`${hostServer}/retrieve-fuel`)
+        const fetchFuel = await axios.get(`${hostServer}/retrieve-fuel?page=${page}&pageSize=${pageSize}`)
         const  data = fetchFuel.data;
         setFuelList(data)
+        setIsLoading(false)
+    }
+    const getFuelListFull = async () => {
+        setIsLoading(true)
+        const fetchFuel = await axios.get(`${hostServer}/retrieve-fuel-full`)
+        const  data = fetchFuel.data;
         setFuelData(data)
         setIsLoading(false)
     }
@@ -33,19 +41,27 @@ const FuelManagement = () => {
         }  
     }
     const filterFuel = (e) => {
-        setFilterData(e)
-        const filtered = fuelData.filter((f)=>{
-            const formattedDate = f.v_modified_date.substring(0,10)
-            return formattedDate == e
-        })
-        setFuelList(filtered)
+        if(e == [] || e == ""){
+            setFuelList(fuelData)
+        }else{
+            setFilterData(e)
+            const filtered = fuelData.filter((f)=>{
+                const formattedDate = formatDate(f.v_fuelfilldate);
+                if(formattedDate == e){
+                    return f
+                }
+            })
+            setFuelList(filtered)
+        }
+       
     }
     useEffect(()=>{
         getFuelList()
-    },[isDelete])
+        getFuelListFull()
+    },[isDelete, page])
     const formatDate = (date) => {
         const formattedDate = new Date(date);
-        formattedDate.setDate(formattedDate.getDate() + 1);
+        formattedDate.setDate(formattedDate.getDate());
         return formattedDate.toISOString().split("T")[0];
       };
       const deleteData = async (e) => {
@@ -74,11 +90,18 @@ const FuelManagement = () => {
                     </ul>
                 </div>
             </div>
-            <div className="filter">
-                    {/* <h3>Filter</h3> */}
+                <div className="filter">
+                {/* <h3>Filter</h3> */}
+                <div className="filter-container">
+                    <p htmlFor=""> Fill Date</p>
+                    <div className="filter-input">
                     <input type="date" id='date-input' value={filterData} onChange={(e)=>{filterFuel(e.currentTarget.value)}}/>
-                    <i className='bx bx-filter' ></i>
+                        <i className='bx bx-filter' ></i>
+                    </div>
+
                 </div>
+
+            </div>
             <div className="fuel-content">
                 <div className="fuel-search">
 
@@ -86,11 +109,11 @@ const FuelManagement = () => {
                     <button onClick={searchFuel}>Search</button>
 
                 </div>
-                <div className="fuel-list">
+                <div className="fuel-list" id="fuelReports">
                     <table className='fuel-table'>
                         <thead>
                             <tr>
-                                <th>S.No</th>
+                                <th>F.No</th>
                                 <th>Fill Date</th>
                                 <th>Vehicle</th>
                                 <th>Quantity</th>
@@ -106,7 +129,7 @@ const FuelManagement = () => {
                             {fuelList.map((e,i)=>
                             { return (
                                 <tr key={i}>
-                                <td>{e.v_fuel_id}</td>
+                                <td>FL-{e.v_fuel_id}</td>
                                 <td>{formatDate(e.v_fuelfilldate)} </td>
                                 <td>{e.v_id}</td>
                                 <td> {e.v_fuel_quantity} </td>
@@ -123,7 +146,20 @@ const FuelManagement = () => {
                         </tbody>
 
                     </table>
+
                 </div>
+                <div className="pagination-container">
+                        <div className='pagination'>
+                            <button
+                                disabled={page === 1}
+                                onClick={() => setPage(page - 1)}
+                            >
+                                Previous
+                            </button>
+                            <span>Page {page}</span>
+                            <button disabled={fuelList.length < 5} onClick={() => setPage(page + 1)}>Next</button>
+                        </div>
+                    </div>
             </div>
 
         </div>

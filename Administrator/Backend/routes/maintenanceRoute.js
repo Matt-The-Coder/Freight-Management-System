@@ -5,7 +5,10 @@ const maintenanceServices = require('../services/maintenance/maintenance')
 const {addMaintenance, getMaintenanceList, maintenanceSearch, updateMaintenance} = maintenanceServices()
 maintenanceRouter.get("/maintenance-list", async (req, res) => 
 {
-    const data = await getMaintenanceList()
+    const { page, pageSize } = req.query;
+    const offset = (page - 1) * pageSize;
+    const limit = parseInt(pageSize);
+    const data = await getMaintenanceList(offset, limit)
     res.json(data)
 })
 
@@ -42,7 +45,7 @@ maintenanceRouter.put("/maintenance-update", async (req, res) => {
 })
 maintenanceRouter.delete('/maintenance-delete/:id', async (req, res) => {
     const {id} = req.params;
-    const query = `Delete from maintenance where m_id = ${id}`
+    const query = `Delete from fms_g11_maintenance where m_id = ${id}`
     try {
         await db(query)
         res.json({message:"Deleted Successfully!"})
