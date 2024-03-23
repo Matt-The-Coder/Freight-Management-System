@@ -150,7 +150,7 @@ const LiveTracking = ({socket}) => {
     // Create a marker with the custom element
     marker.current = new mapboxgl.Marker({
       element: markerTrack.current, scale: '0'
-    }).setPopup(new mapboxgl.Popup().setHTML("<p>I'm Here!</p>")) // add popup
+    }).setPopup(new mapboxgl.Popup().setHTML(`<p>${currentTrip.d_first_name} ${currentTrip.d_last_name}</p>`)) // add popup
 
 
     // Add the MapboxDirections control to the map
@@ -182,7 +182,7 @@ const LiveTracking = ({socket}) => {
     // Create a marker with the custom element
     marker.current = new mapboxgl.Marker({
       element: markerTrack.current, scale: '0'
-    }).setPopup(new mapboxgl.Popup().setHTML("<p>I'm Here!</p>")) // add popup
+    }).setPopup(new mapboxgl.Popup().setHTML(`<p>${currentTrip.d_first_name} ${currentTrip.d_last_name}</p>`)) // add popup
 
 
     // Add the MapboxDirections control to the map
