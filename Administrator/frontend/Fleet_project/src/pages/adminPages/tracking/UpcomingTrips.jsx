@@ -38,11 +38,6 @@ const UpcomingTrips = ({ socket }) => {
         console.log(e)
     }
 
-    const formatDate = (date) => {
-        const newDate = new Date(date);
-        const formattedDate = newDate.toLocaleString();
-        return formattedDate;
-    };
     const formatDateInput = (date) => {
         const formattedDate = new Date(date);
         formattedDate.setDate(formattedDate.getDate());
@@ -86,7 +81,7 @@ const UpcomingTrips = ({ socket }) => {
                             <div className="trips-container" key={i}>
                                 <div className="trips-header">
                                     <div className="time-container">
-                                        <p>Order Date: {formatDate(e.t_created_date)}</p>
+                                        <p>Order Date: {formatDateInput(e.t_created_date)}</p>
                                     </div>
                                     <div className="header-container">
                                         <div className="header1">
@@ -113,11 +108,11 @@ const UpcomingTrips = ({ socket }) => {
                                     <div className="trip-date">
                                         <div className="s-trip-date">
                                             <h4>Start Date:</h4>
-                                            <p>{formatDate(e.t_start_date)}</p>
+                                            <p>{formatDateInput(e.t_start_date)}</p>
                                         </div>
                                         <div className="e-trip-date">
                                             <h4>End Date:</h4>
-                                            <p>{formatDate(e.t_end_date)}</p>
+                                            <p>{formatDateInput(e.t_end_date)}</p>
                                         </div>
 
                                     </div>

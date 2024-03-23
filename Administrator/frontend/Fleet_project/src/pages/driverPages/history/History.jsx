@@ -35,14 +35,9 @@ const DriverHistory = () => {
         } else {
             setFilterData(e)
             const filteredDeliveries = deliveriesStorage.filter((d, i) => {
-                const startDate = new Date(d.t_created_date);
-                startDate.setDate(startDate.getDate());
-                const formattedDate = startDate.toISOString().split('T')[0];
-                console.log(formattedDate)
-                console.log(e)
+                const formattedDate = formatDate(d.t_created_date);
                 if (formattedDate == e) {
-                    return formattedDate
-
+                    return d
                 }
 
             })
@@ -60,9 +55,6 @@ const DriverHistory = () => {
         modalb.style.display = 'block'
         modalbg.style.display = 'block'
 
-        console.log(modalInfo)
-        console.log(modalbg)
-        console.log(modalb)
     }
     const closeModal = (e) => {
         const num = e
@@ -86,10 +78,10 @@ const DriverHistory = () => {
 
     }
     const formatDate = (date) => {
-        const newDate = new Date(date);
-        const formattedDate = newDate.toLocaleString();
-        return formattedDate;
-    };
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate());
+        return formattedDate.toISOString().split("T")[0];
+      };
 
 
     useEffect(() => {
@@ -133,7 +125,6 @@ const DriverHistory = () => {
                         setIsLoading(true)
                         setFilter(el.currentTarget.value)
                         const filteredDeliveries = deliveriesStorage.filter((e) => { return e.t_trip_status == el.currentTarget.value })
-                        console.log(filteredDeliveries)
                         setDeliveries(filteredDeliveries)
                         setIsLoading(false)
                     }

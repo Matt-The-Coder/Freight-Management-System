@@ -416,7 +416,7 @@ const DeliveryTracking = ({ socket }) => {
                       <form onSubmit={(e) => { setDeliveryStatus(e) }}>
                         <h3>Trip Status</h3>
                         <div className="status-form">
-                          <select id='status-update' value={deliveryState} onChange={(e) => { deliveryStateUpdate(e.currentTarget.value) }}>
+                          <select id='status-update' required value={deliveryState} onChange={(e) => { deliveryStateUpdate(e.currentTarget.value) }}>
                             <option value="">Select Status</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>
@@ -931,7 +931,7 @@ const DeliveryTracking = ({ socket }) => {
                       <div className='trip-status'>
                         <form onSubmit={(e) => { setDeliveryStatus(e) }}>
                           <h3 style={{ fontSize: "20px" }}>Trip Status</h3>
-                          <select id='status-update' value={deliveryState} onChange={(e) => { deliveryStateUpdate(e.currentTarget.value) }}>
+                          <select id='status-update' required value={deliveryState} onChange={(e) => { deliveryStateUpdate(e.currentTarget.value) }}>
                             <option value="">Select Status</option>
                             <option value="Cancelled">Cancelled</option>
                             <option value="Completed">Completed</option>

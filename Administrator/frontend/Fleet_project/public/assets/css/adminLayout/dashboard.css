@@ -69,6 +69,7 @@ select, option, #date-input{
 }
 #date-input{
     background-color: white !important;
+    width: 159px;
     color: black;
     border-radius: 5px;
     padding: 6px 12px;

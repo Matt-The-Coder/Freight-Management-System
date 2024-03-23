@@ -18,9 +18,9 @@ const Inprogress = () => {
   };
 
   const formatDate = (date) => {
-    const newDate = new Date(date);
-    const formattedDate = newDate.toLocaleString();
-    return formattedDate;
+    const formattedDate = new Date(date);
+    formattedDate.setDate(formattedDate.getDate());
+    return formattedDate.toISOString().split("T")[0];
   };
   function convertTime(seconds) {
     const hours = Math.floor(seconds / 3600);

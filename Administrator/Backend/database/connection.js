@@ -1,12 +1,12 @@
 const mysql = require('mysql');
 
-// const db = mysql.createPool({
-//     host: 'localhost',
-//     user:'root',
-//     password:'',
-//     database: "freight",
-//     port: "3307"
-// })
+const db = mysql.createPool({
+    host: 'localhost',
+    user:'root',
+    password:'',
+    database: "freight",
+    port: "3307"
+})
 // const db = mysql.createPool({
 //     host: 'bjxwp9zadzdyfnlsid8b-mysql.services.clever-cloud.com',
 //     user:'uyo3diweamt0qrca',
@@ -15,12 +15,12 @@ const mysql = require('mysql');
 //     port: "3306"
 // })
 
-const db = mysql.createPool({
-    host: '194.110.173.106',
-    user:'sust_matthew',
-    password:'qwe',
-    database: "sust_main",
-})
+// const db = mysql.createPool({
+//     host: '194.110.173.106',
+//     user:'sust_matthew',
+//     password:'qwe',
+//     database: "sust_main",
+// })
 
 module.exports = async (query) => {
 return new Promise((resolve, reject)=>{

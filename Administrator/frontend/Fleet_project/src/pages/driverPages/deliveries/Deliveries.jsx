@@ -16,22 +16,12 @@ const DriverDeliveries = ({ socket }) => {
     const [onGoing, setOnGoing] = useState([])
     const acceptButtonRef = useRef(null);
 
-    const acceptOrder = (deliveryId) => {
-        console.log(onGoing)
-        if (onGoing.length !== 0) {
-            alert('You can only accept one order at a time!');
-            return;
-        } else {
-            const accept = document.querySelector(`#accept${deliveryId}`)
-            const view = document.querySelector(`#view${deliveryId}`)
-            accept.style.display = "none"
-            view.style.display = "block"
-
-        }
-
-    };
     const setInProgress = async (trip_id, driverFirstname, t_distance, t_weight) => {
         try {
+            if (onGoing.length !== 0) {
+                alert('You can only accept one order at a time!');
+                return;
+            } else {
             setIsLoading(true)
             const data = await axios.post(`${hostServer}/update-trip-pending/${trip_id}`, {
                 status: "In Progress"
@@ -60,7 +50,7 @@ const DriverDeliveries = ({ socket }) => {
             socket.emit('deliveryUpdate', { deliveryState, trip_id })
             setIsLoading(false)
             nav(`/driver/deliveries/tracking?trip_id=${trip_id}&miles=${convertMiles(t_distance)}&weight=${t_weight}`)
-
+            }
         } catch (error) {
             console.log(error)
         }
@@ -75,17 +65,14 @@ const DriverDeliveries = ({ socket }) => {
             setFilterData(e)
             const indexes = []
             const filteredDeliveries = deliveriesStorage.filter((d, i) => {
-                const startDate = new Date(d.t_start_date);
-                startDate.setDate(startDate.getDate() + 1);
-                const formattedDate = startDate.toISOString().split('T')[0];
+                const formattedDate = formatDate(d.t_start_date);
                 if (formattedDate == e) {
                     indexes.push(i)
-                    return formattedDate
+                    return d;
 
                 }
 
             })
-            console.log(indexes)
             const filterTripData = travelStorage.filter((v, i) => {
                 if (i == indexes) {
                     return v
@@ -99,10 +86,10 @@ const DriverDeliveries = ({ socket }) => {
     }
 
     const formatDate = (date) => {
-        const newDate = new Date(date);
-        const formattedDate = newDate.toLocaleString();
-        return formattedDate;
-    };
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate());
+        return formattedDate.toISOString().split("T")[0];
+      };
     function convertTime(seconds) {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
@@ -272,13 +259,9 @@ const DriverDeliveries = ({ socket }) => {
                                 </div>
                                 <div className="trips-button-pending" id={`accept${e.t_id}`}>
 
-                                    <button onClick={() => acceptOrder(e.t_id)} ref={acceptButtonRef}>
-                                        Accept Order
-                                    </button>
+                                <button onClick={() => { setInProgress(e.t_id, e.d_first_name, travelData[i]?.distance, e.t_totalweight) }}>Accept Order</button>
                                 </div>
-                                <div className="trips-button-view" id={`view${e.t_id}`}>
-                                    <button onClick={() => { setInProgress(e.t_id, e.d_first_name, travelData[i]?.distance, e.t_totalweight) }}>View On Map</button>
-                                </div>
+
 
                             </div>
                         </div>

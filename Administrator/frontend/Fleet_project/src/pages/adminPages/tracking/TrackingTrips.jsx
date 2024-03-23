@@ -45,7 +45,7 @@ const TrackingTrips = ({ socket }) => {
         } else {
             setFilterData(e)
             const filteredDeliveries = deliveriesStorage.filter((d) => {
-                const formattedDate = formatInputDate(d.t_start_date);
+                const formattedDate = formatDate(d.t_start_date);
                 if(formattedDate == e){
                     return d;
                 }
@@ -60,11 +60,6 @@ const TrackingTrips = ({ socket }) => {
     }
 
     const formatDate = (date) => {
-        const newDate = new Date(date);
-        const formattedDate = newDate.toLocaleString();
-        return formattedDate;
-    };
-    const formatInputDate = (date) => {
         const formattedDate = new Date(date);
         formattedDate.setDate(formattedDate.getDate());
         return formattedDate.toISOString().split("T")[0];

@@ -191,7 +191,7 @@ const DeliveryReports = ({ socket }) => {
                                 <th>Status</th>
                                 <th>Trip Report</th>
                                 <th>Tracking Code</th>
-                                <th>Created Date</th>
+                                <th>Order Date</th>
                             </tr>
                         </thead>
                         <tbody>

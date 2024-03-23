@@ -51,11 +51,7 @@ const AdminHistory = ({ socket }) => {
         modalbg.style.display = 'none'
 
     }
-    const formatDate = (date) => {
-        const formattedDate = new Date(date);
-        formattedDate.setDate(formattedDate.getDate() + 1);
-        return formattedDate.toISOString().split("T")[0];
-    };
+
 
 
     const openPictureModal = (e) => {
@@ -76,11 +72,9 @@ const AdminHistory = ({ socket }) => {
         } else {
             setFilterData(e)
             const filteredDeliveries = deliveriesStorage.filter((d, i) => {
-                const startDate = new Date(d.t_created_date);
-                startDate.setDate(startDate.getDate());
-                const formattedDate = startDate.toISOString().split('T')[0];
+                const formattedDate = formatDate(d.t_created_date);
                 if (formattedDate == e) {
-                    return formattedDate
+                    return d
 
                 }
 
@@ -92,6 +86,11 @@ const AdminHistory = ({ socket }) => {
     useEffect(() => {
         getDeliveries()
     }, [])
+    const formatDate = (date) => {
+        const formattedDate = new Date(date);
+        formattedDate.setDate(formattedDate.getDate());
+        return formattedDate.toISOString().split("T")[0];
+      };
     return (
         <>
             <div className="trips">
