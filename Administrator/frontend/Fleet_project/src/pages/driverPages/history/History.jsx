@@ -18,6 +18,7 @@ const DriverHistory = () => {
             setIsLoading(true)
             const data = await axios.get(`${hostServer}/get-completed-trip?username=${id}`)
             const result = data.data.reverse()
+            console.log(result)
             setIsLoading(false)
             setDeliveriesStorage(result)
             setDeliveries(result)

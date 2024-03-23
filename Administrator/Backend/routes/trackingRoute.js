@@ -76,8 +76,8 @@ trackingRoute.get('/get-completed-trip', async (req, res) => {
     try {
         const {username} = req.query
         const data = await db(`SELECT * FROM fms_g11_trips INNER JOIN  fms_g12_drivers ON 
-        fms_g11_trips.t_driver = fms_g12_drivers.d_id
-        WHERE t_driver = '${username}' AND (t_trip_status = 'Completed' OR t_trip_status = 'Cancelled')`);
+        fms_g11_trips.t_driver = fms_g12_drivers.d_id INNER JOIN fms_g11_sustainability_data ON
+        t_id = sd_trip_id WHERE t_driver = '${username}' AND (t_trip_status = 'Completed' OR t_trip_status = 'Cancelled')`);
         res.json(data)
     } catch (error) {
         console.log(error)
