@@ -468,7 +468,7 @@ const DeliveryTracking = ({ socket }) => {
     </div> */}
 
                       <div className="vehicleData">
-                        <p>Vehicle: <label htmlFor="">{currentTrip.t_vehicle}</label></p>
+                        <p>Vehicle: <label htmlFor="">{currentTrip.name}</label></p>
                         {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
                         {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                         {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
@@ -874,7 +874,7 @@ const DeliveryTracking = ({ socket }) => {
                           </Speedometer>
                         </div>
                         <div className="vehicleData">
-                          <p>Vehicle: <label htmlFor="">{currentTrip.t_vehicle}</label></p>
+                          <p>Vehicle: <label htmlFor="">{currentTrip.name}</label></p>
                           {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
                           {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                           {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}

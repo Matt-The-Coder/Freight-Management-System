@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import '/public/assets/css/adminLayout/maintenance.css';
-import {Link, useNavigate, useOutletContext} from "react-router-dom"
+import { Link, useNavigate, useOutletContext } from "react-router-dom"
 import axios from 'axios';
 const AddMaintenance = () => {
-  
-  const {setIsLoading} = useOutletContext()
+
+  const { setIsLoading } = useOutletContext()
   const hostServer = import.meta.env.VITE_SERVER_HOST
   const nav = useNavigate()
   const [addedParts, setAddedParts] = useState([]);
+  const [vehicleList, setVehicleList] = useState([])
+  const [driverList, setDriverList] = useState([])
   const [vehicle, setVehicle] = useState();
   const [sDate, setSDate] = useState();
   const [eDate, setEDate] = useState();
@@ -58,63 +60,45 @@ const AddMaintenance = () => {
     "Deferred",
     "On Hold"
   ];
-  const truckNames = [
-    "Volvo FH16",
-    "Scania R730",
-    "Mercedes-Benz Actros",
-    "MAN TGX",
-    "Iveco Stralis",
-    "DAF XF",
-    "Renault T Range",
-    "Kenworth W900",
-    "Peterbilt 379",
-    "Freightliner Cascadia",
-    "International LT",
-    "Mack Anthem",
-    "Western Star 4900",
-    "Hino 700",
-    "Fuso Super Great",
-    "Isuzu Giga"
-  ];
-  // useEffect(()=>{
-  //   console.log(addedParts)
-  // }, [addedParts])
-  // const addParts = () => {
-  //   const newPart = {
-  //     parts: '',
-  //     quantity: '',
-  //   };
 
-  //   setAddedParts([...addedParts, newPart]);
-  // };
-
-  // const removeParts = (index) => {
-  //   const updatedParts = [...addedParts];
-  //   updatedParts.splice(index, 1);
-  //   setAddedParts(updatedParts);
-  // };
-
-  // const handlePartChange = (index, e) => {
-  //   const { name, value } = e.target;
-  //   const updatedParts = [...addedParts];
-  //   updatedParts[index][name] = value;
-  //   setAddedParts(updatedParts);
-  // };
-
-  const createMaintenance = async () => 
-  {
+  const createMaintenance = async () => {
     setIsLoading(true)
-      const result = await axios.post(`${hostServer}/add-maintenance`, 
-      {vehicle, startDate:sDate, endDate:eDate, details, cost, vendor, mService, status})
-      setIsLoading(false)
-      alert("Created Successfully!")
-      nav('/admin/maintenance/list')
+    const result = await axios.post(`${hostServer}/add-maintenance`,
+      { vehicle, startDate: sDate, endDate: eDate, details, mService, status })
+    setIsLoading(false)
+    alert("Created Successfully!")
+    nav('/admin/maintenance/list')
   }
 
-  const formatDate = (date)=> {
+  const formatDate = (date) => {
     const formattedDate = new Date(date).toISOString().split("T")[0];
     return formattedDate
   }
+
+  const getAllVehicles = async () => {
+    try {
+      const res = await axios.get(`${hostServer}/retrieve-vehicles`)
+      const data = res.data
+      setVehicleList(data)
+    } catch (error) {
+
+    }
+  }
+  const getAllDrivers = async () => {
+    try {
+      const res = await axios.get(`${hostServer}/retrieve-drivers`)
+      const data = res.data
+      setDriverList(data)
+      console.log(data)
+    } catch (error) {
+
+    }
+  }
+
+  useEffect(() => {
+    getAllVehicles()
+    getAllDrivers()
+  }, [])
   return (
     <div className="AddMaintenance">
       <div className="adminHeader">
@@ -126,7 +110,7 @@ const AddMaintenance = () => {
             </li>
             /
             <li>
-              <a href="#"  className="active">
+              <a href="#" className="active">
                 Add Maintenance
               </a>
             </li>
@@ -138,11 +122,9 @@ const AddMaintenance = () => {
           <div className="select-vehicle">
             <h4>Select Vehicle</h4>
             <select name="select-vehicle" id="select-vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }}>
-              <option value="Truck">Select Vehicle</option>
-              {truckNames.map(e=>{
-                return(
-                  <option value={e}>{e}</option>
-                )
+              <option disabled selected>Select Vehicle</option>
+              {vehicleList.map((e, i) => {
+                return <option key={i} value={e.name}>{e.name}</option>
               })}
             </select>
           </div>
@@ -151,7 +133,7 @@ const AddMaintenance = () => {
               <h4>
                 <span>Maintenance</span> Start Date
               </h4>
-              <input type="date" name="" id="" onChange={(e) => {  setSDate(formatDate(e.currentTarget.value)) }} />
+              <input type="date" name="" id="" onChange={(e) => { setSDate(formatDate(e.currentTarget.value)) }} />
             </div>
             <div className="end">
               <h4>
@@ -167,20 +149,20 @@ const AddMaintenance = () => {
           <div className="cost-vendor">
             <div className="cost">
               <h4>Total Cost</h4>
-              <input type="number" placeholder='Enter Price' onChange={(e) => { setCost(e.currentTarget.value) }} />
+              <input type="number" placeholder='Enter Price' disabled onChange={(e) => { setCost(e.currentTarget.value) }} />
             </div>
             <div className="vendor">
               <h4>Vendor <span>Name</span> </h4>
-              <input type="text" name="" id="" placeholder='Enter Name' onChange={(e) => { setVendor(e.currentTarget.value) }} />
+              <input type="text" name="" id="" placeholder='Enter Name' disabled onChange={(e) => { setVendor(e.currentTarget.value) }} />
             </div>
           </div>
           <div className="parts-qty">
             <div className="parts-name">
               <h4>Maintenance Service</h4>
               <select name="parts" id="parts" onChange={(e) => { setMService(e.currentTarget.value) }}>
-                <option value="parts1">Select Service</option>
-                {maintenanceServices.map((e)=>{
-                  return(
+                <option disabled selected>Select Service</option>
+                {maintenanceServices.map((e) => {
+                  return (
                     <option value={e}>{e}</option>
                   )
                 })}
@@ -188,34 +170,11 @@ const AddMaintenance = () => {
             </div>
 
           </div>
-          {/* {addedParts.map((part, index) => (
-            <div className="parts-qty" key={index}>
-              <div className="parts-name">
-                <h4>Parts Name</h4>
-                <select name="parts" id="parts" value={part.parts} onChange={(e) => handlePartChange(index, e)}>
-                  <option value="parts1">Select Parts</option>
-                </select>
-              </div>
-              <div className="qty">
-                <h4>Quantity</h4>
-                <select name="quantity" id="quantity" value={part.quantity} onChange={(e) => handlePartChange(index, e)}>
-                  <option value="quantity">1</option>
-                </select>
-              </div>
-              <div className="add">
-                <i className='bx bxs-trash bx-tada' onClick={() => removeParts(index)}></i>
-              </div>
-            </div>
-          ))} */}
           <div className="maintenance-status">
             <h4>Maintenance Status</h4>
             <select name="maintenance-status" id="maintenance-status" onChange={(e) => { setStatus(e.currentTarget.value) }}>
-              <option value="1">Choose Status</option>
-              {maintenanceStatusOptions.map((e)=>{
-                return (
-                  <option value={e}>{e}</option>
-                )
-              })}
+              <option disabled selected>Choose Status</option>
+              <option value="Scheduled">Scheduled</option>
             </select>
           </div>
           <div className="save">

@@ -14,9 +14,8 @@ maintenanceRouter.get("/maintenance-list", async (req, res) =>
 
 maintenanceRouter.post("/add-maintenance", async (req, res) => 
 {
-    const {vehicle, startDate, endDate, details, cost, vendor, mService, status} = req.body
-    const data = await addMaintenance(vehicle, startDate, endDate, details, cost, 
-        vendor, mService, status)
+    const {vehicle, startDate, endDate, details, mService, status} = req.body
+    const data = await addMaintenance(vehicle, startDate, endDate, details, mService, status)
     res.json(data)
     console.log(req.body)
 })
@@ -52,5 +51,14 @@ maintenanceRouter.delete('/maintenance-delete/:id', async (req, res) => {
     } catch (error) {
         console.log(error)
     }
+})
+maintenanceRouter.get("/retrieve-vehicles", async (req, res) => {
+    const vehicles = await db("Select * from fms_g17_vehicle")
+    res.json(vehicles)
+})
+
+maintenanceRouter.get("/retrieve-drivers", async (req, res) => {
+    const vehicles = await db("Select * from fms_g12_drivers")
+    res.json(vehicles)
 })
 module.exports = maintenanceRouter

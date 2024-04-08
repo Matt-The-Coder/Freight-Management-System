@@ -28,6 +28,7 @@ trackingRoute.get('/get-trips-admin', async (req, res) => {
         const tripData = await db(`
           SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers ON t_driver = d_id
           INNER JOIN fms_g11_sustainability_data on t_id = sd_trip_id
+          INNER JOIN fms_g17_vehicle ON fms_g11_trips.t_vehicle = fms_g17_vehicle.vehicle_id
           WHERE t_trip_status = 'Completed' OR t_trip_status = "Cancelled"
         `);
     
@@ -73,16 +74,21 @@ trackingRoute.get('/get-trip', async (req, res) => {
 })
 
 trackingRoute.get('/get-completed-trip', async (req, res) => {
-    try {
-        const {username} = req.query
-        const data = await db(`SELECT * FROM fms_g11_trips INNER JOIN  fms_g12_drivers ON 
-        fms_g11_trips.t_driver = fms_g12_drivers.d_id INNER JOIN fms_g11_sustainability_data ON
-        t_id = sd_trip_id WHERE t_driver = '${username}' AND (t_trip_status = 'Completed' OR t_trip_status = 'Cancelled')`);
-        res.json(data)
-    } catch (error) {
-        console.log(error)
-    }
-})
+  try {
+      const { username } = req.query;
+      const data = await db(`
+          SELECT *
+          FROM fms_g11_trips
+          INNER JOIN fms_g12_drivers ON fms_g11_trips.t_driver = fms_g12_drivers.d_id
+          INNER JOIN fms_g11_sustainability_data ON t_id = sd_trip_id
+          INNER JOIN fms_g17_vehicle ON fms_g11_trips.t_vehicle = fms_g17_vehicle.vehicle_id
+          WHERE t_driver = '${username}' AND (t_trip_status = 'Completed' OR t_trip_status = 'Cancelled')
+      `);
+      res.json(data);
+  } catch (error) {
+      console.log(error);
+  }
+});
 
 trackingRoute.post('/update-trip-pending/:trip_id', async (req, res) => {
     try {
@@ -139,7 +145,8 @@ trackingRoute.get('/get-current-trip/:trip_id', async (req, res)=>{
   try {
     const {trip_id} = req.params
     const data = await db(`SELECT *, d_first_name, d_last_name FROM fms_g11_trips 
-INNER JOIN fms_g12_drivers on fms_g11_trips.t_driver = fms_g12_drivers.d_id where t_id = '${trip_id}'`);
+INNER JOIN fms_g12_drivers on fms_g11_trips.t_driver = fms_g12_drivers.d_id 
+INNER JOIN fms_g17_vehicle on fms_g11_trips.t_vehicle = fms_g17_vehicle.vehicle_id where t_id = '${trip_id}'`);
     res.json(data[0])
 } catch (error) {
     console.log(error)
@@ -152,7 +159,9 @@ trackingRoute.get('/get-trip-reports', async (req, res) => {
     const offset = (page - 1) * pageSize;
     const limit = parseInt(pageSize);
     const query = `SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers 
-    on fms_g11_trips.t_driver = fms_g12_drivers.d_id LIMIT ${limit} OFFSET ${offset}`;
+    on fms_g11_trips.t_driver = fms_g12_drivers.d_id 
+    INNER JOIN fms_g17_vehicle on fms_g11_trips.t_vehicle = fms_g17_vehicle.vehicle_id
+    LIMIT ${limit} OFFSET ${offset}`;
     const data = await db(query);
     res.json(data);
   } catch (error) {
@@ -162,8 +171,10 @@ trackingRoute.get('/get-trip-reports', async (req, res) => {
 });
 trackingRoute.get('/get-trip-reports-all', async (req, res) => {
   try {
-    const query = `SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers 
-    on fms_g11_trips.t_driver = fms_g12_drivers.d_id `;
+    const query = `SELECT * FROM fms_g11_trips 
+    INNER JOIN fms_g12_drivers 
+    on fms_g11_trips.t_driver = fms_g12_drivers.d_id 
+    INNER JOIN fms_g17_vehicle on fms_g11_trips.t_vehicle = fms_g17_vehicle.vehicle_id`;
     const data = await db(query);
     res.json(data);
   } catch (error) {
@@ -177,6 +188,7 @@ trackingRoute.get('/trip-search', async (req, res)=>{
     const {search} = req.query 
     const data = await db(`SELECT * FROM fms_g11_trips INNER JOIN fms_g12_drivers 
     on fms_g11_trips.t_driver = fms_g12_drivers.d_id
+    INNER JOIN fms_g17_vehicle on fms_g11_trips.t_vehicle = fms_g17_vehicle.vehicle_id
      where t_trip_status LIKE '%${search}%' OR (d_first_name LIKE '%${search}%' OR t_vehicle LIKE '%${search}%')`);
     res.json(data)
 } catch (error) {

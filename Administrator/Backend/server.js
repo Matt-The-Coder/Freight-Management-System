@@ -61,6 +61,7 @@ app.use(weatherAndFuelRoute)
 app.use(mapboxRoute)
 app.use(personalInfoRoute)
 
+
 let activeUsers = []
 io.on('connection', async (socket) =>  {
   console.log(`User connected ${socket.id}`);

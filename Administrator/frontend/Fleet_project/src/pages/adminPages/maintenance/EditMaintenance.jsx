@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import '/public/assets/css/adminLayout/maintenance.css';
-import {Link, useNavigate, useParams, useOutletContext} from "react-router-dom"
+import { Link, useNavigate, useParams, useOutletContext } from "react-router-dom"
 import axios from 'axios';
 const EditMaintenance = () => {
-    const {maintenanceID} = useParams();
-    const nav = useNavigate()
-    
-    const {setIsLoading} = useOutletContext()
+  const { maintenanceID } = useParams();
+  const nav = useNavigate()
+
+  const { setIsLoading } = useOutletContext()
   const hostServer = import.meta.env.VITE_SERVER_HOST
-//   const [addedParts, setAddedParts] = useState([]);
+  const [vehicleList, setVehicleList] = useState([])
+  const [driverList, setDriverList] = useState([])
   const [vehicle, setVehicle] = useState();
   const [sDate, setSDate] = useState();
   const [eDate, setEDate] = useState();
@@ -59,48 +60,7 @@ const EditMaintenance = () => {
     "Deferred",
     "On Hold"
   ];
-  const truckNames = [
-    "Volvo FH16",
-    "Scania R730",
-    "Mercedes-Benz Actros",
-    "MAN TGX",
-    "Iveco Stralis",
-    "DAF XF",
-    "Renault T Range",
-    "Kenworth W900",
-    "Peterbilt 379",
-    "Freightliner Cascadia",
-    "International LT",
-    "Mack Anthem",
-    "Western Star 4900",
-    "Hino 700",
-    "Fuso Super Great",
-    "Isuzu Giga"
-  ];
-  // useEffect(()=>{
-  //   console.log(addedParts)
-  // }, [addedParts])
-  // const addParts = () => {
-  //   const newPart = {
-  //     parts: '',
-  //     quantity: '',
-  //   };
 
-  //   setAddedParts([...addedParts, newPart]);
-  // };
-
-  // const removeParts = (index) => {
-  //   const updatedParts = [...addedParts];
-  //   updatedParts.splice(index, 1);
-  //   setAddedParts(updatedParts);
-  // };
-
-  // const handlePartChange = (index, e) => {
-  //   const { name, value } = e.target;
-  //   const updatedParts = [...addedParts];
-  //   updatedParts[index][name] = value;
-  //   setAddedParts(updatedParts);
-  // };
 
   const formatDate = (date) => {
     const formattedDate = new Date(date);
@@ -111,11 +71,11 @@ const EditMaintenance = () => {
     e.preventDefault()
     setIsLoading(true)
     const result = await axios.put(`${hostServer}/maintenance-update`,
-        {vehicle, startDate:sDate, endDate:eDate, details, cost, vendor, mService, status, id:maintenanceID })
-        setIsLoading(false)
+      { vehicle, startDate: sDate, endDate: eDate, details, cost, vendor, mService, status, id: maintenanceID })
+    setIsLoading(false)
     alert('Updated Successful!')
     nav('/admin/maintenance/list')
-}
+  }
   const getMaintenance = async () => {
     setIsLoading(true)
     const fetched = await axios.get(`${hostServer}/maintenancebyid/${maintenanceID}`)
@@ -129,10 +89,33 @@ const EditMaintenance = () => {
     setVendor(data.m_vendor_name)
     setStatus(data.m_status)
     setIsLoading(false)
-}
-useEffect(() => {
+  }
+  const getAllVehicles = async () => {
+    try {
+      const res = await axios.get(`${hostServer}/retrieve-vehicles`)
+      const data = res.data
+      setVehicleList(data)
+    } catch (error) {
+
+    }
+  }
+  const getAllDrivers = async () => {
+    try {
+      const res = await axios.get(`${hostServer}/retrieve-drivers`)
+      const data = res.data
+      setDriverList(data)
+      console.log(data)
+    } catch (error) {
+
+    }
+  }
+
+  useEffect(() => {
+    getAllVehicles()
+    getAllDrivers()
     getMaintenance()
-}, [])
+  }, [])
+
   return (
     <div className="AddMaintenance">
       <div className="adminHeader">
@@ -156,11 +139,9 @@ useEffect(() => {
           <div className="select-vehicle">
             <h4>Select Vehicle</h4>
             <select name="select-vehicle" id="select-vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }} value={vehicle}>
-              <option value="Truck">Select Vehicle</option>
-              {truckNames.map(e=>{
-                return(
-                  <option value={e}>{e}</option>
-                )
+              <option disabled selected>Select Vehicle</option>
+              {vehicleList.map((e, i) => {
+                return <option key={i} value={e.name}>{e.name}</option>
               })}
             </select>
           </div>
@@ -169,13 +150,13 @@ useEffect(() => {
               <h4>
                 <span>Maintenance</span> Start Date
               </h4>
-              <input type="date" name="" id="" onChange={(e) => {  setSDate(formatDate(e.currentTarget.value)) }} value={sDate}/>
+              <input type="date" name="" id="" onChange={(e) => { setSDate(formatDate(e.currentTarget.value)) }} value={sDate} />
             </div>
             <div className="end">
               <h4>
                 <span>Maintenance</span> End Date
               </h4>
-              <input type="date" name="" id="" onChange={(e) => { setEDate(formatDate(e.currentTarget.value)) }} value={eDate}/>
+              <input type="date" name="" id="" onChange={(e) => { setEDate(formatDate(e.currentTarget.value)) }} value={eDate} />
             </div>
           </div>
           <div className="service-details">
@@ -185,20 +166,20 @@ useEffect(() => {
           <div className="cost-vendor">
             <div className="cost">
               <h4>Total Cost</h4>
-              <input type="number" placeholder='Enter Price' onChange={(e) => { setCost(e.currentTarget.value) }}  value={cost}/>
+              <input type="number" placeholder='Enter Price' disabled onChange={(e) => { setCost(e.currentTarget.value) }} value={cost} />
             </div>
             <div className="vendor">
               <h4>Vendor <span>Name</span> </h4>
-              <input type="text" name="" id="" placeholder='Enter Name' onChange={(e) => { setVendor(e.currentTarget.value) }} value={vendor}/>
+              <input type="text" name="" id="" placeholder='Enter Name' disabled onChange={(e) => { setVendor(e.currentTarget.value) }} value={vendor} />
             </div>
           </div>
           <div className="parts-qty">
             <div className="parts-name">
               <h4>Maintenance Service</h4>
               <select name="parts" id="parts" onChange={(e) => { setMService(e.currentTarget.value) }} value={mService}>
-                <option value="parts1">Select Service</option>
-                {maintenanceServices.map((e)=>{
-                  return(
+                <option disabled selected>Select Service</option>
+                {maintenanceServices.map((e) => {
+                  return (
                     <option value={e}>{e}</option>
                   )
                 })}
@@ -206,34 +187,12 @@ useEffect(() => {
             </div>
 
           </div>
-          {/* {addedParts.map((part, index) => (
-            <div className="parts-qty" key={index}>
-              <div className="parts-name">
-                <h4>Parts Name</h4>
-                <select name="parts" id="parts" value={part.parts} onChange={(e) => handlePartChange(index, e)}>
-                  <option value="parts1">Select Parts</option>
-                </select>
-              </div>
-              <div className="qty">
-                <h4>Quantity</h4>
-                <select name="quantity" id="quantity" value={part.quantity} onChange={(e) => handlePartChange(index, e)}>
-                  <option value="quantity">1</option>
-                </select>
-              </div>
-              <div className="add">
-                <i className='bx bxs-trash bx-tada' onClick={() => removeParts(index)}></i>
-              </div>
-            </div>
-          ))} */}
           <div className="maintenance-status">
             <h4>Maintenance Status</h4>
             <select name="maintenance-status" id="maintenance-status" onChange={(e) => { setStatus(e.currentTarget.value) }} value={status}>
-              <option value="1">Choose Status</option>
-              {maintenanceStatusOptions.map((e)=>{
-                return (
-                  <option value={e}>{e}</option>
-                )
-              })}
+            <option selected>Choose Status</option>
+              <option value="Scheduled" disabled>Scheduled</option>
+              <option value="Cancelled">Cancelled</option>
             </select>
           </div>
           <div className="save">

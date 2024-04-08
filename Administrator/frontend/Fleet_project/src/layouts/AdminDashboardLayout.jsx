@@ -424,25 +424,6 @@ const AdminDashboardLayout = ({ socket }) => {
             } </>)
 
           }
-          {access.a_maintenance == 1 && (<>
-            <li id='adminHistory' onClick={(e) => { toggleDropdown(e.currentTarget) }}>
-              <Link to="#">
-                <i className='bx bx-history' ></i>
-                History
-              </Link>
-            </li>
-            {adminHistory && (
-              <>
-                <li onClick={closeSidebar}>
-                  <Link to="/admin/history/list" id='subMenu'>
-                    Deliveries
-                  </Link>
-                </li >
-              </>
-            )
-            } </>)
-
-          }
 
           {access.a_fuel == 1 && (
             <>
@@ -494,6 +475,25 @@ const AdminDashboardLayout = ({ socket }) => {
               )
               }
             </>)}
+            {access.a_maintenance == 1 && (<>
+            <li id='adminHistory' onClick={(e) => { toggleDropdown(e.currentTarget) }}>
+              <Link to="#">
+                <i className='bx bx-history' ></i>
+                History
+              </Link>
+            </li>
+            {adminHistory && (
+              <>
+                <li onClick={closeSidebar}>
+                  <Link to="/admin/history/list" id='subMenu'>
+                    Deliveries
+                  </Link>
+                </li >
+              </>
+            )
+            } </>)
+
+          }
           {access.a_tracking == 1 && (
             <>
               <li id='report' onClick={(e) => { toggleDropdown(e.currentTarget) }}>

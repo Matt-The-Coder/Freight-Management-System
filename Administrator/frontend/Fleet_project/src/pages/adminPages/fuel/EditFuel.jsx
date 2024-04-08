@@ -5,6 +5,8 @@ import axios from 'axios'
 const EditFuel = () => {
     const {setIsLoading} = useOutletContext()
     const { fuel_id } = useParams()
+    const [vehicleList, setVehicleList] = useState([])
+    const [driverList, setDriverList] = useState([])
     const [vehicle, setVehicle] = useState("")
     const [driver, setDriver] = useState("")
     const [date, setDate] = useState("")
@@ -41,27 +43,32 @@ const EditFuel = () => {
         setRemarks(data.v_fuelcomments)
         setIsLoading(false)
     }
-    useEffect(() => {
+
+    const getAllVehicles = async () => {
+        try {
+            const res = await axios.get(`${hostServer}/retrieve-vehicles`)
+            const data = res.data
+            setVehicleList(data)
+        } catch (error) {
+            
+        }
+    }
+    const getAllDrivers = async () => {
+        try {
+            const res = await axios.get(`${hostServer}/retrieve-drivers`)
+            const data = res.data
+            setDriverList(data)
+            console.log(data)
+        } catch (error) {
+            
+        }
+    }
+
+    useEffect(()=>{
+        getAllVehicles()
+        getAllDrivers()
         getfuel()
-    }, [])
-    const truckNames = [
-        "Volvo FH16",
-        "Scania R730",
-        "Mercedes-Benz Actros",
-        "MAN TGX",
-        "Iveco Stralis",
-        "DAF XF",
-        "Renault T Range",
-        "Kenworth W900",
-        "Peterbilt 379",
-        "Freightliner Cascadia",
-        "International LT",
-        "Mack Anthem",
-        "Western Star 4900",
-        "Hino 700",
-        "Fuso Super Great",
-        "Isuzu Giga"
-    ];
+    },[])
     return (
         <div className="AddFuel">
             <div className="adminHeader">
@@ -83,21 +90,19 @@ const EditFuel = () => {
                         <div className="vehicle">
                             <h4>Vehicle</h4>
                             <select name="vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }} value={vehicle}>
-                                <option>Select Vehicle</option>
-                                {truckNames.map((e,i) => {
-                                    return (
-                                        <option key={i} value={e}>{e}</option>
-                                    )
+                                <option disabled selected>Select Vehicle</option>
+                                {vehicleList.map((e, i)=>{
+                                    return <option key={i} value={e.name}>{e.name}</option>
                                 })}
                             </select>
                         </div>
                         <div className="driver">
                             <h4>Driver</h4>
                             <select onChange={(e) => { setDriver(e.currentTarget.value) }} value={driver}>
-                                <option>Select Driver</option>
-                                <option value="Matt">Matt</option>
-                                <option value="Matthew">Matthew</option>
-                                <option value="Ralph">Ralph</option>
+                            <option disabled selected>Select Driver</option>
+                                {driverList.map((e, i)=>{
+                                    return <option key={i} value={`${e.d_first_name} ${e.d_last_name}`}>{e.d_first_name} {e.d_last_name}</option>
+                                })}
                             </select>
                         </div>
                         <div className="fill-date" >

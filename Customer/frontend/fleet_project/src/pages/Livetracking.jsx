@@ -103,12 +103,15 @@ const trackDriver = async (e)=>
       }
 
     }
-    else {alert("Invalid tracking code! Please enter a valid tracking code.")
-    setIsLoading(false)}
+    else {
+      alert("Invalid tracking code! Please enter a valid tracking code.")
+    setIsLoading(false)
+  }
    
   } catch (error) {
     alert("Invalid tracking code! Please enter a valid tracking code.")
     console.log(error)
+    setIsLoading(false)
   }
 
 }
@@ -525,7 +528,7 @@ const trackDriver = async (e)=>
     </div> */}
 
                       <div className="vehicleData">
-                        <p>Vehicle: <label htmlFor="">{tripDetail.t_vehicle}</label></p>
+                        <p>Vehicle: <label htmlFor="">{tripDetail.name}</label></p>
                         {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
                         {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                         {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
@@ -933,7 +936,7 @@ const trackDriver = async (e)=>
                         </div>
 
                         <div className="vehicleData">
-                          <p>Vehicle: <label htmlFor="">{tripDetail.t_vehicle}</label></p>
+                          <p>Vehicle: <label htmlFor="">{tripDetail.name}</label></p>
                           {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
                           {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                           {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}

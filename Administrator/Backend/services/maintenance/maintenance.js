@@ -11,7 +11,7 @@ module.exports = () =>
             throw error
         }
     }
-    const addMaintenance = async (vehicle, startDate, endDate, details, cost, vendor, mService, status) => 
+    const addMaintenance = async (vehicle, startDate, endDate, details, mService, status) => 
     {
         const d = new Date()
         const year = d.getFullYear()
@@ -19,8 +19,8 @@ module.exports = () =>
         const day = d.getDate()
         const created_date = `${year}-${month}-${day}`
         const query = `Insert into fms_g11_maintenance 	(m_v_id, m_start_date, m_end_date,
-        m_details, m_cost, m_vendor_name, m_service, m_status, v_created_date) 
-        values('${vehicle}', '${startDate}', '${endDate}', '${details}', ${cost}, '${vendor}', 
+        m_details, m_service, m_status, v_created_date) 
+        values('${vehicle}', '${startDate}', '${endDate}', '${details}',
             '${mService}', '${status}', '${created_date}')`
 
         const data = await db(query)

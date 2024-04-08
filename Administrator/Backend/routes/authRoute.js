@@ -8,16 +8,20 @@ const adminAuthServices = require('../services/auth/adminAuth')
 const driverAuthServices = require('../services/auth/driverAuth')
 const {getAdminAccByUsername, getAdminAccounts } = adminAuthServices()
 const {getDriverAccByUsername, getDriverAccounts } = driverAuthServices()
+let account = {
+  token: '',
+  role: ''
+}
 const verifyToken = (req, res, next) => 
 {
   const token = req.session.token
-  // const token = req.cookies.token
+  console.log(account.token)
     if(token){
 
-        req.sessionToken = token
-        // req.sessionToken = req.cookies.token
+        req.sessionToken = account.token
         next()
     }else {
+      console.log("No token")
       return res.json({message:'No token provided.'});
     }
 
@@ -25,8 +29,10 @@ const verifyToken = (req, res, next) =>
 authRoute.get('/alreadyauthenticated', (req, res) => 
 {
 //  if(req.cookies.token){   
-  //  res.json({auth: true, role: req.cookies.role})  
-//}
+//    res.json({auth: true, role: req.cookies.role})  
+// }else{
+//   res.json({auth:false})
+// }
 
 if(req.session.token){   
      res.json({auth: true, role: req.session.role})  
@@ -80,6 +86,10 @@ authRoute.post('/driver/login', async (req, res) => {
           const role = "driver";
           req.session.token = token;
           req.session.role = role;
+          // console.log(ses)
+          // console.log(ses.id)
+          // account.token = ses.token
+          // account.role = ses.role
           return res.json({ success: "Login success!", user });
         });
       }
@@ -114,6 +124,8 @@ authRoute.post('/admin/login', async (req, res) => {
           const role = "admin";
           req.session.token = token;
           req.session.role = role;
+          // account.token = req.session.token;
+          // account.role = req.session.role
           return res.json({ success: "Login success!", user });
         });
       }

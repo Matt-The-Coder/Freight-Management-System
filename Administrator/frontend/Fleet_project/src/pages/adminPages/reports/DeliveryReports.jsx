@@ -205,7 +205,7 @@ const DeliveryReports = ({ socket }) => {
                                             <td> {e.t_trip_fromlocation}</td>
                                             <td>{e.t_trip_tolocation} </td>
                                             <td> {e?.d_first_name}</td>
-                                            <td> {e?.t_vehicle}</td>
+                                            <td> {e?.name}</td>
                                             <td> {e?.t_trip_status}</td>
                                             <td> {e?.t_remarks ? e.t_remarks : "N/A"} </td>
                                             <td> {e?.t_trackingcode}</td>
