@@ -15,10 +15,10 @@ let account = {
 const verifyToken = (req, res, next) => 
 {
   const token = req.session.token
-  console.log(account.token)
+  console.log(req.session.token)
     if(token){
 
-        req.sessionToken = account.token
+        req.sessionToken = req.session.token
         next()
     }else {
       console.log("No token")
