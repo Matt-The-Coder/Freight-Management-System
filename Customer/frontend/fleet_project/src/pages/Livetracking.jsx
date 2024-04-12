@@ -26,7 +26,7 @@ const socket = io.connect(`${mainServer}`)
 const LiveTracking = () => {
   axios.defaults.withCredentials = true;
   const mapboxToken = import.meta.env.VITE_MAPBOX_API;
-  const [mapStyle, setMapStyle] = useState('streets-v12')
+  const [mapStyle, setMapStyle] = useState('light-v11')
   const [transitData, setTransitData] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API;
@@ -300,8 +300,8 @@ const trackDriver = async (e)=>
       setPositionData(result)
       marker.current.setLngLat([result ? result.longitude : 121.0089472, result ? result.latitude : 14.6702336]).addTo(map.current);
       marker.current.setRotation(result ? result.heading : 12)
-      const calcSpeed = result?.speed * 3.6
-      setSpeed(calcSpeed.toFixed(2))
+      const calcSpeed = result?.speed
+      setSpeed(Math.round(calcSpeed))
     } catch (error) {
       console.log(error)
     }
@@ -324,7 +324,7 @@ const trackDriver = async (e)=>
         const body = document.querySelector('body')
         body.classList.remove('dark')
         setCurrentTheme('light')
-        setMapStyle("streets-v12")
+        setMapStyle("light-v11")
       }
     })
     if(systemSettingDark.matches)
@@ -338,7 +338,7 @@ const trackDriver = async (e)=>
       const body = document.querySelector('body')
       body.classList.remove('dark')
       setCurrentTheme('light')
-      setMapStyle("streets-v12")
+      setMapStyle("light-v11")
     }
   }, [])
   // For changing theme
@@ -384,7 +384,7 @@ const trackDriver = async (e)=>
           mapContainer.current.classList.remove("mapboxgl-map")
           mapContainer.current.innerHTML = ""
           setupDarkMap(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat)
-          setInterval(() => { getDriverPosition() }, 5000)
+          setInterval(() => { getDriverPosition() }, 500)
           setIsMapSetup(!isMapSetup)
           if (instructionContainer.current.hasChildNodes()) {
             const instructions = instructionContainer.current
@@ -399,7 +399,7 @@ const trackDriver = async (e)=>
         mapContainer.current.classList.remove("mapboxgl-map")
         mapContainer.current.innerHTML = ""
         setupMap(tripDetail.t_trip_fromlog, tripDetail.t_trip_fromlat);
-        setInterval(() => { getDriverPosition() }, 5000)
+        setInterval(() => { getDriverPosition() }, 500)
         setIsMapSetup(!isMapSetup)
         if (instructionContainer.current.hasChildNodes()) {
           const instructions = instructionContainer.current
@@ -529,7 +529,7 @@ const trackDriver = async (e)=>
 
                       <div className="vehicleData">
                         <p>Vehicle: <label htmlFor="">{tripDetail.name}</label></p>
-                        {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                        {positionData && <p>Speed: {speed == 0 ? <label>Idle</label> : <label>{speed} kph</label>}</p>}
                         {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                         {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
                         {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label> : <label>{positionData?.heading.toFixed(0)}</label>}</p>}
@@ -937,7 +937,7 @@ const trackDriver = async (e)=>
 
                         <div className="vehicleData">
                           <p>Vehicle: <label htmlFor="">{tripDetail.name}</label></p>
-                          {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                          {positionData && <p>Speed: {speed == 0 ? <label>Idle</label> : <label>{speed} kph</label>}</p>}
                           {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                           {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
                           {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label> : <label>{positionData?.heading.toFixed(0)}</label>}</p>}

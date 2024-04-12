@@ -71,7 +71,7 @@ const EditMaintenance = () => {
     e.preventDefault()
     setIsLoading(true)
     const result = await axios.put(`${hostServer}/maintenance-update`,
-      { vehicle, startDate: sDate, endDate: eDate, details, cost, vendor, mService, status, id: maintenanceID })
+      { vehicle, startDate: sDate, endDate: eDate, details, cost, mService, status, id: maintenanceID })
     setIsLoading(false)
     alert('Updated Successful!')
     nav('/admin/maintenance/list')
@@ -86,7 +86,6 @@ const EditMaintenance = () => {
     setDetails(data.m_details)
     setCost(data.m_cost)
     setMService(data.m_service)
-    setVendor(data.m_vendor_name)
     setStatus(data.m_status)
     setIsLoading(false)
   }
@@ -136,6 +135,7 @@ const EditMaintenance = () => {
       </div>
       <div className="vehicle-maintenance">
         <div className="vehicle-details">
+          <form  onSubmit={(e)=>{maintenanceUpdate(e)}}>
           <div className="select-vehicle">
             <h4>Select Vehicle</h4>
             <select name="select-vehicle" id="select-vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }} value={vehicle}>
@@ -166,11 +166,7 @@ const EditMaintenance = () => {
           <div className="cost-vendor">
             <div className="cost">
               <h4>Total Cost</h4>
-              <input type="number" placeholder='Enter Price' disabled onChange={(e) => { setCost(e.currentTarget.value) }} value={cost} />
-            </div>
-            <div className="vendor">
-              <h4>Vendor <span>Name</span> </h4>
-              <input type="text" name="" id="" placeholder='Enter Name' disabled onChange={(e) => { setVendor(e.currentTarget.value) }} value={vendor} />
+              <input min="1" type="number" placeholder='Enter Price' onChange={(e) => { setCost(e.currentTarget.value) }} value={cost} />
             </div>
           </div>
           <div className="parts-qty">
@@ -190,14 +186,15 @@ const EditMaintenance = () => {
           <div className="maintenance-status">
             <h4>Maintenance Status</h4>
             <select name="maintenance-status" id="maintenance-status" onChange={(e) => { setStatus(e.currentTarget.value) }} value={status}>
-            <option selected>Choose Status</option>
+            <option selected disabled>Choose Status</option>
               <option value="Scheduled" disabled>Scheduled</option>
               <option value="Cancelled">Cancelled</option>
             </select>
           </div>
           <div className="save">
-            <button onClick={maintenanceUpdate}>Save</button>
+            <button type='submit'>Save</button>
           </div>
+          </form>
         </div>
       </div>
     </div>

@@ -61,10 +61,11 @@ const AddMaintenance = () => {
     "On Hold"
   ];
 
-  const createMaintenance = async () => {
+  const createMaintenance = async (e) => {
+    e.preventDefault()
     setIsLoading(true)
     const result = await axios.post(`${hostServer}/add-maintenance`,
-      { vehicle, startDate: sDate, endDate: eDate, details, mService, status })
+      { vehicle, startDate: sDate, endDate: eDate, details, cost, mService, status })
     setIsLoading(false)
     alert("Created Successfully!")
     nav('/admin/maintenance/list')
@@ -119,9 +120,10 @@ const AddMaintenance = () => {
       </div>
       <div className="vehicle-maintenance">
         <div className="vehicle-details">
+          <form onSubmit={(e)=>{createMaintenance(e)}}>
           <div className="select-vehicle">
             <h4>Select Vehicle</h4>
-            <select name="select-vehicle" id="select-vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }}>
+            <select required name="select-vehicle" id="select-vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }}>
               <option disabled selected>Select Vehicle</option>
               {vehicleList.map((e, i) => {
                 return <option key={i} value={e.name}>{e.name}</option>
@@ -133,33 +135,29 @@ const AddMaintenance = () => {
               <h4>
                 <span>Maintenance</span> Start Date
               </h4>
-              <input type="date" name="" id="" onChange={(e) => { setSDate(formatDate(e.currentTarget.value)) }} />
+              <input required type="date" name="" id="" onChange={(e) => { setSDate(formatDate(e.currentTarget.value)) }} />
             </div>
             <div className="end">
               <h4>
                 <span>Maintenance</span> End Date
               </h4>
-              <input type="date" name="" id="" onChange={(e) => { setEDate(formatDate(e.currentTarget.value)) }} />
+              <input required type="date" name="" id="" onChange={(e) => { setEDate(formatDate(e.currentTarget.value)) }} />
             </div>
           </div>
           <div className="service-details">
             <h4>Service Details</h4>
-            <textarea name="service-details" id="service-details" onChange={(e) => { setDetails(e.currentTarget.value) }} cols="45" rows="6" placeholder='Enter Details'></textarea>
+            <textarea required name="service-details" id="service-details" onChange={(e) => { setDetails(e.currentTarget.value) }} cols="45" rows="6" placeholder='Enter Details'></textarea>
           </div>
           <div className="cost-vendor">
             <div className="cost">
               <h4>Total Cost</h4>
-              <input type="number" placeholder='Enter Price' disabled onChange={(e) => { setCost(e.currentTarget.value) }} />
-            </div>
-            <div className="vendor">
-              <h4>Vendor <span>Name</span> </h4>
-              <input type="text" name="" id="" placeholder='Enter Name' disabled onChange={(e) => { setVendor(e.currentTarget.value) }} />
+              <input required min="1" type="number" placeholder='Enter Price' onChange={(e) => { setCost(e.currentTarget.value) }} />
             </div>
           </div>
           <div className="parts-qty">
             <div className="parts-name">
               <h4>Maintenance Service</h4>
-              <select name="parts" id="parts" onChange={(e) => { setMService(e.currentTarget.value) }}>
+              <select required name="parts" id="parts" onChange={(e) => { setMService(e.currentTarget.value) }}>
                 <option disabled selected>Select Service</option>
                 {maintenanceServices.map((e) => {
                   return (
@@ -172,14 +170,15 @@ const AddMaintenance = () => {
           </div>
           <div className="maintenance-status">
             <h4>Maintenance Status</h4>
-            <select name="maintenance-status" id="maintenance-status" onChange={(e) => { setStatus(e.currentTarget.value) }}>
+            <select required name="maintenance-status" id="maintenance-status" onChange={(e) => { setStatus(e.currentTarget.value) }}>
               <option disabled selected>Choose Status</option>
               <option value="Scheduled">Scheduled</option>
             </select>
           </div>
           <div className="save">
-            <button onClick={createMaintenance}>Create</button>
+            <button type='submit'>Create</button>
           </div>
+          </form>
         </div>
       </div>
     </div>

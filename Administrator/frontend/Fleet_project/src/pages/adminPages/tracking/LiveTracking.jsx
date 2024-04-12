@@ -286,8 +286,8 @@ const LiveTracking = ({socket}) => {
       setPositionData(result)
       marker.current.setLngLat([result ? result.longitude : 121.0089472, result ? result.latitude : 14.6702336]).addTo(map.current);
       marker.current.setRotation(result ? result.heading : 12)
-      const calcSpeed = result?.speed * 3.6
-      setSpeed(calcSpeed.toFixed(2))
+      const calcSpeed = result?.speed
+      setSpeed(Math.round(calcSpeed))
       setCarPosition(result)
     } catch (error) {
       console.log(error)
@@ -316,7 +316,7 @@ const LiveTracking = ({socket}) => {
         mapContainer.current.classList.remove("mapboxgl-map")
         mapContainer.current.innerHTML = ""
         setupDarkMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat)
-        setInterval(() => { getDriverPosition() }, 2000)
+        setInterval(() => { getDriverPosition() }, 500)
         if (instructionContainer.current) {
           const instructions = instructionContainer.current
           instructionContainer.current.removeChild(instructions.children[0])
@@ -329,7 +329,7 @@ const LiveTracking = ({socket}) => {
       }
       else {
         setupMap(currentTrip?.t_trip_fromlog, currentTrip?.t_trip_fromlat);
-        setInterval(() => { getDriverPosition() }, 2000)
+        setInterval(() => { getDriverPosition() }, 500)
 
         setIsMapSetup(!isMapSetup)
         if (instructionContainer.current.hasChildNodes()) {
@@ -432,7 +432,7 @@ const LiveTracking = ({socket}) => {
 
                       <div className="vehicleData">
                         <p>Vehicle: <label htmlFor="">{currentTrip.name}</label></p>
-                        {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                        {positionData && <p>Speed: {speed == 0 ? <label>Idle</label> : <label>{speed} kph</label>}</p>}
                         {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                         {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
                         {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label> : <label>{positionData?.heading.toFixed(0)}</label>}</p>}
@@ -840,7 +840,7 @@ const LiveTracking = ({socket}) => {
 
                         <div className="vehicleData">
                           <p>Vehicle: <label htmlFor="">{currentTrip.name}</label></p>
-                          {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                          {positionData && <p>Speed: {speed == 0 ? <label>Idle</label> : <label>{speed} kph</label>}</p>}
                           {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                           {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
                           {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label> : <label>{positionData?.heading.toFixed(0)}</label>}</p>}

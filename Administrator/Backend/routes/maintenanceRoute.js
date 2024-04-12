@@ -14,10 +14,9 @@ maintenanceRouter.get("/maintenance-list", async (req, res) =>
 
 maintenanceRouter.post("/add-maintenance", async (req, res) => 
 {
-    const {vehicle, startDate, endDate, details, mService, status} = req.body
-    const data = await addMaintenance(vehicle, startDate, endDate, details, mService, status)
+    const {vehicle, startDate, endDate, details, cost, mService, status} = req.body
+    const data = await addMaintenance(vehicle, startDate, endDate, details, cost, mService, status)
     res.json(data)
-    console.log(req.body)
 })
 
 maintenanceRouter.get("/maintenance-search", async (req, res) => {
@@ -33,13 +32,13 @@ maintenanceRouter.get("/maintenancebyid/:id", async (req, res) => {
 })
 // Update
 maintenanceRouter.put("/maintenance-update", async (req, res) => {
-    const {vehicle, startDate, endDate, details, cost, vendor, mService, status, id} = req.body
+    const {vehicle, startDate, endDate, details, cost, mService, status, id} = req.body
     const d = new Date()
     const year = d.getFullYear()
     const month = d.getMonth() + 1
     const day = d.getDate()
     const created_date = `${year}-${month}-${day}`
-    const result = await updateMaintenance(vehicle, startDate, endDate, details, cost, vendor, mService, status, id, created_date)
+    const result = await updateMaintenance(vehicle, startDate, endDate, details, cost, mService, status, id, created_date)
     res.json(result).status(200)
 })
 maintenanceRouter.delete('/maintenance-delete/:id', async (req, res) => {

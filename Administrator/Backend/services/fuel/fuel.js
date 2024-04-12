@@ -43,7 +43,7 @@ module.exports = () => {
         }
     }
     const fuelSearch = async (search) => {
-        const query = `SELECT * FROM fms_g11_fuel WHERE v_fueladdedby LIKE '%${search}%' OR v_fuelprice LIKE '%${search}%'`;
+        const query = `SELECT * FROM fms_g11_fuel WHERE v_fueladdedby LIKE '%${search}%' OR v_id LIKE '%${search}%'`;
         const data = await db(query)
         return data
 

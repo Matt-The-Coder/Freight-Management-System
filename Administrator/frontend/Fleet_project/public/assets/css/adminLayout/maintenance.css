@@ -95,7 +95,14 @@
 }
 .vehicle-details{
     width: 100%;
-    box-shadow: 1px 2px #1976d28f;
+    display: flex;
+    row-gap: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.vehicle-details form{
+    width: 100%;
     border-radius: 20px;
     display: flex;
     row-gap: 20px;
@@ -145,7 +152,7 @@
     display: flex;
 }
 :is(.vehicle-details .cost-vendor) :is(.cost, .vendor){
-    width: 49%;
+    width: 100%;
 }
 .vehicle-details .cost-vendor .vendor{
     margin-left: auto;
@@ -219,7 +226,6 @@
         align-items: baseline;
         background-color: var(--light);
         margin-bottom: 10px;
-        box-shadow: 1px 2px rgb(36, 36, 44);
     }
     .vehicle-details .select-vehicle {
         width: 90%;
@@ -309,8 +315,6 @@
         border-radius: 5px;
         cursor: pointer;
         margin: 0; 
-        background-color: #1976D2 !important;
-        color: white !important;
         font-size: 1rem;
     }
  }
@@ -338,7 +342,6 @@
         align-items: baseline;
         background-color: var(--light);
         margin-bottom: 10px;
-        box-shadow: 2px 3px rgb(36, 36, 44);
         
     }
     .vehicle-details .select-vehicle {
@@ -433,8 +436,6 @@
         padding: 6px 12px;
         border-radius: 5px;
         cursor: pointer; 
-        background-color: #1976D2 !important;
-        color: white !important;
     }
     /* Maintenance List */
     .Maintenance .title h5{

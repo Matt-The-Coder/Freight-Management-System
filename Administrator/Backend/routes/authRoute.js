@@ -15,9 +15,8 @@ let account = {
 const verifyToken = (req, res, next) => 
 {
   const token = req.session.token
-  console.log(req.session.token)
     if(token){
-
+        // req.sessionToken = account.token
         req.sessionToken = req.session.token
         next()
     }else {
@@ -28,8 +27,8 @@ const verifyToken = (req, res, next) =>
 }
 authRoute.get('/alreadyauthenticated', (req, res) => 
 {
-//  if(req.cookies.token){   
-//    res.json({auth: true, role: req.cookies.role})  
+//  if(account.token){   
+//    res.json({auth: true, role: account.role})  
 // }else{
 //   res.json({auth:false})
 // }
@@ -86,10 +85,8 @@ authRoute.post('/driver/login', async (req, res) => {
           const role = "driver";
           req.session.token = token;
           req.session.role = role;
-          // console.log(ses)
-          // console.log(ses.id)
-          // account.token = ses.token
-          // account.role = ses.role
+          // account.token = token
+          // account.role = role
           return res.json({ success: "Login success!", user });
         });
       }
@@ -124,8 +121,8 @@ authRoute.post('/admin/login', async (req, res) => {
           const role = "admin";
           req.session.token = token;
           req.session.role = role;
-          // account.token = req.session.token;
-          // account.role = req.session.role
+          // account.token = token
+          // account.role = role
           return res.json({ success: "Login success!", user });
         });
       }
