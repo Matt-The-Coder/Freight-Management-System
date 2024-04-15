@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import '/public/assets/css/adminLayout/fuel.css'
 import axios from 'axios'
@@ -31,7 +31,7 @@ const AddFuel = () => {
             const data = res.data
             setVehicleList(data)
         } catch (error) {
-            
+           console.log(error) 
         }
     }
     const getAllDrivers = async () => {
@@ -45,11 +45,29 @@ const AddFuel = () => {
         }
     }
 
+    const getVehicle = async (e) =>{
+        setDriver(e)
+        try {
+            setIsLoading(true)
+            const res = await axios.get(`${hostServer}/retrieve-vehicles?driver=${e}`)
+            const data = res.data
+            setVehicleList(data)
+            setIsLoading(false)
+        } catch (error) {
+            setIsLoading(false)
+           console.log(error) 
+        }
+    }
+
     useEffect(()=>{
         getAllVehicles()
         getAllDrivers()
     },[])
   
+    useEffect(()=>{
+        const opt = document.querySelector("#vehicle")
+        setVehicle(opt.value)
+    }, [vehicleList])
     return (
         <div className="AddFuel">
             <div className="adminHeader">
@@ -68,23 +86,23 @@ const AddFuel = () => {
                 <div className="fuel-details">
                 <form onSubmit={(e)=>{AddFuel(e)}}>
                     <div className="first-row">
-                        <div className="vehicle">
-                            <h4>Vehicle</h4>
-                            <select name="vehicle" onChange={(e)=>{setVehicle(e.currentTarget.value)}} required>
-                                <option disabled selected>Select Vehicle</option>
-                                {vehicleList.map((e, i)=>{
-                                    return <option key={i} value={e.name}>{e.name}</option>
-                                })}
-                            </select>
-                        </div>
                         <div className="driver">
                             <h4>Driver</h4>
-                            <select required  onChange={(e)=>{setDriver(e.currentTarget.value)}}>
+                            <select required onChange={(e)=>{getVehicle(e.currentTarget.value)}}>
                                 <option disabled selected>Select Driver</option>
                                 {driverList.map((e, i)=>{
-                                    return <option key={i} value={`${e.d_first_name} ${e.d_last_name}`}>{e.d_first_name} {e.d_last_name}</option>
+                                    return <option key={i} value={`${e.d_first_name}`}>{e.d_first_name} {e.d_last_name}</option>
                                 })}
 
+                            </select>
+                        </div>
+                        <div className="vehicle">
+                            <h4>Vehicle</h4>
+                            <select name="vehicle" disabled required id='vehicle'>
+                                <option disabled>Select Vehicle</option>
+                                {vehicleList.map((e, i)=>{
+                                    return <option selected key={i} value={e.name}>{e.name}</option>
+                                })}
                             </select>
                         </div>
                         <div className="fill-date" >

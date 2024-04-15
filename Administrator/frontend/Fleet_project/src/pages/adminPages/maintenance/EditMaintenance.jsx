@@ -91,7 +91,7 @@ const EditMaintenance = () => {
   }
   const getAllVehicles = async () => {
     try {
-      const res = await axios.get(`${hostServer}/retrieve-vehicles`)
+      const res = await axios.get(`${hostServer}/retrieve-vehicles-maintenance`)
       const data = res.data
       setVehicleList(data)
     } catch (error) {

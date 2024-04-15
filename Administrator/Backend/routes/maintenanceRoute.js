@@ -51,13 +51,24 @@ maintenanceRouter.delete('/maintenance-delete/:id', async (req, res) => {
         console.log(error)
     }
 })
+// Maintenance
+maintenanceRouter.get("/retrieve-vehicles-maintenance", async (req, res) => {
+    const vehicles = await db(`Select * from fms_g17_vehicle`)
+    res.json(vehicles)
+})
+// ADD FUEL
 maintenanceRouter.get("/retrieve-vehicles", async (req, res) => {
-    const vehicles = await db("Select * from fms_g17_vehicle")
+    const {driver} = req.query
+    const vehicles = await db(`Select * from fms_g11_trips 
+    INNER JOIN fms_g17_vehicle ON t_vehicle = vehicle_id 
+    INNER JOIN fms_g12_drivers ON t_driver = d_id
+    where t_trip_status = "In Progress" AND d_first_name = '${driver}'`)
     res.json(vehicles)
 })
 
 maintenanceRouter.get("/retrieve-drivers", async (req, res) => {
-    const vehicles = await db("Select * from fms_g12_drivers")
+    const vehicles = await db(`Select * from fms_g11_trips 
+    INNER JOIN fms_g12_drivers ON t_driver = d_id where t_trip_status = "In Progress" `)
     res.json(vehicles)
 })
 module.exports = maintenanceRouter

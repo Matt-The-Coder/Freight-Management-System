@@ -153,7 +153,7 @@ const AdminHistory = ({ socket }) => {
             </div>
                 <div className="trips-list">
                     {deliveries.length == 0 && <center><h1>No Trips Found</h1></center>}
-                    {deliveries.map((e, i) => {
+                    {deliveries.reverse().map((e, i) => {
                         let statusColor = '';
                         if (e.t_trip_status == 'Completed') {
                             statusColor = "#388E3C";

@@ -7,16 +7,13 @@ const AddMaintenance = () => {
   const { setIsLoading } = useOutletContext()
   const hostServer = import.meta.env.VITE_SERVER_HOST
   const nav = useNavigate()
-  const [addedParts, setAddedParts] = useState([]);
   const [vehicleList, setVehicleList] = useState([])
-  const [driverList, setDriverList] = useState([])
   const [vehicle, setVehicle] = useState();
   const [sDate, setSDate] = useState();
   const [eDate, setEDate] = useState();
   const [details, setDetails] = useState();
   const [cost, setCost] = useState();
   const [mService, setMService] = useState('')
-  const [vendor, setVendor] = useState();
   const [status, setStatus] = useState();
 
   const maintenanceServices = [
@@ -78,7 +75,7 @@ const AddMaintenance = () => {
 
   const getAllVehicles = async () => {
     try {
-      const res = await axios.get(`${hostServer}/retrieve-vehicles`)
+      const res = await axios.get(`${hostServer}/retrieve-vehicles-maintenance`)
       const data = res.data
       setVehicleList(data)
     } catch (error) {

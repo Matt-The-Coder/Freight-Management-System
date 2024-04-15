@@ -44,29 +44,8 @@ const EditFuel = () => {
         setIsLoading(false)
     }
 
-    const getAllVehicles = async () => {
-        try {
-            const res = await axios.get(`${hostServer}/retrieve-vehicles`)
-            const data = res.data
-            setVehicleList(data)
-        } catch (error) {
-            
-        }
-    }
-    const getAllDrivers = async () => {
-        try {
-            const res = await axios.get(`${hostServer}/retrieve-drivers`)
-            const data = res.data
-            setDriverList(data)
-            console.log(data)
-        } catch (error) {
-            
-        }
-    }
 
     useEffect(()=>{
-        getAllVehicles()
-        getAllDrivers()
         getfuel()
     },[])
     return (
@@ -87,22 +66,19 @@ const EditFuel = () => {
             <div className="fuel-details">
                 <form onSubmit={(e) => { updateFuel(e) }}>
                     <div className="first-row">
-                        <div className="vehicle">
-                            <h4>Vehicle</h4>
-                            <select name="vehicle" onChange={(e) => { setVehicle(e.currentTarget.value) }} value={vehicle}>
-                                <option disabled selected>Select Vehicle</option>
-                                {vehicleList.map((e, i)=>{
-                                    return <option key={i} value={e.name}>{e.name}</option>
-                                })}
-                            </select>
-                        </div>
                         <div className="driver">
                             <h4>Driver</h4>
-                            <select onChange={(e) => { setDriver(e.currentTarget.value) }} value={driver}>
+                            <select disabled onChange={(e) => { setDriver(e.currentTarget.value) }} value={driver}>
                             <option disabled selected>Select Driver</option>
-                                {driverList.map((e, i)=>{
-                                    return <option key={i} value={`${e.d_first_name} ${e.d_last_name}`}>{e.d_first_name} {e.d_last_name}</option>
-                                })}
+                            <option  value={driver}>{driver}</option>
+                            </select>
+                        </div>
+                        <div className="vehicle">
+                            <h4>Vehicle</h4>
+                            <select name="vehicle" disabled onChange={(e) => { setVehicle(e.currentTarget.value) }} value={vehicle}>
+                                <option disabled selected>Select Vehicle</option>
+                                 <option value={vehicle}>{vehicle}</option>
+
                             </select>
                         </div>
                         <div className="fill-date" >
