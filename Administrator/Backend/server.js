@@ -31,9 +31,9 @@ app.use(session({
   proxy: true, // Required for Heroku & Digital Ocean (regarding X-Forwarded-For)
   name: 'MyKargadaOnly', // This needs to be unique per-host.
   cookie: {
-    secure: true, // required for cookies to work on HTTPS
+    secure: false, // required for cookies to work on HTTPS
     httpOnly: false,
-    sameSite: 'none'
+    sameSite: 'lax'
   }
 }))
 
