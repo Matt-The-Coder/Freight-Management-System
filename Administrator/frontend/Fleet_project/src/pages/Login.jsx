@@ -60,6 +60,7 @@ const AdminLogin = () => {
       }
 
     } catch (error) {
+      setIsLoading(false)
       console.error(error)
     }
   };
@@ -68,6 +69,7 @@ const AdminLogin = () => {
       e.preventDefault();
       setIsLoading(true)
       const result = await axios.post(`${hostServer}/driver/login`, { userName, password });
+      console.log(result)
       if (result.data.success) {
         setIsLoading(false)
           nav('/driver/dashboard')

@@ -78,6 +78,7 @@ const DriverDashboardLayout = ({ socket }) => {
 
     try {
       const result = await axios.get(`${hostServer}/homeAuthentication`)
+      console.log(result.data)
       if (result.data.message) {
         setAuthError(result.data.message)
         nav("/login")
@@ -349,30 +350,6 @@ const DriverDashboardLayout = ({ socket }) => {
                 Dashboard
               </Link>
             </li>}
-            {/* {access.a_driver_board == 1 && (<>
-            <li id='maintenance' onClick={(e) => { toggleDropdown(e.currentTarget) }}>
-              <Link to="#" >
-                <i className='bx bx-wrench'></i>
-                Maintenance
-              </Link>
-            </li>
-            {maintenanceDropdown && (
-              <>
-                <li onClick={closeSidebar}>
-                  <Link to={`/driver/maintenance/list/${user?.d_id}`} id='subMenu'>
-                    Maintenance List
-                  </Link>
-                </li >
-                <li onClick={closeSidebar}>
-                  <Link to="/driver/maintenance/add" id='subMenu'>
-                    Add Maintenance
-                  </Link>
-                </li>
-              </>
-            )
-            } </>)
-
-          } */}
           {access.a_deliveries == 1 && (<>
             <li id='deliveries' onClick={(e) => { toggleDropdown(e.currentTarget) }} >
               <Link to="#">

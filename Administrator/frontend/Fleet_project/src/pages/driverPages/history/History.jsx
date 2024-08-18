@@ -243,7 +243,7 @@ const DriverHistory = () => {
                                                 </dialog>
                                                 <p>Report: {e.t_remarks}</p>
                                                 <p>Duration: {e.t_totaldrivetime}</p>
-                                                <p>Vehicle: {e.t_vehicle}</p>
+                                                <p>Vehicle: {e.name}</p>
                                                 <p>Weather: {e.sd_current_weather}</p>
                                                 <p>Total Emission: {e.sd_carbon_emission}</p>
                                                 <p>Total Fuel Usage: {e.sd_fuelconsumption}</p>

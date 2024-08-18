@@ -183,7 +183,7 @@ personalInfoRoute.post('/updateDriverPersonalInfo', async (req, res)=>{
 
 })
 personalInfoRoute.post('/updateDriverSecurityInfo', async (req, res)=>{
-  const {nP:newPassword, u_id:id} = req.body
+  const {nP:newPassword, d_id:id} = req.body
   const hashedPassword = await bcrypt.hash(newPassword, 10)
   const query = `UPDATE fms_g12_drivers SET d_password = '${hashedPassword}' WHERE d_id = ${id}`
   const result = await db(query)

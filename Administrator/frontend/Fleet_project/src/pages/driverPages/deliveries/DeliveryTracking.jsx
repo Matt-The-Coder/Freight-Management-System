@@ -256,7 +256,7 @@ const DeliveryTracking = ({ socket }) => {
         const data = position.coords;
         setPositionData(data);
         const calcSpeed = data.speed * 3.6
-        setSpeed(calcSpeed.toFixed(2))
+        setSpeed(Math.round(calcSpeed))
         marker.current.setLngLat([data?.longitude, data?.latitude]).addTo(map.current);
         marker.current.setRotation(data?.heading)
         const updatePosition = await axios.put(`${hostServer}/updatePosition`, {
@@ -468,8 +468,8 @@ const DeliveryTracking = ({ socket }) => {
     </div> */}
 
                       <div className="vehicleData">
-                        <p>Vehicle: <label htmlFor="">{currentTrip.t_vehicle}</label></p>
-                        {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                        <p>Vehicle: <label htmlFor="">{currentTrip.name}</label></p>
+                        {positionData && <p>Speed: {speed == 0 ? <label>Idle</label> : <label>{speed} kph</label>}</p>}
                         {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                         {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
                         {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label> : <label>{positionData?.heading.toFixed(0)}</label>}</p>}
@@ -874,8 +874,8 @@ const DeliveryTracking = ({ socket }) => {
                           </Speedometer>
                         </div>
                         <div className="vehicleData">
-                          <p>Vehicle: <label htmlFor="">{currentTrip.t_vehicle}</label></p>
-                          {positionData && <p>Speed: {positionData.speed == null ? <label>Idle</label> : <label>{positionData?.speed.toFixed(0)} m/s</label>}</p>}
+                          <p>Vehicle: <label htmlFor="">{currentTrip.name}</label></p>
+                          {positionData && <p>Speed: {speed == 0 ? <label>Idle</label> : <label>{speed} kph</label>}</p>}
                           {positionData && <p>Altitude: {positionData.altitude == null ? <label>Unavailable</label> : <label>{positionData?.altitude.toFixed(0)} meters</label>}</p>}
                           {positionData && <p>Accuracy: {positionData.accuracy == null ? <label>Unavailable</label> : <label>{positionData?.accuracy.toFixed(0)}</label>} </p>}
                           {positionData && <p>Heading: {positionData.heading == null ? <label>Unavailable</label> : <label>{positionData?.heading.toFixed(0)}</label>}</p>}

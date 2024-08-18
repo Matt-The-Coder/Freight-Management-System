@@ -112,10 +112,9 @@ const MaintenanceList = () => {
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Service Info</th>
-                                <th>Vendor</th>
                                 <th>Cost</th>
                                 <th>Status</th>
-                                {/* <th>Manage</th> */}
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -129,10 +128,9 @@ const MaintenanceList = () => {
                                         <td> {formatDate(e?.m_start_date)}</td>
                                         <td> {formatDate(e?.m_end_date)}</td>
                                         <td>{e?.m_service} </td>
-                                        <td> {e?.m_vendor_name}</td>
-                                        <td> {e?.m_cost}</td>
+                                        <td> {e?.m_cost ? e.m_cost:  'N/A'}</td>
                                         <td> {e?.m_status}</td>
-                                        {/* <td><button onClick={()=>{updateData(e.m_id)}}>Edit</button><button onClick={()=>{deleteData(e.m_id)}}>Delete</button></td> */}
+                                        <td><button onClick={()=>{updateData(e.m_id)}}>Edit</button><button onClick={()=>{deleteData(e.m_id)}}>Delete</button></td>
                                     </tr>
                                 )})
                             }

@@ -11,7 +11,7 @@ module.exports = () =>
             throw error
         }
     }
-    const addMaintenance = async (vehicle, startDate, endDate, details, cost, vendor, mService, status) => 
+    const addMaintenance = async (vehicle, startDate, endDate, details, cost, mService, status) => 
     {
         const d = new Date()
         const year = d.getFullYear()
@@ -19,14 +19,14 @@ module.exports = () =>
         const day = d.getDate()
         const created_date = `${year}-${month}-${day}`
         const query = `Insert into fms_g11_maintenance 	(m_v_id, m_start_date, m_end_date,
-        m_details, m_cost, m_vendor_name, m_service, m_status, v_created_date) 
-        values('${vehicle}', '${startDate}', '${endDate}', '${details}', ${cost}, '${vendor}', 
+        m_details, m_cost, m_service, m_status, v_created_date) 
+        values('${vehicle}', '${startDate}', '${endDate}', '${details}', '${cost}',
             '${mService}', '${status}', '${created_date}')`
 
         const data = await db(query)
         return data
     }
-    const updateMaintenance = async (vehicle, startDate, endDate, details, cost, vendor, mService, status, id, modifiedDate) => 
+    const updateMaintenance = async (vehicle, startDate, endDate, details, cost, mService, status, id, modifiedDate) => 
     {
         const query = `UPDATE fms_g11_maintenance set
         m_v_id ='${vehicle}',
@@ -35,7 +35,6 @@ module.exports = () =>
         m_details	= '${details}',
         m_cost = ${cost},
         m_service = '${mService}',
-        m_vendor_name = '${vendor}',
         m_status =  '${status}', v_modified_date = '${modifiedDate}' where m_id= ${id}`
         
         try {
@@ -46,7 +45,7 @@ module.exports = () =>
         }
     }
     const maintenanceSearch = async (search) => {
-        const query = `SELECT * FROM fms_g11_maintenance WHERE m_cost LIKE '%${search}%' OR m_status LIKE '%${search}%'`;
+        const query = `SELECT * FROM fms_g11_maintenance WHERE m_v_id LIKE '%${search}%' OR m_status LIKE '%${search}%'`;
         const data = await db(query)
         return data
 
